@@ -14,6 +14,10 @@
 #include "lgfx_cyd.h"
 #include "secrets.h"
 
+#ifndef CALLSIGN
+#define CALLSIGN ""   // optional in secrets.h: #define CALLSIGN "HB9XXX"
+#endif
+
 // ---------------- Einstellungen ----------------
 static const int      ROTATION       = 1;          // 1 oder 3 (180 Grad gedreht)
 static const uint8_t  BRIGHTNESS     = 180;        // 0 bis 255
@@ -36,6 +40,7 @@ static WiFiMulti wifiMulti;
 static Solar solar;
 static bool  haveData = false;
 static const char* BAND_NAMES[4] = { "80m-40m", "30m-20m", "17m-15m", "12m-10m" };
+static const char* BAND_LABELS[4] = { "80-40m", "30-20m", "17-15m", "12-10m" };
 static Cond bandDay[4]   = { C_UNK, C_UNK, C_UNK, C_UNK };
 static Cond bandNight[4] = { C_UNK, C_UNK, C_UNK, C_UNK };
 
@@ -160,7 +165,7 @@ static void drawHeader() {
   tft.fillRect(0, 0, 320, 26, COL_HDR);
   tft.setFont(&lgfx::fonts::Font4);
   tft.setTextColor(COL_TEXT, COL_HDR);
-  tft.drawString("BANDAMPEL", 6, 3);
+  tft.drawString(strlen(CALLSIGN) ? CALLSIGN : "BANDAMPEL", 6, 3);
   drawClock();
 }
 
@@ -179,24 +184,61 @@ static void drawFooter() {
   tft.drawString(pg, 314 - w, 222);
 }
 
-static void drawTile(int x, int y, int w, int h, const char* label, const String& val, Cond c) {
+static uint16_t shade(uint16_t c, int pct) {
+  int r = ((c >> 11) & 31) * pct / 100;
+  int g = ((c >> 5) & 63) * pct / 100;
+  int b = (c & 31) * pct / 100;
+  return (uint16_t)((r << 11) | (g << 5) | b);
+}
+
+// Symbole: 1 Sonne, 2 Sonnenflecken, 3 Pegel, 4 Welle
+static void drawIcon(int type, int cx, int cy, uint16_t col) {
+  if (type == 1) {
+    tft.fillCircle(cx, cy, 5, col);
+    for (int k = 0; k < 8; k++) {
+      float a = k * 0.7853982f;
+      tft.drawLine(cx + (int)(8 * cosf(a)), cy + (int)(8 * sinf(a)),
+                   cx + (int)(12 * cosf(a)), cy + (int)(12 * sinf(a)), col);
+    }
+  } else if (type == 2) {
+    tft.drawCircle(cx, cy, 10, col);
+    tft.fillCircle(cx - 3, cy - 2, 2, col);
+    tft.fillCircle(cx + 4, cy + 3, 3, col);
+  } else if (type == 3) {
+    tft.fillRect(cx - 9, cy + 1, 5, 6, col);
+    tft.fillRect(cx - 2, cy - 3, 5, 10, col);
+    tft.fillRect(cx + 5, cy - 7, 5, 14, col);
+  } else if (type == 4) {
+    int px = cx - 12, py = cy;
+    for (int k = 1; k <= 20; k++) {
+      int nx = cx - 12 + k * 24 / 20;
+      int ny = cy + (int)(6 * sinf(k * 0.3141593f * 1.5f));
+      tft.drawLine(px, py, nx, ny, col);
+      px = nx; py = ny;
+    }
+  }
+}
+
+static void drawTile(int x, int y, int w, int h, const char* label, const String& val, Cond c, int icon) {
   uint16_t bg = colFor(c), fg = fgFor(c);
-  tft.fillRoundRect(x, y, w, h, 8, bg);
+  tft.fillRoundRect(x, y + 3, w, h - 3, 8, shade(bg, 60));
+  tft.fillRoundRect(x, y, w, h - 4, 8, bg);
   tft.setTextColor(fg, bg);
   tft.setFont(&lgfx::fonts::Font2);
   tft.drawString(label, x + 8, y + 6);
+  drawIcon(icon, x + w - 24, y + 20, fg);
   tft.setFont(&lgfx::fonts::Font7);
   String v = val.length() ? val : String("--");
   int tw = tft.textWidth(v);
-  tft.drawString(v, x + (w - tw) / 2, y + h - tft.fontHeight() - 8);
+  tft.drawString(v, x + (w - tw) / 2, y + h - tft.fontHeight() - 12);
 }
 
 static void drawPageOverview() {
   bool d = haveData;
-  drawTile(4,   28,  156, 90, "SFI (Solar Flux)", solar.sfi, d && solar.sfi.length() ? levelSfi(solar.sfi.toInt()) : C_UNK);
-  drawTile(160, 28,  156, 90, "K-Index",          solar.k,   d && solar.k.length()   ? levelK(solar.k.toInt())     : C_UNK);
-  drawTile(4,   122, 156, 90, "Sunspots",         solar.ssn, d && solar.ssn.length() ? levelSsn(solar.ssn.toInt()) : C_UNK);
-  drawTile(160, 122, 156, 90, "A-Index",          solar.a,   d && solar.a.length()   ? levelA(solar.a.toInt())     : C_UNK);
+  drawTile(4,   28,  156, 90, "SFI (Solar Flux)", solar.sfi, d && solar.sfi.length() ? levelSfi(solar.sfi.toInt()) : C_UNK, 1);
+  drawTile(160, 28,  156, 90, "K-Index",          solar.k,   d && solar.k.length()   ? levelK(solar.k.toInt())     : C_UNK, 3);
+  drawTile(4,   122, 156, 90, "Sunspots",         solar.ssn, d && solar.ssn.length() ? levelSsn(solar.ssn.toInt()) : C_UNK, 2);
+  drawTile(160, 122, 156, 90, "A-Index",          solar.a,   d && solar.a.length()   ? levelA(solar.a.toInt())     : C_UNK, 4);
 }
 
 static const char* condText(Cond c) {
@@ -210,26 +252,27 @@ static const char* condText(Cond c) {
 
 static void drawBar(int x, int y, int w, int h, Cond c) {
   uint16_t bg = colFor(c);
-  tft.fillRoundRect(x, y, w, h, 6, bg);
+  tft.fillRoundRect(x, y + 3, w, h - 3, 6, shade(bg, 60));
+  tft.fillRoundRect(x, y, w, h - 4, 6, bg);
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(fgFor(c), bg);
   const char* s = condText(c);
   int tw = tft.textWidth(s);
-  tft.drawString(s, x + (w - tw) / 2, y + (h - tft.fontHeight()) / 2);
+  tft.drawString(s, x + (w - tw) / 2, y + (h - 4 - tft.fontHeight()) / 2);
 }
 
 static void drawPageBands() {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString("Tag",   100 + 53 - tft.textWidth("Tag") / 2,   28);
-  tft.drawString("Nacht", 210 + 53 - tft.textWidth("Nacht") / 2, 28);
+  tft.drawString("Tag",   98 + 53 - tft.textWidth("Tag") / 2,   28);
+  tft.drawString("Nacht", 208 + 53 - tft.textWidth("Nacht") / 2, 28);
   for (int i = 0; i < 4; i++) {
     int y = 46 + i * 44;
     tft.setFont(&lgfx::fonts::Font4);
     tft.setTextColor(COL_TEXT, COL_BG);
-    tft.drawString(BAND_NAMES[i], 4, y + (40 - tft.fontHeight()) / 2);
-    drawBar(100, y, 106, 40, haveData ? bandDay[i]   : C_UNK);
-    drawBar(210, y, 106, 40, haveData ? bandNight[i] : C_UNK);
+    tft.drawString(BAND_LABELS[i], 4, y + (36 - tft.fontHeight()) / 2);
+    drawBar(98,  y, 106, 40, haveData ? bandDay[i]   : C_UNK);
+    drawBar(208, y, 106, 40, haveData ? bandNight[i] : C_UNK);
   }
 }
 
