@@ -3,7 +3,7 @@
 Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streichen.
 
 ## Stand
-- Läuft auf dem CYD (ESP32-2432S028, ILI9341, Port `/dev/cu.wchusbserial110`, arduino-cli, FQBN `esp32:esp32:esp32`). Stand 18.11.2026.
+- Läuft auf dem CYD (ESP32-2432S028, ILI9341, Port `/dev/cu.wchusbserial110`, arduino-cli, FQBN `esp32:esp32:esp32:PartitionScheme=huge_app`, steht in `sketch.yaml`). Stand 18.11.2026.
 - Läuft: Übersicht, Prognose Bänder, Prognose Betriebsart (SSB oben, CW unten), Details. Auto-Wechsel alle 10 s, langer Druck schaltet auf Halten. Kopfzeile: Rufzeichen, Zürcher Zeit und UTC. WLAN-Liste und Rufzeichen in secrets.h.
 - Läuft und getestet: Live-Seite mit gemessener WSPR-Aktivität aller 9 Bänder inkl. 160m (wspr.live, Abruf alle 15 min, Region JN und JO). Prognose-Seiten ohne 160m. Alle Seiten und SSB/CW einzeln in secrets.h schaltbar.
 - Abfrage geprüft: `db1.wspr.live/?query=` liefert Bandcodes (1=160m, 3=80m, 7=40m, 10=30m, 14=20m, 18=17m, 21=15m, 24=12m, 28=10m). Der Regionsfilter (JN, JO) funktioniert (Zahlen 30 bis 58 Prozent der Weltzahlen).

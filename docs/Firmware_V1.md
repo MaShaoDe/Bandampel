@@ -15,10 +15,11 @@ cp secrets.h.example secrets.h   # WLAN-Daten eintragen
 ## Bauen und hochladen
 
 ```bash
-arduino-cli compile --fqbn esp32:esp32:esp32 firmware/bandampel
-arduino-cli upload -p /dev/cu.wchusbserial110 --fqbn esp32:esp32:esp32 firmware/bandampel
+arduino-cli compile firmware/bandampel && arduino-cli upload -p /dev/cu.wchusbserial110 firmware/bandampel
 arduino-cli monitor -p /dev/cu.wchusbserial110 -c baudrate=115200
 ```
+
+Die Datei `firmware/bandampel/sketch.yaml` setzt das Board (`esp32:esp32:esp32`) und die Flash-Aufteilung «Huge APP» (3 MB für das Programm, ohne OTA). Mit der Standard-Aufteilung (1,3 MB) ist der Sketch zu gross und das Kompilieren bricht mit «Textbereich überschreitet den verfügbaren Platz» ab. Gibst du `--fqbn` selbst an, ergänze `:PartitionScheme=huge_app`.
 
 ## Bedienung
 
