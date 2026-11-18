@@ -98,7 +98,7 @@ Das Gerät hat einen Web-Konfigurator. Er läuft im selben WLAN wie das Gerät, 
 
 1. Im Browser `http://bandampel-001.local` öffnen (die Nummer ist `UNIT_NUMBER`). Geht das nicht, die IP-Adresse aus der Fusszeile des Geräts verwenden.
 2. Einstellungen ändern und «Speichern und neu starten» drücken. Das Gerät startet danach neu.
-3. «Werkseinstellung» löscht alle gespeicherten Werte. Danach gelten wieder die Vorgaben aus `secrets.h`.
+3. «Werkseinstellung» löscht alle gespeicherten Werte. Danach gelten wieder die Vorgaben aus `secrets.h`. Zur Bestätigung ist das Menü-Passwort einzugeben, wenn keines gesetzt ist `000000`.
 
 Passwort: Ist ein Menü-Passwort gesetzt, fragt der Browser danach (Benutzer `admin`). Leer heisst kein Passwort. Die Übertragung ist unverschlüsselt (HTTP), das Passwort schützt also nur vor zufälligem Zugriff im Heimnetz.
 
