@@ -28,7 +28,8 @@ Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A,
 
 - Zeit: Hauptuhr in Zürcher Zeit (MEZ/MESZ, automatische Sommerzeit), daneben klein die UTC-Zeit mit Z. Andere Zeitzone: `TZ_ZURICH` in `bandampel.ino` ändern.
 - Bild gedreht: `ROTATION` in `bandampel.ino` von 1 auf 3.
-- Farben negativ oder Rot und Blau vertauscht: `invert` oder `rgb_order` in `lgfx_cyd.h`.
+- Farbstich (z.B. Grün als Türkis, Rot als Rosa): In `secrets.h` zuerst `#define PANEL_ST7789 1` probieren (CYD mit 2 USB-Anschlüssen hat oft einen ST7789). Sind die Farben danach negativ, `#define PANEL_INVERT 0` setzen. Sind Rot und Blau vertauscht, `#define PANEL_RGB_ORDER 1`. Neu kompilieren und hochladen.
+- Nachtmodus: Empfindlichkeit über `LDR_THRESHOLD` (Schwelle) und `LDR_HYST` (Toleranz, Standard 150) in `secrets.h`.
 - Mehrere WLAN-Netze (Heimnetz, Hotspot): Liste in `secrets.h`.
 
 ## Quelle

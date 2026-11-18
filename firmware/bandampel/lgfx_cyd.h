@@ -5,8 +5,30 @@
 #define LGFX_USE_V1
 #include <LovyanGFX.hpp>
 
+// Einstellbar in secrets.h (vor diesem Include):
+//   PANEL_ST7789 1    ST7789 statt ILI9341 (CYD mit 2 USB-Anschluessen, bei Farbstich ausprobieren)
+//   PANEL_INVERT 0/1  Farben negativ? umschalten
+//   PANEL_RGB_ORDER 0/1  Rot und Blau vertauscht? umschalten
+#ifndef PANEL_ST7789
+#define PANEL_ST7789 0
+#endif
+#ifndef PANEL_INVERT
+#if PANEL_ST7789
+#define PANEL_INVERT 1
+#else
+#define PANEL_INVERT 0
+#endif
+#endif
+#ifndef PANEL_RGB_ORDER
+#define PANEL_RGB_ORDER 0
+#endif
+
 class LGFX_CYD : public lgfx::LGFX_Device {
+#if PANEL_ST7789
+  lgfx::Panel_ST7789  _panel;
+#else
   lgfx::Panel_ILI9341 _panel;
+#endif
   lgfx::Bus_SPI       _bus;
   lgfx::Light_PWM     _light;
   lgfx::Touch_XPT2046 _touch;
@@ -40,8 +62,8 @@ public:
       cfg.offset_y         = 0;
       cfg.offset_rotation  = 0;
       cfg.readable         = false;
-      cfg.invert           = false;  // Farben falsch (negativ)? auf true setzen
-      cfg.rgb_order        = false;  // Rot und Blau vertauscht? auf true setzen
+      cfg.invert           = PANEL_INVERT;
+      cfg.rgb_order        = PANEL_RGB_ORDER;
       cfg.dlen_16bit       = false;
       cfg.bus_shared       = false;
       _panel.config(cfg);
