@@ -20,7 +20,7 @@ static const uint8_t  BRIGHTNESS     = 180;        // 0 bis 255
 static const uint32_t FETCH_OK_MS    = 30UL * 60UL * 1000UL;
 static const uint32_t FETCH_RETRY_MS = 2UL * 60UL * 1000UL;
 static const char*    FEED_URL       = "https://www.hamqsl.com/solarxml.php";
-static const int      BOOT_PIN       = 0;
+static const int      BTN_PIN       = 0;
 static const int      PAGES          = 3;
 
 // ---------------- Typen und Zustand ----------------
@@ -266,7 +266,7 @@ static bool pageSwitchRequested() {
   uint32_t now = millis();
   if ((int32_t)(now - lockUntil) < 0) return false;
   int32_t tx, ty;
-  bool pressed = (digitalRead(BOOT_PIN) == LOW) || tft.getTouch(&tx, &ty);
+  bool pressed = (digitalRead(BTN_PIN) == LOW) || tft.getTouch(&tx, &ty);
   if (pressed) {
     lockUntil = now + 350;
     return true;
@@ -277,7 +277,7 @@ static bool pageSwitchRequested() {
 // ---------------- Setup und Loop ----------------
 void setup() {
   Serial.begin(115200);
-  pinMode(BOOT_PIN, INPUT_PULLUP);
+  pinMode(BTN_PIN, INPUT_PULLUP);
   tft.init();
   tft.setRotation(ROTATION);
   tft.setBrightness(BRIGHTNESS);
