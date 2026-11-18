@@ -28,8 +28,8 @@ struct Cfg {
   String  wifiPass[CFG_MAX_WIFI];
   int     wifiCount;
   // Seiten
-  bool    pOverview, pForecast, pModes, pLive, pDetails;
-  bool    showSsb, showCw, ssbFirst, showSun;
+  bool    pOverview, pForecast, pModes, pLive, pDetails, pSun;
+  bool    showSsb, showCw, ssbFirst;
   int     autoMs;
   // Helligkeit und Nachtmodus
   int     brightness, brightnessNight;
@@ -60,8 +60,8 @@ static void cfgDefaults() {
     cfg.wifiCount++;
   }
   cfg.pOverview = PAGE_OVERVIEW; cfg.pForecast = PAGE_FORECAST; cfg.pModes = PAGE_MODES;
-  cfg.pLive = PAGE_LIVE;         cfg.pDetails = PAGE_DETAILS;
-  cfg.showSsb = SHOW_SSB; cfg.showCw = SHOW_CW; cfg.ssbFirst = SSB_FIRST; cfg.showSun = SHOW_SUN;
+  cfg.pLive = PAGE_LIVE;         cfg.pDetails = PAGE_DETAILS;   cfg.pSun = PAGE_SUN;
+  cfg.showSsb = SHOW_SSB; cfg.showCw = SHOW_CW; cfg.ssbFirst = SSB_FIRST; 
   cfg.autoMs = AUTO_PAGE_MS;
   cfg.brightness = 180; cfg.brightnessNight = BRIGHTNESS_NIGHT;
   cfg.ldrThreshold = LDR_THRESHOLD; cfg.ldrHyst = LDR_HYST; cfg.ldrNightHigh = LDR_NIGHT_IS_HIGH;
@@ -117,7 +117,7 @@ static void cfgLoad() {
   cfg.pModes = p.getBool("pMo", cfg.pModes);         cfg.pLive = p.getBool("pLi", cfg.pLive);
   cfg.pDetails = p.getBool("pDe", cfg.pDetails);
   cfg.showSsb = p.getBool("ssb", cfg.showSsb);       cfg.showCw = p.getBool("cw", cfg.showCw);
-  cfg.ssbFirst = p.getBool("ssbf", cfg.ssbFirst);    cfg.showSun = p.getBool("sun", cfg.showSun);
+  cfg.ssbFirst = p.getBool("ssbf", cfg.ssbFirst);    cfg.pSun = p.getBool("pSu", cfg.pSun);
   cfg.autoMs = p.getInt("automs", cfg.autoMs);
   cfg.brightness = p.getInt("br", cfg.brightness);   cfg.brightnessNight = p.getInt("brn", cfg.brightnessNight);
   cfg.ldrThreshold = p.getInt("ldrt", cfg.ldrThreshold); cfg.ldrHyst = p.getInt("ldrh", cfg.ldrHyst);
@@ -146,7 +146,7 @@ static void cfgSave() {
   p.putBool("pOv", cfg.pOverview); p.putBool("pFc", cfg.pForecast); p.putBool("pMo", cfg.pModes);
   p.putBool("pLi", cfg.pLive);     p.putBool("pDe", cfg.pDetails);
   p.putBool("ssb", cfg.showSsb);   p.putBool("cw", cfg.showCw);
-  p.putBool("ssbf", cfg.ssbFirst); p.putBool("sun", cfg.showSun);
+  p.putBool("ssbf", cfg.ssbFirst); p.putBool("pSu", cfg.pSun);
   p.putInt("automs", cfg.autoMs);
   p.putInt("br", cfg.brightness);  p.putInt("brn", cfg.brightnessNight);
   p.putInt("ldrt", cfg.ldrThreshold); p.putInt("ldrh", cfg.ldrHyst); p.putBool("ldrn", cfg.ldrNightHigh);

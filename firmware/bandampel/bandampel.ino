@@ -69,8 +69,8 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
-#ifndef SHOW_SUN
-#define SHOW_SUN 1                // Seite Baender: Sonnenaufgang und Sonnenuntergang zeigen
+#ifndef PAGE_SUN
+#define PAGE_SUN 1                // Sonne (Aufgang, Untergang, Grayline)
 #endif
 #ifndef SUN_LAT
 #define SUN_LAT 47.556            // Standort fuer Sonnenzeiten (Voreinstellung Frauenfeld, Locator JN47)
@@ -111,13 +111,14 @@ static String   statusMsg   = "Start";
 static uint32_t nextFetch   = 0;
 static bool     fetchedOnce = false;
 
-enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS };
-static int pageIds[5];
+enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN };
+static int pageIds[6];
 static int pageCount = 0;
 
 static void buildPages() {
   pageCount = 0;
   if (cfg.pOverview) pageIds[pageCount++] = PG_OVERVIEW;
+  if (cfg.pSun)      pageIds[pageCount++] = PG_SUN;
   if (cfg.pForecast) pageIds[pageCount++] = PG_FORECAST;
   if (cfg.pModes)    pageIds[pageCount++] = PG_MODES;
   if (cfg.pLive)     pageIds[pageCount++] = PG_LIVE;
@@ -457,7 +458,7 @@ static void drawPageBands() {
   }
   // Aktuelle Zeile (Tag oder Nacht) hell, die andere gedaempft
   time_t sr = 0, ss = 0, tnow = time(nullptr);
-  bool haveSun = cfg.showSun && sunToday(sr, ss);
+  bool haveSun = sunToday(sr, ss);
   bool isDay = haveSun && tnow >= sr && tnow < ss;
   drawIcon(1, 18, YD + BH / 2, (!haveSun || isDay) ? COL_YELLOW : COL_DIM);
   drawIcon(5, 18, YN + BH / 2, (haveSun && !isDay) ? COL_TEXT : COL_DIM);
@@ -480,12 +481,115 @@ static void drawPageBands() {
     tft.setTextColor(colFor(cc[i]), COL_BG);
     tft.drawString(val[i].length() ? val[i] : String("--"), x + lw + 8, 172);
   }
-  if (cfg.showSun) {
-  tft.setFont(&lgfx::fonts::Font2);
-  tft.setTextColor(haveSun ? COL_YELLOW : COL_DIM, COL_BG);
-  String sun = haveSun ? String("Sonne auf ") + hhmm(sr) + "   unter " + hhmm(ss) : String("Sonne: warte auf Uhrzeit");
-  tft.drawString(sun, 8, 198);
+}
+
+// Dauer als Text: "2 h 14 min" oder "35 min"
+static String fmtDur(long sec) {
+  if (sec < 0) sec = 0;
+  long m = (sec + 30) / 60;
+  if (m >= 60) return String(m / 60) + " h " + String(m % 60) + " min";
+  return String(m) + " min";
+}
+
+static void drawCentered(const String& t, int cx, int y) {
+  tft.drawString(t, cx - tft.textWidth(t) / 2, y);
+}
+
+// Seite Sonne: Bogen mit Sonnen- oder Mondposition, Zeiten, Tageslaenge, Countdown, Grayline
+static void drawPageSun() {
+  const int CX = 160, BASE = 124, R = 96, RN = 22;   // Mitte, Horizont, Radius Tag, Tiefe Nacht
+  time_t sr = 0, ss = 0, now = time(nullptr);
+  bool have = sunToday(sr, ss);
+
+  // Horizont und Tagesbogen
+  tft.drawFastHLine(24, BASE, 272, COL_GREY);
+  float f = -1;                       // Anteil des Tages (0 bis 1), -1 = Nacht
+  float fn = 0;                       // Anteil der Nacht (0 bis 1)
+  bool isDay = false;
+  if (have) {
+    isDay = now >= sr && now < ss;
+    if (isDay) f = (float)(now - sr) / (float)(ss - sr);
+    else {
+      time_t ns, ne;                  // Nachtspanne: von Untergang bis naechstem Aufgang
+      if (now < sr) { ns = ss - 86400; ne = sr; } else { ns = ss; ne = sr + 86400; }
+      fn = (float)(now - ns) / (float)(ne - ns);
+    }
   }
+  int px = CX - R, py = BASE;
+  for (int k = 1; k <= 48; k++) {
+    float a = 3.1415927f * k / 48.0f;
+    int nx = CX - (int)(R * cosf(a)), ny = BASE - (int)(R * sinf(a));
+    bool passed = isDay && (k / 48.0f) <= f;
+    tft.drawLine(px, py, nx, ny, passed ? COL_YELLOW : COL_GREY);
+    px = nx; py = ny;
+  }
+  // Nachtbogen flach unter dem Horizont
+  px = CX - R; py = BASE;
+  for (int k = 1; k <= 48; k++) {
+    float a = 3.1415927f * k / 48.0f;
+    int nx = CX - (int)(R * cosf(a)), ny = BASE + (int)(RN * sinf(a));
+    tft.drawLine(px, py, nx, ny, COL_HDR);
+    px = nx; py = ny;
+  }
+  if (have) {
+    if (isDay) {
+      float a = 3.1415927f * f;
+      drawIcon(1, CX - (int)(R * cosf(a)), BASE - (int)(R * sinf(a)), COL_YELLOW);
+    } else {
+      float a = 3.1415927f * fn;
+      drawIcon(5, CX - (int)(R * cosf(a)), BASE + (int)(RN * sinf(a)), COL_TEXT);
+    }
+  }
+
+  tft.setFont(&lgfx::fonts::Font2);
+  if (!have) {
+    tft.setTextColor(COL_DIM, COL_BG);
+    drawCentered("Warte auf Uhrzeit", CX, 90);
+    return;
+  }
+
+  // Grayline: +-30 Minuten um Aufgang und Untergang (Faustregel fuer tiefe Baender)
+  const long GL = 1800;
+  time_t ev[3] = { sr, ss, sr + 86400 };
+  bool gl = false;
+  long untilGl = 999999;
+  for (int i = 0; i < 3; i++) {
+    long d = (long)(now - ev[i]);
+    if (d >= -GL && d <= GL) gl = true;
+    long start = (long)(ev[i] - GL - now);
+    if (start > 0 && start < untilGl) untilGl = start;
+  }
+  if (gl) {
+    tft.setTextColor(COL_YELLOW, COL_BG);
+    drawCentered("GRAYLINE AKTIV", CX, 92);
+    tft.setTextColor(COL_DIM, COL_BG);
+    drawCentered("160, 80, 40 m oft gut", CX, 108);
+  } else {
+    tft.setTextColor(COL_DIM, COL_BG);
+    drawCentered("Grayline in " + fmtDur(untilGl), CX, 100);
+  }
+
+  // Zeiten unter dem Horizont
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString("Aufgang", 14, 160);
+  String lu = "Untergang";
+  tft.drawString(lu, 306 - tft.textWidth(lu), 160);
+  drawCentered("Tageslaenge", CX, 160);
+  tft.setFont(&lgfx::fonts::Font4);
+  tft.setTextColor(COL_YELLOW, COL_BG);
+  tft.drawString(hhmm(sr), 14, 178);
+  String ts = hhmm(ss);
+  tft.drawString(ts, 306 - tft.textWidth(ts), 178);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  long dl = (long)(ss - sr);
+  String dls = String(dl / 3600) + ":" + (((dl % 3600) / 60) < 10 ? "0" : "") + String((dl % 3600) / 60);
+  drawCentered(dls, CX, 178);
+
+  // Countdown zum naechsten Ereignis
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  time_t nextEv = isDay ? ss : (now < sr ? sr : sr + 86400);
+  drawCentered(String(isDay ? "Untergang in " : "Aufgang in ") + fmtDur((long)(nextEv - now)), CX, 204);
 }
 
 // Betriebsart (Vorschlag, noch zu pruefen): HamQSL kennt keine Betriebsarten.
@@ -608,6 +712,7 @@ static void drawAll() {
     case PG_FORECAST: drawPageBands();    break;
     case PG_MODES:    drawPageModes();    break;
     case PG_LIVE:     drawPageLive();     break;
+    case PG_SUN:      drawPageSun();      break;
     default:          drawPageDetails();  break;
   }
   drawFooter();
@@ -783,6 +888,7 @@ void loop() {
   if (getLocalTime(&t, 0) && t.tm_year > 120 && t.tm_min != lastMin) {
     lastMin = t.tm_min;
     drawClock();
+    if (pageIds[page] == PG_SUN) drawAll();   // Countdown minuetlich auffrischen
   }
   updateNight();
   delay(20);
