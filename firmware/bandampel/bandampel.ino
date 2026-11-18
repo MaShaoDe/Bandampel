@@ -12,8 +12,8 @@
 #include <HTTPClient.h>
 #include <time.h>
 #include <Preferences.h>
+#include "secrets.h"     // vor lgfx_cyd.h, damit PANEL_* und andere Einstellungen gelten
 #include "lgfx_cyd.h"
-#include "secrets.h"
 
 #ifndef CALLSIGN
 #define CALLSIGN ""   // optional in secrets.h: #define CALLSIGN "HB9XXX"
@@ -40,7 +40,9 @@ static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/ME
 #define BRIGHTNESS_NIGHT 25        // 0 bis 255
 #endif
 static const int LDR_PIN  = 34;
-static const int LDR_HYST = 150;
+#ifndef LDR_HYST
+#define LDR_HYST 150               // Toleranz um die Schwelle (grosser = traeger, kleiner = empfindlicher)
+#endif
 // Seiten ein (1) oder aus (0), in secrets.h einstellbar
 #ifndef PAGE_OVERVIEW
 #define PAGE_OVERVIEW 1           // Uebersicht (SFI, K, A, Sunspots)
