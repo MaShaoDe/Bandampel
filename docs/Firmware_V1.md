@@ -126,3 +126,7 @@ Die Seite «Info» (zuletzt) zeigt WLAN-Name, IP-Adresse, Signalstärke, den Nam
 
 Fusszeile: links steht das Alter der Daten («Daten vor 2 h 5 min», aus dem Zeitstempel von HamQSL, nicht die aktuelle Uhrzeit). Rechts steht das WLAN-Symbol: grün mit 1 bis 3 Bögen nach Signalstärke, rot ohne Verbindung. Die Uhrzeit steht nur noch in der Kopfzeile (Ortszeit und UTC).
 
+## Notausgang: BOOT-Taste 10 Sekunden
+
+Ist das Web-Menü nicht erreichbar oder sind falsche Werte gespeichert (zum Beispiel ein Tippfehler im WLAN-Namen), hilft die BOOT-Taste: Im Betrieb 10 Sekunden gedrückt halten. Ab 5 Sekunden erscheint ein Countdown, Loslassen bricht ab. Bei 0 löscht das Gerät alle im Menü gespeicherten Werte und startet neu. Danach gelten wieder die Werte aus `secrets.h` (nicht leer). Steht dort kein WLAN, öffnet das Gerät nach 60 Sekunden das Notfall-WLAN «Bandampel-Setup». Nur die BOOT-Taste löst das aus, Berührung des Displays nicht. Die Taste darf beim Einschalten nicht gedrückt sein, sonst startet der ESP32 in den Flash-Modus.
+
