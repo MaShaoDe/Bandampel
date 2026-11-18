@@ -26,3 +26,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Gemergt, ungetestet: Werkseinstellung verlangt Bestätigung (Menü-Passwort, sonst 000000).
 - Neu (PR offen, ungetestet): Helligkeit in Prozent, 3 Modi inkl. stufenlos nach Lichtsensor, Kalibrierknöpfe im Menü (Vorgabe Tag 60, Nacht 10). Details-Seite als 4 Karten mit Farbrahmen (Einstufung ist Vorschlag).
 - Neu (PR offen, ungetestet): Seite Info (WLAN, IP, Signal, Name, Datenalter, Laufzeit), WLAN-Symbol in der Fusszeile, Datenalter statt Zeitstempel.
+- Neu (PR offen, ungetestet): Web-Menü mit 6 Reitern, Handy-Layout, WLAN-Scan. Offen: Live-Schwellen kalibrieren, Phase 2 (Platine).
