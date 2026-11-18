@@ -97,8 +97,10 @@ static void webRoot() {
   }
 
   h += F("<button type=submit>Speichern und neu starten</button></form>"
-         "<form method=post action=/reset onsubmit=\"return confirm('Alle gespeicherten Einstellungen löschen?')\">"
-         "<button type=submit>Werkseinstellung</button></form></body></html>");
+         "<h2>Werkseinstellung</h2><form method=post action=/reset>"
+         "<label>Bestätigung: Menü-Passwort eingeben, wenn keines gesetzt ist 000000"
+         "<input type=password name=code autocomplete=off></label>"
+         "<button type=submit>Alle Einstellungen löschen</button></form></body></html>");
   web.send(200, "text/html; charset=utf-8", h);
 }
 
@@ -150,6 +152,14 @@ static void webSave() {
 
 static void webReset() {
   if (!webAuth()) return;
+  String need = cfg.menuPass.length() ? cfg.menuPass : String("000000");
+  if (web.arg("code") != need) {
+    web.send(403, "text/html; charset=utf-8",
+             "<!DOCTYPE html><html lang=de><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
+             "<body style='font-family:sans-serif;background:#111;color:#eee;padding:20px'><h2>Falsche Bestätigung</h2>"
+             "<p>Nichts wurde gelöscht.</p><p><a style='color:#fc0' href='/'>Zurück zum Menü</a></p></body></html>");
+    return;
+  }
   cfgFactoryReset();
   web.sendHeader("Location", "/saved");
   web.send(303, "text/plain", "");
