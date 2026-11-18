@@ -898,7 +898,7 @@ void loop() {
   uint32_t now = millis();
 
   bool wifiOk = (WiFi.status() == WL_CONNECTED);
-  if (!wifiOk && (now - lastWifiTry > (apActive ? 300000UL : 5000UL) || lastWifiTry == 0)) {
+  if (!wifiOk && (now - lastWifiTry > (apActive ? 300000UL : (uint32_t)cfg.wifiRetryS * 1000UL) || lastWifiTry == 0)) {
     lastWifiTry = now ? now : 1;
     statusMsg = "WLAN suchen...";
     drawFooter();

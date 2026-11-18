@@ -61,6 +61,7 @@ static void webRoot() {
     h += "<div class=r>" + fInput("Name " + String(i + 1), "ws" + String(i), i < cfg.wifiCount ? cfg.wifiSsid[i] : String(""))
        + fInput("Passwort (leer = unverändert)", "wp" + String(i), "", "password") + "</div>";
   }
+  h += fInput("Pause zwischen WLAN-Versuchen (Sekunden, 5 bis 600)", "wretry", String(cfg.wifiRetryS), "number", "min=5 max=600");
   h += F("<small>Nur 2,4 GHz. Beim iPhone-Hotspot «Kompatibilität maximieren» einschalten.</small>");
 
   h += "<h2>Seiten</h2>";
@@ -127,6 +128,7 @@ static void webSave() {
     cfg.wifiSsid[n] = s; cfg.wifiPass[n] = p; n++;
   }
   cfg.wifiCount = n;
+  cfg.wifiRetryS = web.arg("wretry").toInt();
 
   cfg.pOverview = argOn("pOv"); cfg.pForecast = argOn("pFc"); cfg.pModes = argOn("pMo");
   cfg.pLive = argOn("pLi");     cfg.pDetails = argOn("pDe");
