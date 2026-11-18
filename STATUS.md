@@ -11,7 +11,6 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Nachtmodus: Sensor GPIO 34, dunkel = grosser Wert, Schwelle 400 in secrets.h. Getestet, funktioniert. Empfindlichkeit über LDR_THRESHOLD und LDR_HYST in secrets.h.
 
 ## Als Nächstes
-- Marcel: Haus-WLAN freigeben (MAC `a4:f0:0f:5b:e9:9c`), Live-Seite morgens, abends und nachts fotografieren (Schwellen einstellen), Farbtest mit `PANEL_ST7789 1`.
 - Phase 2: Drehgeber (GPIO 22, 27, 35) und Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD).
 
 ## Entscheide (Marcel Sauder)
@@ -26,3 +25,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Gemergt, ungetestet: Web-Menü nach Speichern auf neutraler Seite (kein doppeltes Senden bei Reload).
 - Gemergt, ungetestet: Werkseinstellung verlangt Bestätigung (Menü-Passwort, sonst 000000).
 - Neu (PR offen, ungetestet): Helligkeit in Prozent, 3 Modi inkl. stufenlos nach Lichtsensor, Kalibrierknöpfe im Menü (Vorgabe Tag 60, Nacht 10). Details-Seite als 4 Karten mit Farbrahmen (Einstufung ist Vorschlag).
+- Neu (PR offen, ungetestet): Pause zwischen WLAN-Versuchen einstellbar (Standard 30 s). Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt, ST7789 weiss, INVERT 1 negativ, RGB_ORDER 1 vertauscht Rot und Blau.

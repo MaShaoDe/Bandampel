@@ -14,6 +14,9 @@
 #ifndef UNIT_NUMBER
 #define UNIT_NUMBER 1                              // Nummer des Geraets, 1 bis 999 (Name: bandampel-001)
 #endif
+#ifndef WIFI_RETRY_S
+#define WIFI_RETRY_S 30                          // Pause zwischen WLAN-Versuchen in Sekunden
+#endif
 #ifndef MENU_PASSWORD
 #define MENU_PASSWORD ""                           // leer = kein Passwort
 #endif
@@ -27,6 +30,7 @@ struct Cfg {
   String  wifiSsid[CFG_MAX_WIFI];
   String  wifiPass[CFG_MAX_WIFI];
   int     wifiCount;
+  int     wifiRetryS;              // Pause zwischen WLAN-Versuchen (Sekunden)
   // Seiten
   bool    pOverview, pForecast, pModes, pLive, pDetails, pSun;
   bool    showSsb, showCw, ssbFirst;
@@ -56,6 +60,7 @@ static void cfgDefaults() {
   cfg.menuPass = MENU_PASSWORD;
   cfg.tz = TZ_DEFAULT;
   cfg.wifiCount = 0;
+  cfg.wifiRetryS = WIFI_RETRY_S;
   for (int i = 0; i < WIFI_COUNT && i < CFG_MAX_WIFI; i++) {
     cfg.wifiSsid[i] = WIFI_LIST[i].ssid;
     cfg.wifiPass[i] = WIFI_LIST[i].pass;
@@ -76,6 +81,7 @@ static void cfgDefaults() {
 // Werte auf sinnvolle Bereiche begrenzen (auch gegen kaputte Eingaben aus dem Menue)
 static void cfgSanitize() {
   cfg.unit = constrain(cfg.unit, 1, 999);
+  cfg.wifiRetryS = constrain(cfg.wifiRetryS, 5, 600);
   cfg.autoMs = constrain(cfg.autoMs, 2000, 600000);
   cfg.brightMode = constrain(cfg.brightMode, 0, 2);
   cfg.brightPct = constrain(cfg.brightPct, 5, 100);
@@ -112,6 +118,7 @@ static void cfgLoad() {
   cfg.unit = p.getInt("unit", cfg.unit);
   cfg.menuPass = p.getString("pass", cfg.menuPass);
   cfg.tz = p.getString("tz", cfg.tz);
+  cfg.wifiRetryS = p.getInt("wretry", cfg.wifiRetryS);
   if (p.isKey("wcount")) {
     cfg.wifiCount = constrain(p.getInt("wcount", 0), 0, CFG_MAX_WIFI);
     for (int i = 0; i < cfg.wifiCount; i++) {
@@ -146,6 +153,7 @@ static void cfgSave() {
   p.begin("cfg", false);
   p.putString("call", cfg.callsign); p.putInt("unit", cfg.unit);
   p.putString("pass", cfg.menuPass); p.putString("tz", cfg.tz);
+  p.putInt("wretry", cfg.wifiRetryS);
   p.putInt("wcount", cfg.wifiCount);
   for (int i = 0; i < cfg.wifiCount; i++) {
     p.putString((String("ws") + i).c_str(), cfg.wifiSsid[i]);
