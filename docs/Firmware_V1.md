@@ -28,7 +28,7 @@ Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A,
 
 - Zeit: Hauptuhr in Zürcher Zeit (MEZ/MESZ, automatische Sommerzeit), daneben klein die UTC-Zeit mit Z. Andere Zeitzone: `TZ_ZURICH` in `bandampel.ino` ändern.
 - Bild gedreht: `ROTATION` in `bandampel.ino` von 1 auf 3.
-- Farbstich (z.B. Grün als Türkis, Rot als Rosa): In `secrets.h` zuerst `#define PANEL_ST7789 1` probieren (CYD mit 2 USB-Anschlüssen hat oft einen ST7789). Sind die Farben danach negativ, `#define PANEL_INVERT 0` setzen. Sind Rot und Blau vertauscht, `#define PANEL_RGB_ORDER 1`. Neu kompilieren und hochladen.
+- Farbstich: Beim CYD mit 2 USB-Anschlüssen hat sich keine Einstellung bewährt, der Standard bleibt (siehe Abschnitt «Anzeige-Treiber» unten). Zum Ausprobieren stehen `PANEL_ST7789`, `PANEL_INVERT` und `PANEL_RGB_ORDER` in `secrets.h` bereit.
 - Nachtmodus: Empfindlichkeit über `LDR_THRESHOLD` (Schwelle) und `LDR_HYST` (Toleranz, Standard 150) in `secrets.h`.
 - Mehrere WLAN-Netze (Heimnetz, Hotspot): Liste in `secrets.h`.
 
@@ -111,3 +111,12 @@ Live-Schwellen: Auf der Menüseite steht neben jedem Band die aktuelle Zahl der 
 ## Seite Details
 
 4 Karten mit farbigem Rahmen: X-Ray (Sonneneruptionen), Sonnenwind, Magnetfeld Bz und Signal-Rauschen. Grün ist ruhig, Gelb erhöht, Rot gestört. Die Einstufung ist eine Faustregel (Vorschlag), keine Prognose: X-Ray A oder B grün, C gelb, M oder X rot. Sonnenwind unter 400 km/s grün, unter 600 gelb, sonst rot. Bz ab minus 3 grün, ab minus 8 gelb, darunter rot. Rauschen S0 bis S1 grün, S2 bis S3 gelb, ab S4 rot.
+
+## WLAN-Wiederverbindung
+
+Verliert das Gerät das WLAN, versucht es automatisch erneut. Zwischen 2 Versuchen wartet es `WIFI_RETRY_S` Sekunden (Standard 30, im Web-Menü einstellbar von 5 bis 600). Jeder Versuch dauert bis zu 20 Sekunden. Im Notfall-WLAN sucht das Gerät nur alle 5 Minuten nach dem bekannten Netz.
+
+## Anzeige-Treiber (getestet am CYD mit 2 USB-Anschlüssen)
+
+Standard bleibt der ILI9341-Treiber ohne Änderungen. Getestet: `PANEL_ST7789 1` ergibt ein weisses Display, `PANEL_INVERT 1` kehrt alle Farben um, `PANEL_RGB_ORDER 1` vertauscht Rot und Blau. Die Farben sind etwas ungenau (leichter Blaustich), das ist nach Test so belassen.
+
