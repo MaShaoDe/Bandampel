@@ -72,8 +72,17 @@ static void webRoot() {
   h += "<h2>Standort für die Sonnenzeiten</h2><div class=r>" + fInput("Breitengrad", "lat", String(cfg.sunLat, 3), "text") + fInput("Längengrad", "lon", String(cfg.sunLon, 3), "text") + "</div>";
 
   h += "<h2>Helligkeit und Nachtmodus</h2>";
-  h += "<div class=r>" + fInput("Helligkeit Tag (10 bis 255)", "br", String(cfg.brightness), "number") + fInput("Helligkeit Nacht (0 bis 255)", "brn", String(cfg.brightnessNight), "number") + "</div>";
-  h += "<div class=r>" + fInput("Schwelle (-1 = aus)", "ldrt", String(cfg.ldrThreshold), "number") + fInput("Toleranz", "ldrh", String(cfg.ldrHyst), "number") + "</div>";
+  h += String("<label>Modus<select name=bmode>")
+     + "<option value=0" + (cfg.brightMode == 0 ? " selected" : "") + ">Fest (Tageswert)</option>"
+     + "<option value=1" + (cfg.brightMode == 1 ? " selected" : "") + ">Tag oder Nacht mit Schwelle</option>"
+     + "<option value=2" + (cfg.brightMode == 2 ? " selected" : "") + ">Stufenlos nach Lichtsensor</option></select></label>";
+  h += "<div class=r>" + fInput("Helligkeit Tag (5 bis 100 %)", "bp", String(cfg.brightPct), "number", "min=5 max=100") + fInput("Helligkeit Nacht (5 bis 100 %)", "bnp", String(cfg.brightNightPct), "number", "min=5 max=100") + "</div>";
+  h += F("<small>Schnellwahl: 100, 75, 50, 25, 10 Prozent. Weniger Helligkeit spart Strom und Wärme.</small>");
+  h += "<div class=r>" + fInput("Sensorwert hell", "ldrb", String(cfg.ldrBright), "number") + fInput("Sensorwert dunkel", "ldrd", String(cfg.ldrDark), "number") + "</div>";
+  h += F("<button type=button onclick=\"fetch('/ldr').then(r=>r.text()).then(v=>document.getElementsByName('ldrb')[0].value=v)\">Aktuellen Wert als hell übernehmen</button>"
+         "<button type=button onclick=\"fetch('/ldr').then(r=>r.text()).then(v=>document.getElementsByName('ldrd')[0].value=v)\">Aktuellen Wert als dunkel übernehmen</button>");
+  h += F("<small>Stufenlos: Zwischen «hell» und «dunkel» geht die Helligkeit gleitend von Tag- zu Nachtwert. Zum Kalibrieren Raum hell machen, ersten Knopf drücken, Sensor abdecken, zweiten Knopf drücken.</small>");
+  h += "<div class=r>" + fInput("Schwelle nur für Tag/Nacht (-1 = aus)", "ldrt", String(cfg.ldrThreshold), "number") + fInput("Toleranz", "ldrh", String(cfg.ldrHyst), "number") + "</div>";
   h += fCheck("Grosser Messwert = dunkel", "ldrn", cfg.ldrNightHigh);
   h += "<small>Aktueller Messwert Lichtsensor: " + String(ldrRaw) + " (Seite neu laden zum Aktualisieren). Schwelle in die Mitte zwischen hell und dunkel legen.</small>";
 
@@ -123,7 +132,9 @@ static void webSave() {
   cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu");
   cfg.autoMs = web.arg("automs").toInt() * 1000;
   cfg.sunLat = web.arg("lat").toFloat(); cfg.sunLon = web.arg("lon").toFloat();
-  cfg.brightness = web.arg("br").toInt(); cfg.brightnessNight = web.arg("brn").toInt();
+  cfg.brightMode = web.arg("bmode").toInt();
+  cfg.brightPct = web.arg("bp").toInt(); cfg.brightNightPct = web.arg("bnp").toInt();
+  cfg.ldrBright = web.arg("ldrb").toInt(); cfg.ldrDark = web.arg("ldrd").toInt();
   cfg.ldrThreshold = web.arg("ldrt").toInt(); cfg.ldrHyst = web.arg("ldrh").toInt();
   cfg.ldrNightHigh = argOn("ldrn");
   cfg.liveFields = web.arg("lf"); cfg.liveMinutes = web.arg("lmin").toInt();
@@ -157,6 +168,7 @@ static void webSaved() {
 
 static void webInit() {
   web.on("/saved", HTTP_GET, webSaved);
+  web.on("/ldr", HTTP_GET, []() { if (!webAuth()) return; web.send(200, "text/plain", String(ldrRaw)); });
   web.on("/", HTTP_GET, webRoot);
   web.on("/save", HTTP_POST, webSave);
   web.on("/reset", HTTP_POST, webReset);
