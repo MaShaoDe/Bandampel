@@ -71,6 +71,15 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
+#ifndef SHOW_SUN
+#define SHOW_SUN 1                // Seite Baender: Sonnenaufgang und Sonnenuntergang zeigen
+#endif
+#ifndef SUN_LAT
+#define SUN_LAT 47.556            // Standort fuer Sonnenzeiten (Voreinstellung Frauenfeld, Locator JN47)
+#endif
+#ifndef SUN_LON
+#define SUN_LON 8.898
+#endif
 static const uint32_t LIVE_OK_MS = 15UL * 60UL * 1000UL;   // Abruf wspr.live alle 15 Minuten
 #ifndef SSB_FIRST
 #define SSB_FIRST 1               // 1: SSB oben und CW unten, 0: umgekehrt (in secrets.h einstellbar)
@@ -394,6 +403,47 @@ static void drawBand(int x, int y, int w, int h, Cond c) {
   tft.fillRoundRect(x, y, w, h, 4, colFor(c));
 }
 
+// Sonnenaufgang und -untergang (Naeherung nach Almanac, auf etwa 1 bis 2 Minuten genau).
+// Rueckgabe: Stunden in UTC, oder -1 bei Polartag oder Polarnacht.
+static double sunEventUtc(int yday, bool rise) {
+  const double D2R = 0.017453292519943295, R2D = 57.29577951308232;
+  double lngH = SUN_LON / 15.0;
+  double t = (yday + 1) + ((rise ? 6.0 : 18.0) - lngH) / 24.0;
+  double M = 0.9856 * t - 3.289;
+  double L = M + 1.916 * sin(M * D2R) + 0.020 * sin(2 * M * D2R) + 282.634;
+  L = fmod(L + 720.0, 360.0);
+  double RA = fmod(R2D * atan(0.91764 * tan(L * D2R)) + 720.0, 360.0);
+  RA += floor(L / 90.0) * 90.0 - floor(RA / 90.0) * 90.0;
+  RA /= 15.0;
+  double sinDec = 0.39782 * sin(L * D2R);
+  double cosDec = cos(asin(sinDec));
+  double cosH = (cos(90.833 * D2R) - sinDec * sin(SUN_LAT * D2R)) / (cosDec * cos(SUN_LAT * D2R));
+  if (cosH > 1.0 || cosH < -1.0) return -1;
+  double H = (rise ? 360.0 - R2D * acos(cosH) : R2D * acos(cosH)) / 15.0;
+  double T = H + RA - 0.06571 * t - 6.622;
+  return fmod(T - lngH + 48.0, 24.0);
+}
+
+// Setzt Aufgang und Untergang von heute als Epoche. false, wenn die Uhr noch nicht stimmt.
+static bool sunToday(time_t& rise, time_t& set) {
+  time_t now = time(nullptr);
+  if (now < 1700000000) return false;
+  struct tm g; gmtime_r(&now, &g);
+  time_t midnight = now - (g.tm_hour * 3600 + g.tm_min * 60 + g.tm_sec);
+  double r = sunEventUtc(g.tm_yday, true), u = sunEventUtc(g.tm_yday, false);
+  if (r < 0 || u < 0) return false;
+  rise = midnight + (time_t)(r * 3600.0);
+  set  = midnight + (time_t)(u * 3600.0);
+  if (set < rise) set += 86400;
+  return true;
+}
+
+static String hhmm(time_t t) {
+  struct tm l; localtime_r(&t, &l);
+  char b[8]; snprintf(b, sizeof(b), "%02d:%02d", l.tm_hour, l.tm_min);
+  return String(b);
+}
+
 static void drawPageBands() {
   const int X0 = 40, CW = 34, BW = 28;
   const int YD = 52, YN = 106, BH = 46;
@@ -407,8 +457,12 @@ static void drawPageBands() {
     drawBand(cx - BW / 2, YD, BW, BH, haveData ? bandDay[g]   : C_UNK);
     drawBand(cx - BW / 2, YN, BW, BH, haveData ? bandNight[g] : C_UNK);
   }
-  drawIcon(1, 18, YD + BH / 2, COL_YELLOW);
-  drawIcon(5, 18, YN + BH / 2, COL_DIM);
+  // Aktuelle Zeile (Tag oder Nacht) hell, die andere gedaempft
+  time_t sr = 0, ss = 0, tnow = time(nullptr);
+  bool haveSun = SHOW_SUN && sunToday(sr, ss);
+  bool isDay = haveSun && tnow >= sr && tnow < ss;
+  drawIcon(1, 18, YD + BH / 2, (!haveSun || isDay) ? COL_YELLOW : COL_DIM);
+  drawIcon(5, 18, YN + BH / 2, (haveSun && !isDay) ? COL_TEXT : COL_DIM);
 
   // Kennwerte darunter
   tft.drawFastHLine(8, 162, 304, COL_GREY);
@@ -428,6 +482,12 @@ static void drawPageBands() {
     tft.setTextColor(colFor(cc[i]), COL_BG);
     tft.drawString(val[i].length() ? val[i] : String("--"), x + lw + 8, 172);
   }
+#if SHOW_SUN
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(haveSun ? COL_YELLOW : COL_DIM, COL_BG);
+  String sun = haveSun ? String("Sonne auf ") + hhmm(sr) + "   unter " + hhmm(ss) : String("Sonne: warte auf Uhrzeit");
+  tft.drawString(sun, 8, 198);
+#endif
 }
 
 // Betriebsart (Vorschlag, noch zu pruefen): HamQSL kennt keine Betriebsarten.
