@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (c) 2026 FerienBSD aka Marcel Sauder
-# Legt die Tags und Releases v1.0.0 bis v1.18.5 rückwirkend an (je auf dem Merge-Commit des PR).
+# Legt die Tags und Releases v1.0.0 bis v1.18.6 rückwirkend an (je auf dem Merge-Commit des PR).
 # Voraussetzung: gh ist installiert und angemeldet (gh auth login). Einmal ausführen. Bereits vorhandene Tags melden einen Fehler und werden übersprungen.
 # Aufruf im Repository-Ordner: sh tools/releases_anlegen.sh
 
@@ -40,4 +40,5 @@ gh release create v1.18.1 --repo $R --target d573757af991c5b7ef558e6406ccd122054
 gh release create v1.18.2 --repo $R --target 6eaedcf6d5423aaa77c12e53c7fd9f469ce88189 --title "Bandampel 1.18.2" --latest=false --notes "Seitenname auch bei Baender und Details. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/32. Alle Versionen: CHANGELOG.md"
 gh release create v1.18.3 --repo $R --target f38536c955d4920a547982edaef740622edea9b3 --title "Bandampel 1.18.3" --latest=false --notes "STATUS aufgeräumt, Release-Skript bis v1.18.2. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/33. Alle Versionen: CHANGELOG.md"
 gh release create v1.18.4 --repo $R --target 264e311b3fe62710b63e025c08d0d676c29e7d97 --title "Bandampel 1.18.4" --latest=false --notes "STATUS: Name Bandampel Firmware. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/34. Alle Versionen: CHANGELOG.md"
-gh release create v1.18.5 --repo $R --target 993d6b2b505a9052779c4f2c4e84c2f7b4db0795 --title "Bandampel 1.18.5" --latest --notes "Seite Info zeigt die Firmware-Version. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/35. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.5 --repo $R --target 993d6b2b505a9052779c4f2c4e84c2f7b4db0795 --title "Bandampel 1.18.5" --latest=false --notes "Seite Info zeigt die Firmware-Version. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/35. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.6 --repo $R --target 9e1d2d97a917e7273ea0eb8d1fd1e51b82fe5c95 --title "Bandampel 1.18.6" --latest --notes "Release-Skript bis v1.18.5, Firmware eingefroren. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/36. Alle Versionen: CHANGELOG.md"
