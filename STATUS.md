@@ -23,3 +23,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Das Hochladen überschreibt das Werksprogramm des Boards.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
+- Neu (PR offen, ungetestet): Sonnenaufgang und -untergang auf der Seite Bänder (Vorschlag: Standort Frauenfeld, einstellbar).
