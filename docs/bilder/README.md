@@ -5,6 +5,7 @@ Hier liegen die Fotos und Bildschirmfotos. Die Namen sind im [Benutzerhandbuch](
 
 | Datei | Was zeigt sie? |
 |---|---|
+| `teaser.jpg` | Teaser- und Header-Bild im README |
 | `00_gesamt.jpg` | |
 | `01_kopf_fuss.jpg` | |
 | `02_uebersicht.jpg` | Seite 1 Ampel |
