@@ -41,7 +41,9 @@ Bandprognose: HamQSL (N0NBH), Abruf alle 30 Minuten.
 1. Firmware hochladen, Monitor öffnen: Alle 5 Sekunden erscheint `LDR roh: <Wert>`.
 2. Wert bei Tageslicht notieren, dann den Lichtsensor (kleiner Fotowiderstand neben dem Display) mit dem Finger abdecken und den Wert im Dunkeln notieren.
 3. In `secrets.h` die Mitte als `LDR_THRESHOLD` eintragen. Wird der Wert im Dunkeln kleiner, zusätzlich `#define LDR_NIGHT_IS_HIGH false`.
-4. Neu hochladen. Im Dunkeln wird die Helligkeit auf `BRIGHTNESS_NIGHT` gesenkt.
+4. Neu hochladen. Im Dunkeln wird die Helligkeit auf `BRIGHT_NIGHT_PCT` gesenkt.
+
+Helligkeit in Prozent, 3 Modi (`BRIGHT_MODE` oder im Web-Menü): 0 fest auf dem Tageswert, 1 Tag oder Nacht mit Schwelle, 2 stufenlos. Stufenlos geht die Helligkeit zwischen den Sensorwerten «hell» (`LDR_BRIGHT`) und «dunkel» (`LDR_DARK`) gleitend vom Tag- zum Nachtwert, mit sanftem Übergang. Die Kalibrierung geht im Web-Menü mit 2 Knöpfen. Vorgabe: Tag 60 %, Nacht 10 %.
 
 ## Betriebsart (CW und SSB)
 
@@ -106,3 +108,6 @@ Notfall-WLAN: Findet das Gerät 60 Sekunden lang kein bekanntes WLAN, öffnet es
 
 Live-Schwellen: Auf der Menüseite steht neben jedem Band die aktuelle Zahl der WSPR-Spots. Damit lassen sich die Schwellen «mittel» und «gut» nach Foto oder Gefühl einstellen.
 
+## Seite Details
+
+4 Karten mit farbigem Rahmen: X-Ray (Sonneneruptionen), Sonnenwind, Magnetfeld Bz und Signal-Rauschen. Grün ist ruhig, Gelb erhöht, Rot gestört. Die Einstufung ist eine Faustregel (Vorschlag), keine Prognose: X-Ray A oder B grün, C gelb, M oder X rot. Sonnenwind unter 400 km/s grün, unter 600 gelb, sonst rot. Bz ab minus 3 grün, ab minus 8 gelb, darunter rot. Rauschen S0 bis S1 grün, S2 bis S3 gelb, ab S4 rot.
