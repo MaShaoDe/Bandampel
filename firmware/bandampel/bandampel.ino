@@ -286,7 +286,15 @@ void setup() {
   drawAll();
 
   WiFi.mode(WIFI_STA);
-  for (int i = 0; i < WIFI_COUNT; i++) wifiMulti.addAP(WIFI_LIST[i].ssid, WIFI_LIST[i].pass);
+  for (int i = 0; i < WIFI_COUNT; i++) {
+    wifiMulti.addAP(WIFI_LIST[i].ssid, WIFI_LIST[i].pass);
+    Serial.printf("Konfiguriert: [%s] (Passwort %u Zeichen)\n", WIFI_LIST[i].ssid, (unsigned)strlen(WIFI_LIST[i].pass));
+  }
+  int n = WiFi.scanNetworks();
+  Serial.printf("WLAN-Scan: %d Netze (nur 2,4 GHz sichtbar)\n", n);
+  for (int i = 0; i < n; i++) {
+    Serial.printf("  [%s]  RSSI %d  Kanal %d\n", WiFi.SSID(i).c_str(), WiFi.RSSI(i), WiFi.channel(i));
+  }
   configTime(0, 0, "pool.ntp.org", "time.nist.gov");
 }
 
@@ -301,8 +309,10 @@ void loop() {
     lastWifiTry = now ? now : 1;
     statusMsg = "WLAN suchen...";
     drawFooter();
-    wifiMulti.run();
+    wl_status_t r = (wl_status_t)wifiMulti.run();
     wifiOk = (WiFi.status() == WL_CONNECTED);
+    Serial.printf("WLAN-Versuch: Status %d (3 = verbunden, 1 = Netz nicht gefunden, 4 = Verbindung fehlgeschlagen)\n", (int)r);
+    if (wifiOk) Serial.printf("Verbunden mit [%s], IP %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
   }
   if (wifiOk != lastWifiOk) {
     lastWifiOk = wifiOk;
