@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (c) 2026 FerienBSD aka Marcel Sauder
+# Standard fuer arduino-cli in diesem Ordner. Huge APP: 3 MB fuer das Programm (ohne OTA),
+# weil der Sketch mit der Standard-Aufteilung (1,3 MB) zu gross ist.
+default_fqbn: esp32:esp32:esp32:PartitionScheme=huge_app
