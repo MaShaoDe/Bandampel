@@ -41,7 +41,35 @@ static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/ME
 #endif
 static const int LDR_PIN  = 34;
 static const int LDR_HYST = 150;
-static const int      PAGES          = 4;
+// Seiten ein (1) oder aus (0), in secrets.h einstellbar
+#ifndef PAGE_OVERVIEW
+#define PAGE_OVERVIEW 1           // Uebersicht (SFI, K, A, Sunspots)
+#endif
+#ifndef PAGE_FORECAST
+#define PAGE_FORECAST 1           // Prognose Baender (HamQSL)
+#endif
+#ifndef PAGE_MODES
+#define PAGE_MODES 1              // Prognose Betriebsart (SSB, CW)
+#endif
+#ifndef PAGE_LIVE
+#define PAGE_LIVE 1               // Live-Aktivitaet (WSPR, inkl. 160m)
+#endif
+#ifndef PAGE_DETAILS
+#define PAGE_DETAILS 1            // Details (X-Ray, Sonnenwind, ...)
+#endif
+#ifndef SHOW_SSB
+#define SHOW_SSB 1                // Seite Betriebsart: SSB zeigen
+#endif
+#ifndef SHOW_CW
+#define SHOW_CW 1                 // Seite Betriebsart: CW zeigen
+#endif
+#ifndef LIVE_FIELDS
+#define LIVE_FIELDS "'JN','JO'"   // Locator-Felder der Region (Sender oder Empfaenger)
+#endif
+#ifndef LIVE_MINUTES
+#define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
+#endif
+static const uint32_t LIVE_OK_MS = 15UL * 60UL * 1000UL;   // Abruf wspr.live alle 15 Minuten
 #ifndef SSB_FIRST
 #define SSB_FIRST 1               // 1: SSB oben und CW unten, 0: umgekehrt (in secrets.h einstellbar)
 #endif
@@ -72,6 +100,31 @@ static uint32_t lastPageChange = 0;
 static String   statusMsg   = "Start";
 static uint32_t nextFetch   = 0;
 static bool     fetchedOnce = false;
+
+enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS };
+static int pageIds[5];
+static int pageCount = 0;
+
+static void buildPages() {
+  pageCount = 0;
+  if (PAGE_OVERVIEW) pageIds[pageCount++] = PG_OVERVIEW;
+  if (PAGE_FORECAST) pageIds[pageCount++] = PG_FORECAST;
+  if (PAGE_MODES)    pageIds[pageCount++] = PG_MODES;
+  if (PAGE_LIVE)     pageIds[pageCount++] = PG_LIVE;
+  if (PAGE_DETAILS)  pageIds[pageCount++] = PG_DETAILS;
+  if (pageCount == 0) pageIds[pageCount++] = PG_OVERVIEW;   // mindestens eine Seite
+}
+
+// Live-Aktivitaet (WSPR, wspr.live). Bandcodes der Datenbank: 1=160m, 3=80m, 7=40m, 10=30m, 14=20m, 18=17m, 21=15m, 24=12m, 28=10m.
+// Schwellen (Spots in der Region im Zeitfenster) sind ein Vorschlag fuer 30 Minuten und noch einzustellen.
+static const int   LIVE_WSPR_BAND[9] = { 1, 3, 7, 10, 14, 18, 21, 24, 28 };
+static const char* LIVE_LABELS[9]    = { "160", "80", "40", "30", "20", "17", "15", "12", "10" };
+static const int   LIVE_FAIR[9]      = { 150, 1000, 8000, 6000, 12000, 3000, 3000, 800, 1500 };
+static const int   LIVE_GOOD[9]      = { 500, 3000, 25000, 18000, 35000, 9000, 9000, 2500, 4500 };
+static int      liveCount[9]    = { 0 };
+static bool     haveLive        = false;
+static bool     liveFetchedOnce = false;
+static uint32_t nextLiveFetch   = 0;
 
 // ---------------- Farben ----------------
 static uint16_t COL_BG, COL_HDR, COL_GREEN, COL_YELLOW, COL_RED, COL_GREY, COL_TEXT, COL_DIM;
@@ -170,6 +223,58 @@ static bool fetchSolar() {
   return true;
 }
 
+// ---------------- Live-Aktivitaet (wspr.live) ----------------
+static String urlEncode(const String& in) {
+  static const char* hex = "0123456789ABCDEF";
+  String out;
+  for (size_t i = 0; i < in.length(); i++) {
+    uint8_t c = (uint8_t)in[i];
+    if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') out += (char)c;
+    else { out += '%'; out += hex[c >> 4]; out += hex[c & 15]; }
+  }
+  return out;
+}
+
+static bool fetchLive() {
+  String f = LIVE_FIELDS;
+  String q = String("SELECT band, count() FROM wspr.rx WHERE time > now() - ") + String(LIVE_MINUTES * 60) +
+             " AND (substring(tx_loc,1,2) IN (" + f + ") OR substring(rx_loc,1,2) IN (" + f + "))" +
+             " GROUP BY band ORDER BY band FORMAT TSV";
+  String url = String("https://db1.wspr.live/?query=") + urlEncode(q);
+  WiFiClientSecure client;
+  client.setInsecure();   // offen: Zertifikatspruefung
+  HTTPClient http;
+  http.setTimeout(20000);
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  if (!http.begin(client, url)) return false;
+  int code = http.GET();
+  if (code != 200) {
+    Serial.printf("wspr.live HTTP %d\n", code);
+    http.end();
+    return false;
+  }
+  String body = http.getString();
+  http.end();
+  Serial.printf("wspr.live (%u Bytes):\n%s\n", (unsigned)body.length(), body.c_str());
+
+  int counts[9] = { 0 };
+  int pos = 0;
+  while (pos < (int)body.length()) {
+    int nl = body.indexOf('\n', pos);
+    if (nl < 0) nl = body.length();
+    String line = body.substring(pos, nl);
+    pos = nl + 1;
+    int tab = line.indexOf('\t');
+    if (tab < 0) continue;
+    int band = line.substring(0, tab).toInt();
+    int n = line.substring(tab + 1).toInt();
+    for (int i = 0; i < 9; i++) if (LIVE_WSPR_BAND[i] == band) counts[i] = n;
+  }
+  for (int i = 0; i < 9; i++) liveCount[i] = counts[i];
+  haveLive = true;
+  return true;
+}
+
 // ---------------- Zeichnen ----------------
 static void drawClock() {
   tft.fillRect(160, 0, 160, 26, COL_HDR);
@@ -214,7 +319,7 @@ static void drawFooter() {
   bool ok = (WiFi.status() == WL_CONNECTED);
   tft.fillCircle(262, 230, 5, ok ? COL_GREEN : COL_RED);
   char pg[8];
-  snprintf(pg, sizeof(pg), "%d/%d", page + 1, PAGES);
+  snprintf(pg, sizeof(pg), "%d/%d", page + 1, pageCount);
   int w = tft.textWidth(pg);
   tft.drawString(pg, 314 - w, 222);
 }
@@ -276,43 +381,29 @@ static void drawPageOverview() {
   drawTile(160, 122, 156, 90, "A-Index",          solar.a,   d && solar.a.length()   ? levelA(solar.a.toInt())     : C_UNK, 4);
 }
 
-// 9 Baender in 4 HamQSL-Gruppen. 160m liefert HamQSL nicht: Schaetzung (Vorschlag), hohl gezeichnet.
-static const char* BAND9_LABELS[9] = { "160", "80", "40", "30", "20", "17", "15", "12", "10" };
-static const int   BAND9_GROUP[9]  = { -1, 0, 0, 1, 1, 2, 2, 3, 3 };   // Index in bandDay/bandNight, -1 = Schaetzung
+// Prognose-Seiten: 8 Baender in 4 HamQSL-Gruppen. HamQSL liefert kein 160m, das steht auf der Live-Seite.
+static const char* FC_LABELS[8] = { "80", "40", "30", "20", "17", "15", "12", "10" };
+static const int   FC_GROUP[8]  = { 0, 0, 1, 1, 2, 2, 3, 3 };   // Index in bandDay/bandNight
 
 static Cond stepDown(Cond c) { return c == C_GOOD ? C_FAIR : (c == C_FAIR ? C_POOR : c); }
-static Cond est160Day()   { return C_POOR; }
-static Cond est160Night() {
-  if (solar.k.toInt() >= 4) return C_POOR;
-  return stepDown(bandNight[0]);   // eine Stufe schlechter als 80m-40m Nacht
-}
+static Cond stepUp(Cond c)   { return c == C_POOR ? C_FAIR : (c == C_FAIR ? C_GOOD : c); }
 
-static void drawBand(int x, int y, int w, int h, Cond c, bool estimated) {
-  uint16_t col = colFor(c);
-  if (estimated) {
-    tft.fillRoundRect(x, y, w, h, 4, COL_BG);
-    tft.drawRoundRect(x, y, w, h, 4, col);
-    tft.drawRoundRect(x + 1, y + 1, w - 2, h - 2, 3, col);
-  } else {
-    tft.fillRoundRect(x, y, w, h, 4, col);
-  }
+static void drawBand(int x, int y, int w, int h, Cond c) {
+  tft.fillRoundRect(x, y, w, h, 4, colFor(c));
 }
 
 static void drawPageBands() {
-  const int X0 = 40, CW = 30, BW = 24;
+  const int X0 = 40, CW = 34, BW = 28;
   const int YD = 52, YN = 106, BH = 46;
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  for (int i = 0; i < 9; i++) {
+  for (int i = 0; i < 8; i++) {
     int cx = X0 + i * CW + CW / 2;
-    int tw = tft.textWidth(BAND9_LABELS[i]);
-    tft.drawString(BAND9_LABELS[i], cx - tw / 2, 30);
-    int g = BAND9_GROUP[i];
-    bool est = (g < 0);
-    Cond d = !haveData ? C_UNK : (est ? est160Day()   : bandDay[g]);
-    Cond n = !haveData ? C_UNK : (est ? est160Night() : bandNight[g]);
-    drawBand(cx - BW / 2, YD, BW, BH, d, est);
-    drawBand(cx - BW / 2, YN, BW, BH, n, est);
+    int tw = tft.textWidth(FC_LABELS[i]);
+    tft.drawString(FC_LABELS[i], cx - tw / 2, 30);
+    int g = FC_GROUP[i];
+    drawBand(cx - BW / 2, YD, BW, BH, haveData ? bandDay[g]   : C_UNK);
+    drawBand(cx - BW / 2, YN, BW, BH, haveData ? bandNight[g] : C_UNK);
   }
   drawIcon(1, 18, YD + BH / 2, COL_YELLOW);
   drawIcon(5, 18, YN + BH / 2, COL_DIM);
@@ -340,45 +431,95 @@ static void drawPageBands() {
 // Betriebsart (Vorschlag, noch zu pruefen): HamQSL kennt keine Betriebsarten.
 // CW und Digital (FT8) kommen mit ca. 10 bis 15 dB weniger Signal aus als SSB, daher eine Stufe besser.
 // Bei K >= 5 (gestoert) fuer beide eine Stufe schlechter.
-static Cond stepUp(Cond c)      { return c == C_POOR ? C_FAIR : (c == C_FAIR ? C_GOOD : c); }
-static Cond modeCw(Cond c)      { return c == C_UNK ? c : stepUp(c); }
-static Cond disturbed(Cond c)   { return (c != C_UNK && solar.k.toInt() >= 5) ? stepDown(c) : c; }
+static Cond modeCw(Cond c)    { return c == C_UNK ? c : stepUp(c); }
+static Cond disturbed(Cond c) { return (c != C_UNK && solar.k.toInt() >= 5) ? stepDown(c) : c; }
 
-static void drawPageModes() {
-  const int X0 = 56, CW = 28, BW = 22, BH = 26;
-#if SSB_FIRST
-  const int Y_SSB_D = 48, Y_SSB_N = 78, Y_CW_D = 118, Y_CW_N = 148;   // SSB oben
-#else
-  const int Y_CW_D = 48, Y_CW_N = 78, Y_SSB_D = 118, Y_SSB_N = 148;   // CW oben
-#endif
-  tft.setFont(&lgfx::fonts::Font2);
-  for (int i = 0; i < 9; i++) {
-    int cx = X0 + i * CW + CW / 2;
-    tft.setTextColor(COL_DIM, COL_BG);
-    int tw = tft.textWidth(BAND9_LABELS[i]);
-    tft.drawString(BAND9_LABELS[i], cx - tw / 2, 28);
-    int g = BAND9_GROUP[i];
-    bool est = (g < 0);
-    Cond d = !haveData ? C_UNK : disturbed(est ? est160Day()   : bandDay[g]);
-    Cond n = !haveData ? C_UNK : disturbed(est ? est160Night() : bandNight[g]);
-    drawBand(cx - BW / 2, Y_CW_D,  BW, BH, modeCw(d), est);
-    drawBand(cx - BW / 2, Y_CW_N,  BW, BH, modeCw(n), est);
-    drawBand(cx - BW / 2, Y_SSB_D, BW, BH, d, est);
-    drawBand(cx - BW / 2, Y_SSB_N, BW, BH, n, est);
+static void drawModeBlock(const char* name, bool cw, int y, int bh) {
+  const int X0 = 56, CWID = 31, BW = 25;
+  for (int i = 0; i < 8; i++) {
+    int cx = X0 + i * CWID + CWID / 2;
+    int g = FC_GROUP[i];
+    Cond d = haveData ? disturbed(bandDay[g])   : C_UNK;
+    Cond n = haveData ? disturbed(bandNight[g]) : C_UNK;
+    if (cw) { d = modeCw(d); n = modeCw(n); }
+    drawBand(cx - BW / 2, y,          BW, bh, d);
+    drawBand(cx - BW / 2, y + bh + 4, BW, bh, n);
   }
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_TEXT, COL_BG);
-  tft.drawString("CW",  2, Y_CW_D  + 28 - tft.fontHeight() / 2);
-  tft.drawString("SSB", 2, Y_SSB_D + 28 - tft.fontHeight() / 2);
-  drawIcon(1, 42, Y_CW_D  + BH / 2, COL_YELLOW);
-  drawIcon(5, 42, Y_CW_N  + BH / 2, COL_DIM);
-  drawIcon(1, 42, Y_SSB_D + BH / 2, COL_YELLOW);
-  drawIcon(5, 42, Y_SSB_N + BH / 2, COL_DIM);
-  tft.drawFastHLine(8, 108, 304, COL_GREY);
+  tft.drawString(name, 2, y + (2 * bh + 4) / 2 - tft.fontHeight() / 2);
+  drawIcon(1, 42, y + bh / 2, COL_YELLOW);
+  drawIcon(5, 42, y + bh + 4 + bh / 2, COL_DIM);
+}
+
+static void drawPageModes() {
+  const int X0 = 56, CWID = 31;
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString("CW inkl. Digital (FT8)", 8, 184);
+  for (int i = 0; i < 8; i++) {
+    int cx = X0 + i * CWID + CWID / 2;
+    int tw = tft.textWidth(FC_LABELS[i]);
+    tft.drawString(FC_LABELS[i], cx - tw / 2, 28);
+  }
+  bool showSsb = SHOW_SSB, showCw = SHOW_CW;
+  if (!showSsb && !showCw) showSsb = showCw = true;
+  int n = (showSsb ? 1 : 0) + (showCw ? 1 : 0);
+  int bh = (n == 2) ? 26 : 44;
+  int y = 48;
+#if SSB_FIRST
+  if (showSsb) { drawModeBlock("SSB", false, y, bh); y += 2 * bh + 4 + 14; }
+  if (showCw)  { drawModeBlock("CW",  true,  y, bh); y += 2 * bh + 4 + 14; }
+#else
+  if (showCw)  { drawModeBlock("CW",  true,  y, bh); y += 2 * bh + 4 + 14; }
+  if (showSsb) { drawModeBlock("SSB", false, y, bh); y += 2 * bh + 4 + 14; }
+#endif
+  if (n == 2) tft.drawFastHLine(8, 108, 304, COL_GREY);
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  if (showCw) tft.drawString("CW inkl. Digital (FT8)", 8, 184);
   tft.drawString("Faustregel, keine Prognose", 8, 200);
+}
+
+// Live-Aktivitaet: gemessene WSPR-Spots, alle 9 Baender inkl. 160m
+static String shortCount(int c) {
+  if (c >= 10000) return String(c / 1000) + "k";
+  if (c >= 1000)  return String(c / 1000) + "." + String((c % 1000) / 100) + "k";
+  return String(c);
+}
+
+static Cond liveCond(int i) {
+  if (!haveLive) return C_UNK;
+  int c = liveCount[i];
+  if (c >= LIVE_GOOD[i]) return C_GOOD;
+  if (c >= LIVE_FAIR[i]) return C_FAIR;
+  return C_POOR;
+}
+
+static void drawPageLive() {
+  const int X0 = 8, CW = 34, BW = 26, BASE = 150, HMAX = 100;
+  for (int i = 0; i < 9; i++) {
+    int cx = X0 + i * CW + CW / 2;
+    tft.setFont(&lgfx::fonts::Font2);
+    tft.setTextColor(COL_DIM, COL_BG);
+    int tw = tft.textWidth(LIVE_LABELS[i]);
+    tft.drawString(LIVE_LABELS[i], cx - tw / 2, 30);
+    int c = haveLive ? liveCount[i] : 0;
+    int h = 0;
+    if (haveLive) {
+      h = (c >= LIVE_GOOD[i]) ? HMAX : (int)((long)c * HMAX / LIVE_GOOD[i]);
+      if (c > 0 && h < 4) h = 4;
+    }
+    tft.drawRoundRect(cx - BW / 2, BASE - HMAX, BW, HMAX, 3, COL_GREY);
+    if (h > 0) tft.fillRoundRect(cx - BW / 2, BASE - h, BW, h, 2, colFor(liveCond(i)));
+    String sc = haveLive ? shortCount(c) : String("--");
+    int sw = tft.textWidth(sc);
+    tft.setTextColor(COL_TEXT, COL_BG);
+    tft.drawString(sc, cx - sw / 2, BASE + 6);
+  }
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString(String("LIVE: WSPR-Spots der letzten ") + LIVE_MINUTES + " min", 8, 184);
+  tft.drawString(String("Sender oder Empfaenger in ") + LIVE_FIELDS, 8, 200);
 }
 
 static void drawRow(int y, const char* label, const String& val, const char* unit) {
@@ -402,10 +543,13 @@ static void drawPageDetails() {
 static void drawAll() {
   tft.fillScreen(COL_BG);
   drawHeader();
-  if (page == 0)      drawPageOverview();
-  else if (page == 1) drawPageBands();
-  else if (page == 2) drawPageModes();
-  else                drawPageDetails();
+  switch (pageIds[page]) {
+    case PG_OVERVIEW: drawPageOverview(); break;
+    case PG_FORECAST: drawPageBands();    break;
+    case PG_MODES:    drawPageModes();    break;
+    case PG_LIVE:     drawPageLive();     break;
+    default:          drawPageDetails();  break;
+  }
   drawFooter();
 }
 
@@ -436,7 +580,7 @@ static void handleInput() {
   } else if (down && !pressed && now - lastSeen > 60) {   // losgelassen (mit Entprellung)
     down = false;
     if (!longDone && lastSeen - downAt >= 30) {
-      page = (page + 1) % PAGES;
+      page = (page + 1) % pageCount;
       lastPageChange = now;
       drawAll();
     }
@@ -446,7 +590,7 @@ static void handleInput() {
 static void autoAdvance() {
   uint32_t now = millis();
   if (autoMode && now - lastPageChange >= (uint32_t)AUTO_PAGE_MS) {
-    page = (page + 1) % PAGES;
+    page = (page + 1) % pageCount;
     lastPageChange = now;
     drawAll();
   }
@@ -483,6 +627,7 @@ static void updateNight() {
 // ---------------- Setup und Loop ----------------
 void setup() {
   Serial.begin(115200);
+  buildPages();
   pinMode(BTN_PIN, INPUT_PULLUP);
   {
     Preferences prefs;
@@ -541,6 +686,13 @@ void loop() {
     nextFetch = millis() + (ok ? FETCH_OK_MS : FETCH_RETRY_MS);
     if (!ok) statusMsg = "Abruf fehlgeschlagen";
     drawAll();
+  }
+
+  if (wifiOk && PAGE_LIVE && (!liveFetchedOnce || (int32_t)(millis() - nextLiveFetch) >= 0)) {
+    liveFetchedOnce = true;
+    bool ok = fetchLive();
+    nextLiveFetch = millis() + (ok ? LIVE_OK_MS : FETCH_RETRY_MS);
+    if (pageIds[page] == PG_LIVE) drawAll();
   }
 
   handleInput();
