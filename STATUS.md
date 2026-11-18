@@ -5,12 +5,13 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 ## Stand
 - Repo steht (18.11.2026): README, Lizenzen, Ordner firmware, hardware, docs. Hilfstool `firmware/tools/cyd_id` vorhanden.
 - Phase 1: Board ESP32-2432S028 (CYD, 1x USB-C und 1x Micro-USB). Das Werksprogramm (lvgl-demo) meldet ILI9341, Chip Revision 3, 4MB Flash, Touch XPT2046 (GPIO 36 und 39). Display ist damit ILI9341, Auflösung 320x240 quer.
+- Firmware V1 geschrieben (PR offen, ungetestet): LovyanGFX, WLAN-Liste in secrets.h, HamQSL, 3 Seiten (Übersicht, Bänder, Details), Umschalten per Touch oder BOOT-Taste. Anleitung: docs/Firmware_V1.md.
 - Port am MacBook: `/dev/cu.wchusbserial110`. Werkzeug: arduino-cli, FQBN `esp32:esp32:esp32`.
 
 ## Als Nächstes
-- Firmware V1: WLAN (WiFiMulti), NTP (UTC), HamQSL XML abrufen, Übersicht und Bandbalken, Treiber TFT_eSPI mit Sprites. Pinbelegung vor dem Schreiben prüfen.
-- Danach Drehgeber (GPIO 22, 27, 35), Nachtmodus per Lichtsensor (GPIO 34), RGB-LED als Ampel.
-- Phase 2: Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD). Beides erst, wenn Phase 1 läuft.
+- Marcel: V1 auf dem CYD testen (Farben, Drehung, Touch, Feed). Rückmeldung mit Seriellem Log.
+- Danach Drehgeber (GPIO 22, 27, 35), Nachtmodus per Lichtsensor (GPIO 34), RGB-LED als Ampel. Schwellen für die Farben sind Vorschlag.
+- Phase 2: Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD), erst wenn Phase 1 läuft.
 
 ## Entscheide (Marcel Sauder)
 - 18.11.2026: Repo heisst Bandampel. Doku Deutsch zuerst, kurze englische Zusammenfassung. Firmware GPL-3.0-only.
