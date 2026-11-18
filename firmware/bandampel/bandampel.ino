@@ -21,12 +21,10 @@
 
 // ---------------- Einstellungen ----------------
 static const int      ROTATION       = 1;          // 1 oder 3 (180 Grad gedreht)
-static const uint8_t  BRIGHTNESS     = 180;        // 0 bis 255
 static const uint32_t FETCH_OK_MS    = 30UL * 60UL * 1000UL;
 static const uint32_t FETCH_RETRY_MS = 2UL * 60UL * 1000UL;
 static const char*    FEED_URL       = "https://www.hamqsl.com/solarxml.php";
 static const int      BTN_PIN       = 0;
-static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/MESZ mit Sommerzeit
 
 // Nachtmodus per Lichtsensor (CYD: GPIO 34). Einstellungen koennen in secrets.h ueberschrieben werden.
 // LDR_THRESHOLD = -1: aus (nur Messwerte auf der seriellen Schnittstelle).
@@ -87,6 +85,7 @@ static const uint32_t LIVE_OK_MS = 15UL * 60UL * 1000UL;   // Abruf wspr.live al
 #ifndef AUTO_PAGE_MS
 #define AUTO_PAGE_MS 10000        // Seitenwechsel im Auto-Modus
 #endif
+#include "settings.h"     // Laufzeit-Einstellungen (cfg), Vorgabe aus den Makros oben
 static const uint32_t LONG_PRESS_MS  = 800;       // langer Druck: Auto/Halten umschalten
 
 // ---------------- Typen und Zustand ----------------
@@ -118,11 +117,11 @@ static int pageCount = 0;
 
 static void buildPages() {
   pageCount = 0;
-  if (PAGE_OVERVIEW) pageIds[pageCount++] = PG_OVERVIEW;
-  if (PAGE_FORECAST) pageIds[pageCount++] = PG_FORECAST;
-  if (PAGE_MODES)    pageIds[pageCount++] = PG_MODES;
-  if (PAGE_LIVE)     pageIds[pageCount++] = PG_LIVE;
-  if (PAGE_DETAILS)  pageIds[pageCount++] = PG_DETAILS;
+  if (cfg.pOverview) pageIds[pageCount++] = PG_OVERVIEW;
+  if (cfg.pForecast) pageIds[pageCount++] = PG_FORECAST;
+  if (cfg.pModes)    pageIds[pageCount++] = PG_MODES;
+  if (cfg.pLive)     pageIds[pageCount++] = PG_LIVE;
+  if (cfg.pDetails)  pageIds[pageCount++] = PG_DETAILS;
   if (pageCount == 0) pageIds[pageCount++] = PG_OVERVIEW;   // mindestens eine Seite
 }
 
@@ -130,8 +129,6 @@ static void buildPages() {
 // Schwellen (Spots in der Region im Zeitfenster) sind ein Vorschlag fuer 30 Minuten und noch einzustellen.
 static const int   LIVE_WSPR_BAND[9] = { 1, 3, 7, 10, 14, 18, 21, 24, 28 };
 static const char* LIVE_LABELS[9]    = { "160", "80", "40", "30", "20", "17", "15", "12", "10" };
-static const int   LIVE_FAIR[9]      = { 150, 1000, 8000, 6000, 12000, 3000, 3000, 800, 1500 };
-static const int   LIVE_GOOD[9]      = { 500, 3000, 25000, 18000, 35000, 9000, 9000, 2500, 4500 };
 static int      liveCount[9]    = { 0 };
 static bool     haveLive        = false;
 static bool     liveFetchedOnce = false;
@@ -247,8 +244,8 @@ static String urlEncode(const String& in) {
 }
 
 static bool fetchLive() {
-  String f = LIVE_FIELDS;
-  String q = String("SELECT band, count() FROM wspr.rx WHERE time > now() - ") + String(LIVE_MINUTES * 60) +
+  String f = cfg.liveFields;
+  String q = String("SELECT band, count() FROM wspr.rx WHERE time > now() - ") + String(cfg.liveMinutes * 60) +
              " AND (substring(tx_loc,1,2) IN (" + f + ") OR substring(rx_loc,1,2) IN (" + f + "))" +
              " GROUP BY band ORDER BY band FORMAT TSV";
   String url = String("https://db1.wspr.live/?query=") + urlEncode(q);
@@ -313,7 +310,7 @@ static void drawHeader() {
   tft.fillRect(0, 0, 320, 26, COL_HDR);
   tft.setFont(&lgfx::fonts::Font4);
   tft.setTextColor(COL_TEXT, COL_HDR);
-  tft.drawString(strlen(CALLSIGN) ? CALLSIGN : "BANDAMPEL", 6, 3);
+  tft.drawString(cfg.callsign.length() ? cfg.callsign.c_str() : "BANDAMPEL", 6, 3);
   drawClock();
 }
 
@@ -407,7 +404,7 @@ static void drawBand(int x, int y, int w, int h, Cond c) {
 // Rueckgabe: Stunden in UTC, oder -1 bei Polartag oder Polarnacht.
 static double sunEventUtc(int yday, bool rise) {
   const double D2R = 0.017453292519943295, R2D = 57.29577951308232;
-  double lngH = SUN_LON / 15.0;
+  double lngH = cfg.sunLon / 15.0;
   double t = (yday + 1) + ((rise ? 6.0 : 18.0) - lngH) / 24.0;
   double M = 0.9856 * t - 3.289;
   double L = M + 1.916 * sin(M * D2R) + 0.020 * sin(2 * M * D2R) + 282.634;
@@ -417,7 +414,7 @@ static double sunEventUtc(int yday, bool rise) {
   RA /= 15.0;
   double sinDec = 0.39782 * sin(L * D2R);
   double cosDec = cos(asin(sinDec));
-  double cosH = (cos(90.833 * D2R) - sinDec * sin(SUN_LAT * D2R)) / (cosDec * cos(SUN_LAT * D2R));
+  double cosH = (cos(90.833 * D2R) - sinDec * sin(cfg.sunLat * D2R)) / (cosDec * cos(cfg.sunLat * D2R));
   if (cosH > 1.0 || cosH < -1.0) return -1;
   double H = (rise ? 360.0 - R2D * acos(cosH) : R2D * acos(cosH)) / 15.0;
   double T = H + RA - 0.06571 * t - 6.622;
@@ -459,7 +456,7 @@ static void drawPageBands() {
   }
   // Aktuelle Zeile (Tag oder Nacht) hell, die andere gedaempft
   time_t sr = 0, ss = 0, tnow = time(nullptr);
-  bool haveSun = SHOW_SUN && sunToday(sr, ss);
+  bool haveSun = cfg.showSun && sunToday(sr, ss);
   bool isDay = haveSun && tnow >= sr && tnow < ss;
   drawIcon(1, 18, YD + BH / 2, (!haveSun || isDay) ? COL_YELLOW : COL_DIM);
   drawIcon(5, 18, YN + BH / 2, (haveSun && !isDay) ? COL_TEXT : COL_DIM);
@@ -482,12 +479,12 @@ static void drawPageBands() {
     tft.setTextColor(colFor(cc[i]), COL_BG);
     tft.drawString(val[i].length() ? val[i] : String("--"), x + lw + 8, 172);
   }
-#if SHOW_SUN
+  if (cfg.showSun) {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(haveSun ? COL_YELLOW : COL_DIM, COL_BG);
   String sun = haveSun ? String("Sonne auf ") + hhmm(sr) + "   unter " + hhmm(ss) : String("Sonne: warte auf Uhrzeit");
   tft.drawString(sun, 8, 198);
-#endif
+  }
 }
 
 // Betriebsart (Vorschlag, noch zu pruefen): HamQSL kennt keine Betriebsarten.
@@ -523,18 +520,18 @@ static void drawPageModes() {
     int tw = tft.textWidth(FC_LABELS[i]);
     tft.drawString(FC_LABELS[i], cx - tw / 2, 28);
   }
-  bool showSsb = SHOW_SSB, showCw = SHOW_CW;
+  bool showSsb = cfg.showSsb, showCw = cfg.showCw;
   if (!showSsb && !showCw) showSsb = showCw = true;
   int n = (showSsb ? 1 : 0) + (showCw ? 1 : 0);
   int bh = (n == 2) ? 26 : 44;
   int y = 48;
-#if SSB_FIRST
+  if (cfg.ssbFirst) {
   if (showSsb) { drawModeBlock("SSB", false, y, bh); y += 2 * bh + 4 + 14; }
   if (showCw)  { drawModeBlock("CW",  true,  y, bh); y += 2 * bh + 4 + 14; }
-#else
+  } else {
   if (showCw)  { drawModeBlock("CW",  true,  y, bh); y += 2 * bh + 4 + 14; }
   if (showSsb) { drawModeBlock("SSB", false, y, bh); y += 2 * bh + 4 + 14; }
-#endif
+  }
   if (n == 2) tft.drawFastHLine(8, 108, 304, COL_GREY);
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
@@ -552,8 +549,8 @@ static String shortCount(int c) {
 static Cond liveCond(int i) {
   if (!haveLive) return C_UNK;
   int c = liveCount[i];
-  if (c >= LIVE_GOOD[i]) return C_GOOD;
-  if (c >= LIVE_FAIR[i]) return C_FAIR;
+  if (c >= cfg.liveGood[i]) return C_GOOD;
+  if (c >= cfg.liveFair[i]) return C_FAIR;
   return C_POOR;
 }
 
@@ -568,7 +565,7 @@ static void drawPageLive() {
     int c = haveLive ? liveCount[i] : 0;
     int h = 0;
     if (haveLive) {
-      h = (c >= LIVE_GOOD[i]) ? HMAX : (int)((long)c * HMAX / LIVE_GOOD[i]);
+      h = (c >= cfg.liveGood[i]) ? HMAX : (int)((long)c * HMAX / cfg.liveGood[i]);
       if (c > 0 && h < 4) h = 4;
     }
     tft.drawRoundRect(cx - BW / 2, BASE - HMAX, BW, HMAX, 3, COL_GREY);
@@ -580,8 +577,8 @@ static void drawPageLive() {
   }
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString(String("LIVE: WSPR-Spots der letzten ") + LIVE_MINUTES + " min", 8, 184);
-  tft.drawString(String("Sender oder Empfaenger in ") + LIVE_FIELDS, 8, 200);
+  tft.drawString(String("LIVE: WSPR-Spots der letzten ") + cfg.liveMinutes + " min", 8, 184);
+  tft.drawString(String("Sender oder Empfaenger in ") + cfg.liveFields, 8, 200);
 }
 
 static void drawRow(int y, const char* label, const String& val, const char* unit) {
@@ -651,7 +648,7 @@ static void handleInput() {
 
 static void autoAdvance() {
   uint32_t now = millis();
-  if (autoMode && now - lastPageChange >= (uint32_t)AUTO_PAGE_MS) {
+  if (autoMode && now - lastPageChange >= (uint32_t)cfg.autoMs) {
     page = (page + 1) % pageCount;
     lastPageChange = now;
     drawAll();
@@ -659,7 +656,7 @@ static void autoAdvance() {
 }
 
 // ---------------- Nachtmodus ----------------
-static uint8_t curBrightness = BRIGHTNESS;
+static uint8_t curBrightness = 180;
 
 static void updateNight() {
   static uint32_t lastRead = 0, lastPrint = 0;
@@ -670,11 +667,11 @@ static void updateNight() {
   long sum = 0;
   for (int i = 0; i < 8; i++) sum += analogRead(LDR_PIN);
   int v = (int)(sum / 8);
-  if (LDR_THRESHOLD >= 0) {
-    int dark = LDR_NIGHT_IS_HIGH ? (v - LDR_THRESHOLD) : (LDR_THRESHOLD - v);   // positiv = dunkler als Schwelle
-    if (!night && dark > LDR_HYST) night = true;
-    else if (night && dark < -LDR_HYST) night = false;
-    uint8_t target = night ? BRIGHTNESS_NIGHT : BRIGHTNESS;
+  if (cfg.ldrThreshold >= 0) {
+    int dark = cfg.ldrNightHigh ? (v - cfg.ldrThreshold) : (cfg.ldrThreshold - v);   // positiv = dunkler als Schwelle
+    if (!night && dark > cfg.ldrHyst) night = true;
+    else if (night && dark < -cfg.ldrHyst) night = false;
+    uint8_t target = night ? cfg.brightnessNight : cfg.brightness;
     if (target != curBrightness) {
       curBrightness = target;
       tft.setBrightness(target);
@@ -689,6 +686,7 @@ static void updateNight() {
 // ---------------- Setup und Loop ----------------
 void setup() {
   Serial.begin(115200);
+  cfgLoad();
   buildPages();
   pinMode(BTN_PIN, INPUT_PULLUP);
   {
@@ -699,22 +697,26 @@ void setup() {
   }
   tft.init();
   tft.setRotation(ROTATION);
-  tft.setBrightness(BRIGHTNESS);
+  curBrightness = cfg.brightness;
+  tft.setBrightness(cfg.brightness);
   initColors();
   statusMsg = "WLAN suchen...";
   drawAll();
 
   WiFi.mode(WIFI_STA);
-  for (int i = 0; i < WIFI_COUNT; i++) {
-    wifiMulti.addAP(WIFI_LIST[i].ssid, WIFI_LIST[i].pass);
-    Serial.printf("Konfiguriert: [%s] (Passwort %u Zeichen)\n", WIFI_LIST[i].ssid, (unsigned)strlen(WIFI_LIST[i].pass));
+  WiFi.setHostname(cfgHostname().c_str());
+  Serial.printf("Geraet: %s\n", cfgHostname().c_str());
+  for (int i = 0; i < cfg.wifiCount; i++) {
+    if (!cfg.wifiSsid[i].length()) continue;
+    wifiMulti.addAP(cfg.wifiSsid[i].c_str(), cfg.wifiPass[i].c_str());
+    Serial.printf("Konfiguriert: [%s] (Passwort %u Zeichen)\n", cfg.wifiSsid[i].c_str(), (unsigned)cfg.wifiPass[i].length());
   }
   int n = WiFi.scanNetworks();
   Serial.printf("WLAN-Scan: %d Netze (nur 2,4 GHz sichtbar)\n", n);
   for (int i = 0; i < n; i++) {
     Serial.printf("  [%s]  RSSI %d  Kanal %d\n", WiFi.SSID(i).c_str(), WiFi.RSSI(i), WiFi.channel(i));
   }
-  configTzTime(TZ_ZURICH, "pool.ntp.org", "time.nist.gov");
+  configTzTime(cfg.tz.c_str(), "pool.ntp.org", "time.nist.gov");
 }
 
 void loop() {
@@ -750,7 +752,7 @@ void loop() {
     drawAll();
   }
 
-  if (wifiOk && PAGE_LIVE && (!liveFetchedOnce || (int32_t)(millis() - nextLiveFetch) >= 0)) {
+  if (wifiOk && cfg.pLive && (!liveFetchedOnce || (int32_t)(millis() - nextLiveFetch) >= 0)) {
     liveFetchedOnce = true;
     bool ok = fetchLive();
     nextLiveFetch = millis() + (ok ? LIVE_OK_MS : FETCH_RETRY_MS);
