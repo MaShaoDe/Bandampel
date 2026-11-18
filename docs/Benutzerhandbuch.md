@@ -219,6 +219,7 @@ Nur zum Anschauen: WLAN, IP, Signal, Version, Name im Netz, Alter der Daten, Lau
 - **Live-Seite:** Region (Locator-Felder), Zeitfenster und die Farbschwellen für jedes Band. Daneben steht die aktuelle Zahl, damit du die Schwellen nach Gefühl einstellen kannst.
 
 ![Reiter Funk](bilder/15_web_funk.png)
+![Reiter Funk, unterer Teil](bilder/15_web_funk_2.png)
 
 ### Reiter «System»
 
@@ -231,6 +232,8 @@ Nur zum Anschauen: WLAN, IP, Signal, Version, Name im Netz, Alter der Daten, Lau
 ### Reiter «Über»
 
 Version, Urheber, Lizenzen, Datenquellen und der Link zum Projekt auf GitHub. Hier lässt sich nichts ändern.
+
+![Reiter Über](bilder/18_web_ueber.png)
 
 ---
 
