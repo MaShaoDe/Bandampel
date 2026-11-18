@@ -26,6 +26,7 @@ Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A,
 
 ## Anpassen
 
+- Zeit: Hauptuhr in Zürcher Zeit (MEZ/MESZ, automatische Sommerzeit), daneben klein die UTC-Zeit mit Z. Andere Zeitzone: `TZ_ZURICH` in `bandampel.ino` ändern.
 - Bild gedreht: `ROTATION` in `bandampel.ino` von 1 auf 3.
 - Farben negativ oder Rot und Blau vertauscht: `invert` oder `rgb_order` in `lgfx_cyd.h`.
 - Mehrere WLAN-Netze (Heimnetz, Hotspot): Liste in `secrets.h`.
