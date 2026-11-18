@@ -44,7 +44,7 @@ Jede Seite hat oben eine **Kopfzeile** und unten eine **Fusszeile**. Dazwischen 
 
 ### Kopfzeile
 
-Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast). Rechts die Uhrzeit: gross die Ortszeit, klein dahinter die UTC-Zeit mit einem «Z» (Funker sprechen von «Zulu»).
+Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast), dahinter in Gelb der Name der Seite: Ampel, Baender, Modus, Live, Details, Sonne, Info oder Lizenz. Im Web-Menü heissen die Haken genauso. Rechts die Uhrzeit: gross die Ortszeit, klein dahinter die UTC-Zeit mit einem «Z» (Funker sprechen von «Zulu»).
 
 ### Fusszeile
 
