@@ -698,22 +698,60 @@ static void drawPageLive() {
   tft.drawString(String("Sender oder Empfaenger in ") + cfg.liveFields, 8, 200);
 }
 
-static void drawRow(int y, const char* label, const String& val, const char* unit) {
+// Details-Seite: 4 Karten mit farbigem Rahmen. Einstufung ist eine Faustregel (Vorschlag), keine Prognose.
+static Cond levelXray(const String& x) {
+  if (!x.length()) return C_UNK;
+  char c = toupper(x[0]);
+  if (c == 'A' || c == 'B') return C_GOOD;
+  if (c == 'C') return C_FAIR;
+  if (c == 'M' || c == 'X') return C_POOR;
+  return C_UNK;
+}
+static Cond levelWind(const String& w) {
+  if (!w.length()) return C_UNK;
+  int v = w.toInt();
+  return v < 400 ? C_GOOD : (v < 600 ? C_FAIR : C_POOR);
+}
+static Cond levelBz(const String& b) {
+  if (!b.length()) return C_UNK;
+  float v = b.toFloat();
+  return v >= -3 ? C_GOOD : (v >= -8 ? C_FAIR : C_POOR);   // negativ (nach Sueden) stoert das Erdmagnetfeld
+}
+static Cond levelNoise(const String& n) {
+  int d = -1;
+  for (unsigned i = 0; i < n.length(); i++) if (isdigit(n[i])) { d = n[i] - '0'; break; }   // "S0-S1": erste Zahl
+  if (d < 0) return C_UNK;
+  return d <= 1 ? C_GOOD : (d <= 3 ? C_FAIR : C_POOR);
+}
+
+static void drawDetailCard(int x, int y, const char* label, const String& val, const char* unit, Cond c, int icon,
+                           const char* good, const char* fair, const char* poor) {
+  const int w = 156, ch = 86;
+  uint16_t col = colFor(c);
+  tft.fillRoundRect(x, y, w, ch, 8, COL_HDR);
+  tft.drawRoundRect(x, y, w, ch, 8, col);
+  tft.drawRoundRect(x + 1, y + 1, w - 2, ch - 2, 7, col);
   tft.setFont(&lgfx::fonts::Font2);
-  tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString(label, 10, y + 6);
+  tft.setTextColor(COL_DIM, COL_HDR);
+  tft.drawString(label, x + 8, y + 6);
+  drawIcon(icon, x + w - 22, y + 18, col);
   tft.setFont(&lgfx::fonts::Font4);
-  tft.setTextColor(COL_TEXT, COL_BG);
-  String v = (val.length() ? val : String("--")) + " " + unit;
-  int w = tft.textWidth(v);
-  tft.drawString(v, 310 - w, y);
+  tft.setTextColor(col, COL_HDR);
+  String v = val.length() ? val : String("--");
+  if (unit[0]) v += String(" ") + unit;
+  tft.drawString(v, x + (w - tft.textWidth(v)) / 2, y + 34);
+  tft.setFont(&lgfx::fonts::Font2);
+  const char* word = (c == C_GOOD) ? good : (c == C_FAIR ? fair : (c == C_POOR ? poor : "keine Daten"));
+  tft.setTextColor(col, COL_HDR);
+  tft.drawString(word, x + (w - tft.textWidth(word)) / 2, y + 64);
 }
 
 static void drawPageDetails() {
-  drawRow(40,  "X-Ray",             solar.xray,  "");
-  drawRow(80,  "Sonnenwind",        solar.wind,  "km/s");
-  drawRow(120, "Magnetfeld Bz",     solar.bz,    "nT");
-  drawRow(160, "Signal-Rauschen",   solar.noise, "");
+  bool d = haveData;
+  drawDetailCard(4,   30,  "X-Ray (Flares)", solar.xray,  "",     d ? levelXray(solar.xray)   : C_UNK, 1, "ruhig", "leicht erhoeht", "Funkstoerung");
+  drawDetailCard(160, 30,  "Sonnenwind",     solar.wind,  "km/s", d ? levelWind(solar.wind)   : C_UNK, 4, "ruhig", "erhoeht", "schnell");
+  drawDetailCard(4,   124, "Magnetfeld Bz",  solar.bz,    "nT",   d ? levelBz(solar.bz)       : C_UNK, 2, "ruhig", "unruhig", "gestoert");
+  drawDetailCard(160, 124, "Rauschen",       solar.noise, "",     d ? levelNoise(solar.noise) : C_UNK, 3, "leise", "mittel", "laut");
 }
 
 static void drawAll() {
