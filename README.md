@@ -29,6 +29,10 @@ Erste Phase: ESP32-2432S028 (ESP32, 2,8 Zoll, 240x320, resistiver Touch). Die Di
 
 Die Bandprognose stammt von HamQSL (N0NBH), Rohdaten ergänzend von NOAA SWPC. Bitte die Quellen nicht öfter als nötig abfragen (alle 30 Minuten oder seltener reicht, HamQSL aktualisiert ca. alle 3 Stunden). Die Daten sind für nicht-kommerzielle Nutzung gedacht. 160m liefert HamQSL nicht, deshalb steht 160m nur auf der Live-Seite. Die Live-Aktivität stammt aus gemessenen WSPR-Spots von wspr.live (Abruf alle 15 Minuten, bitte nicht öfter).
 
+## Benutzerhandbuch
+
+Funktionsumfang, Bedienung und Einstellungen: [docs/Benutzerhandbuch.md](docs/Benutzerhandbuch.md). Technik zum Selbstbau: [docs/Firmware_V1.md](docs/Firmware_V1.md).
+
 ## Platinen und Bausätze
 
 Bastlerprojekt. Platinen und Bausätze gibt es auf Anfrage zum Materialpreis, solange Vorrat, ohne Gewährleistung und ohne CE-Prüfung. Betrieb auf eigene Verantwortung. Anfragen über einen «Issue» auf GitHub oder an HE9QCU. Gemeinsame Lötworkshops (zum Beispiel im Funkclub oder Fab Lab) sind möglich, das Material wird zum Selbstkostenpreis weitergegeben. Es gibt keinen Verkauf mit Gewinn. Die Datenquellen (HamQSL, NOAA, wspr.live) sind für nicht-kommerzielle Nutzung gedacht.
