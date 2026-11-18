@@ -84,7 +84,7 @@ Auf der Seite Betriebsart lassen sich SSB und CW einzeln schalten: `#define SHOW
 
 ## Sonnenaufgang und Sonnenuntergang
 
-Auf der Seite «Bänder» steht unten «Sonne auf HH:MM unter HH:MM» in Ortszeit (Zürich, mit Sommerzeit). Die Zeile Tag (Sonne) oder Nacht (Mond) ist hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), es braucht keine Datenquelle. Standort in `secrets.h` mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), ausblenden mit `#define SHOW_SUN 0`. Vor der Zeitsynchronisation steht «warte auf Uhrzeit».
+Die Seite «Sonne» (nach der Übersicht) zeigt einen Sonnenbogen mit der aktuellen Position (nachts den Mond unter dem Horizont), Aufgang, Untergang, Tageslänge und einen Countdown zum nächsten Ereignis. In den 30 Minuten vor und nach Auf- und Untergang steht «GRAYLINE AKTIV». In dieser Dämmerungszone sind die tiefen Bänder (160, 80, 40 m) oft besonders gut. Das ist eine Faustregel, keine Prognose. Auf der Seite «Bänder» ist die Zeile Tag (Sonne) oder Nacht (Mond) hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), in Ortszeit (Zürich, mit Sommerzeit). Standort mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), Seite ausblenden mit `#define PAGE_SUN 0` oder im Web-Menü. Vor der Zeitsynchronisation steht «Warte auf Uhrzeit».
 
 ## Einstellungen im Flash
 

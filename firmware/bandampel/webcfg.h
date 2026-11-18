@@ -64,12 +64,12 @@ static void webRoot() {
   h += F("<small>Nur 2,4 GHz. Beim iPhone-Hotspot «Kompatibilität maximieren» einschalten.</small>");
 
   h += "<h2>Seiten</h2>";
-  h += fCheck("Übersicht", "pOv", cfg.pOverview) + fCheck("Prognose Bänder", "pFc", cfg.pForecast)
+  h += fCheck("Übersicht", "pOv", cfg.pOverview) + fCheck("Sonne (Aufgang, Untergang, Grayline)", "pSu", cfg.pSun) + fCheck("Prognose Bänder", "pFc", cfg.pForecast)
      + fCheck("Betriebsart", "pMo", cfg.pModes) + fCheck("Live-Aktivität", "pLi", cfg.pLive) + fCheck("Details", "pDe", cfg.pDetails);
   h += fInput("Seitenwechsel im Auto-Modus (Sekunden)", "automs", String(cfg.autoMs / 1000), "number", "min=2 max=600");
   h += fCheck("SSB zeigen", "ssb", cfg.showSsb) + fCheck("CW zeigen", "cw", cfg.showCw)
-     + fCheck("SSB oben, CW unten", "ssbf", cfg.ssbFirst) + fCheck("Sonnenaufgang und Sonnenuntergang zeigen", "sun", cfg.showSun);
-  h += "<div class=r>" + fInput("Breitengrad", "lat", String(cfg.sunLat, 3), "text") + fInput("Längengrad", "lon", String(cfg.sunLon, 3), "text") + "</div>";
+     + fCheck("SSB oben, CW unten", "ssbf", cfg.ssbFirst);
+  h += "<h2>Standort für die Sonnenzeiten</h2><div class=r>" + fInput("Breitengrad", "lat", String(cfg.sunLat, 3), "text") + fInput("Längengrad", "lon", String(cfg.sunLon, 3), "text") + "</div>";
 
   h += "<h2>Helligkeit und Nachtmodus</h2>";
   h += "<div class=r>" + fInput("Helligkeit Tag (10 bis 255)", "br", String(cfg.brightness), "number") + fInput("Helligkeit Nacht (0 bis 255)", "brn", String(cfg.brightnessNight), "number") + "</div>";
@@ -120,7 +120,7 @@ static void webSave() {
   cfg.pOverview = argOn("pOv"); cfg.pForecast = argOn("pFc"); cfg.pModes = argOn("pMo");
   cfg.pLive = argOn("pLi");     cfg.pDetails = argOn("pDe");
   cfg.showSsb = argOn("ssb");   cfg.showCw = argOn("cw");
-  cfg.ssbFirst = argOn("ssbf"); cfg.showSun = argOn("sun");
+  cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu");
   cfg.autoMs = web.arg("automs").toInt() * 1000;
   cfg.sunLat = web.arg("lat").toFloat(); cfg.sunLon = web.arg("lon").toFloat();
   cfg.brightness = web.arg("br").toInt(); cfg.brightnessNight = web.arg("brn").toInt();
