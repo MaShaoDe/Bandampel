@@ -8,7 +8,8 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.18.10 | 2026-11-18 | dieser PR | Neue Fotos der Seiten Ampel, Sonne, Details, Info und Lizenz (Firmware 1.18.8, schärfer) |
+| 1.18.11 | 2026-11-18 | dieser PR | Neue Fotos der Seiten Bänder, Modus, Live und Details (Firmware 1.18.8) |
+| 1.18.10 | 2026-11-18 | [#40](https://github.com/MaShaoDe/Bandampel/pull/40) | Neue Fotos der Seiten Ampel, Sonne, Details, Info und Lizenz (Firmware 1.18.8, schärfer) |
 | 1.18.9 | 2026-11-18 | [#39](https://github.com/MaShaoDe/Bandampel/pull/39) | STATUS: Akku und Strom (Vorschlag), Bilder, Port |
 | 1.18.8 | 2026-11-18 | [#38](https://github.com/MaShaoDe/Bandampel/pull/38) | Bilder der 8 Display-Seiten und 7 Web-Reiter im Handbuch (docs/bilder/) |
 | 1.18.7 | 2026-11-18 | [#37](https://github.com/MaShaoDe/Bandampel/pull/37) | Nachbauanleitung (docs/Nachbauen.md), Release v1.18.6 im Skript |
