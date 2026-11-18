@@ -42,6 +42,9 @@ static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/ME
 static const int LDR_PIN  = 34;
 static const int LDR_HYST = 150;
 static const int      PAGES          = 4;
+#ifndef SSB_FIRST
+#define SSB_FIRST 1               // 1: SSB oben und CW unten, 0: umgekehrt (in secrets.h einstellbar)
+#endif
 #ifndef AUTO_PAGE_MS
 #define AUTO_PAGE_MS 10000        // Seitenwechsel im Auto-Modus
 #endif
@@ -343,7 +346,11 @@ static Cond disturbed(Cond c)   { return (c != C_UNK && solar.k.toInt() >= 5) ? 
 
 static void drawPageModes() {
   const int X0 = 56, CW = 28, BW = 22, BH = 26;
-  const int Y_CW_D = 48, Y_CW_N = 78, Y_SSB_D = 118, Y_SSB_N = 148;
+#if SSB_FIRST
+  const int Y_SSB_D = 48, Y_SSB_N = 78, Y_CW_D = 118, Y_CW_N = 148;   // SSB oben
+#else
+  const int Y_CW_D = 48, Y_CW_N = 78, Y_SSB_D = 118, Y_SSB_N = 148;   // CW oben
+#endif
   tft.setFont(&lgfx::fonts::Font2);
   for (int i = 0; i < 9; i++) {
     int cx = X0 + i * CW + CW / 2;
