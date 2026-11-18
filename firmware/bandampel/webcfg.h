@@ -8,7 +8,6 @@
 #include <ESPmDNS.h>
 
 static WebServer web(80);
-static bool      apActive    = false;
 static bool      mdnsStarted = false;
 static uint32_t  restartAt   = 0;
 
@@ -66,7 +65,7 @@ static void webRoot() {
 
   h += "<h2>Seiten</h2>";
   h += fCheck("Übersicht", "pOv", cfg.pOverview) + fCheck("Sonne (Aufgang, Untergang, Grayline)", "pSu", cfg.pSun) + fCheck("Prognose Bänder", "pFc", cfg.pForecast)
-     + fCheck("Betriebsart", "pMo", cfg.pModes) + fCheck("Live-Aktivität", "pLi", cfg.pLive) + fCheck("Details", "pDe", cfg.pDetails);
+     + fCheck("Betriebsart", "pMo", cfg.pModes) + fCheck("Live-Aktivität", "pLi", cfg.pLive) + fCheck("Details", "pDe", cfg.pDetails) + fCheck("Info (WLAN, IP, Signal)", "pIn", cfg.pInfo);
   h += fInput("Seitenwechsel im Auto-Modus (Sekunden)", "automs", String(cfg.autoMs / 1000), "number", "min=2 max=600");
   h += fCheck("SSB zeigen", "ssb", cfg.showSsb) + fCheck("CW zeigen", "cw", cfg.showCw)
      + fCheck("SSB oben, CW unten", "ssbf", cfg.ssbFirst);
@@ -133,7 +132,7 @@ static void webSave() {
   cfg.pOverview = argOn("pOv"); cfg.pForecast = argOn("pFc"); cfg.pModes = argOn("pMo");
   cfg.pLive = argOn("pLi");     cfg.pDetails = argOn("pDe");
   cfg.showSsb = argOn("ssb");   cfg.showCw = argOn("cw");
-  cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu");
+  cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu"); cfg.pInfo = argOn("pIn");
   cfg.autoMs = web.arg("automs").toInt() * 1000;
   cfg.sunLat = web.arg("lat").toFloat(); cfg.sunLon = web.arg("lon").toFloat();
   cfg.brightMode = web.arg("bmode").toInt();
