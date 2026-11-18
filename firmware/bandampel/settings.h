@@ -32,7 +32,9 @@ struct Cfg {
   bool    showSsb, showCw, ssbFirst;
   int     autoMs;
   // Helligkeit und Nachtmodus
-  int     brightness, brightnessNight;
+  int     brightMode;              // 0 fest, 1 Tag/Nacht mit Schwelle, 2 stufenlos
+  int     brightPct, brightNightPct;   // Prozent
+  int     ldrBright, ldrDark;      // Kalibrierung stufenlos
   int     ldrThreshold, ldrHyst;
   bool    ldrNightHigh;
   // Live-Seite
@@ -63,7 +65,8 @@ static void cfgDefaults() {
   cfg.pLive = PAGE_LIVE;         cfg.pDetails = PAGE_DETAILS;   cfg.pSun = PAGE_SUN;
   cfg.showSsb = SHOW_SSB; cfg.showCw = SHOW_CW; cfg.ssbFirst = SSB_FIRST; 
   cfg.autoMs = AUTO_PAGE_MS;
-  cfg.brightness = 180; cfg.brightnessNight = BRIGHTNESS_NIGHT;
+  cfg.brightMode = BRIGHT_MODE; cfg.brightPct = BRIGHT_DAY_PCT; cfg.brightNightPct = BRIGHT_NIGHT_PCT;
+  cfg.ldrBright = LDR_BRIGHT; cfg.ldrDark = LDR_DARK;
   cfg.ldrThreshold = LDR_THRESHOLD; cfg.ldrHyst = LDR_HYST; cfg.ldrNightHigh = LDR_NIGHT_IS_HIGH;
   cfg.liveFields = LIVE_FIELDS; cfg.liveMinutes = LIVE_MINUTES;
   for (int i = 0; i < 9; i++) { cfg.liveFair[i] = CFG_LIVE_FAIR_DEF[i]; cfg.liveGood[i] = CFG_LIVE_GOOD_DEF[i]; }
@@ -74,8 +77,11 @@ static void cfgDefaults() {
 static void cfgSanitize() {
   cfg.unit = constrain(cfg.unit, 1, 999);
   cfg.autoMs = constrain(cfg.autoMs, 2000, 600000);
-  cfg.brightness = constrain(cfg.brightness, 10, 255);
-  cfg.brightnessNight = constrain(cfg.brightnessNight, 0, 255);
+  cfg.brightMode = constrain(cfg.brightMode, 0, 2);
+  cfg.brightPct = constrain(cfg.brightPct, 5, 100);
+  cfg.brightNightPct = constrain(cfg.brightNightPct, 5, 100);
+  cfg.ldrBright = constrain(cfg.ldrBright, 0, 4095);
+  cfg.ldrDark = constrain(cfg.ldrDark, 0, 4095);
   cfg.ldrHyst = constrain(cfg.ldrHyst, 10, 2000);
   cfg.ldrThreshold = constrain(cfg.ldrThreshold, -1, 4095);
   cfg.liveMinutes = constrain(cfg.liveMinutes, 5, 120);
@@ -119,7 +125,9 @@ static void cfgLoad() {
   cfg.showSsb = p.getBool("ssb", cfg.showSsb);       cfg.showCw = p.getBool("cw", cfg.showCw);
   cfg.ssbFirst = p.getBool("ssbf", cfg.ssbFirst);    cfg.pSun = p.getBool("pSu", cfg.pSun);
   cfg.autoMs = p.getInt("automs", cfg.autoMs);
-  cfg.brightness = p.getInt("br", cfg.brightness);   cfg.brightnessNight = p.getInt("brn", cfg.brightnessNight);
+  cfg.brightMode = p.getInt("bmode", cfg.brightMode);
+  cfg.brightPct = p.getInt("bp", cfg.brightPct);     cfg.brightNightPct = p.getInt("bnp", cfg.brightNightPct);
+  cfg.ldrBright = p.getInt("ldrb", cfg.ldrBright);   cfg.ldrDark = p.getInt("ldrd", cfg.ldrDark);
   cfg.ldrThreshold = p.getInt("ldrt", cfg.ldrThreshold); cfg.ldrHyst = p.getInt("ldrh", cfg.ldrHyst);
   cfg.ldrNightHigh = p.getBool("ldrn", cfg.ldrNightHigh);
   cfg.liveFields = p.getString("lf", cfg.liveFields); cfg.liveMinutes = p.getInt("lmin", cfg.liveMinutes);
@@ -148,7 +156,9 @@ static void cfgSave() {
   p.putBool("ssb", cfg.showSsb);   p.putBool("cw", cfg.showCw);
   p.putBool("ssbf", cfg.ssbFirst); p.putBool("pSu", cfg.pSun);
   p.putInt("automs", cfg.autoMs);
-  p.putInt("br", cfg.brightness);  p.putInt("brn", cfg.brightnessNight);
+  p.putInt("bmode", cfg.brightMode);
+  p.putInt("bp", cfg.brightPct);   p.putInt("bnp", cfg.brightNightPct);
+  p.putInt("ldrb", cfg.ldrBright); p.putInt("ldrd", cfg.ldrDark);
   p.putInt("ldrt", cfg.ldrThreshold); p.putInt("ldrh", cfg.ldrHyst); p.putBool("ldrn", cfg.ldrNightHigh);
   p.putString("lf", cfg.liveFields); p.putInt("lmin", cfg.liveMinutes);
   for (int i = 0; i < 9; i++) {

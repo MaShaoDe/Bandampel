@@ -24,3 +24,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
 - Neu (PR offen, ungetestet): Seite Sonne nach der Übersicht (Bogen, Zeiten, Countdown, Grayline), im Menü schaltbar. Web-Menü läuft (getestet).
 - Neu (PR offen, ungetestet): Web-Menü nach Speichern auf neutraler Seite (kein doppeltes Senden bei Reload).
+- Neu (PR offen, ungetestet): Helligkeit in Prozent, 3 Modi inkl. stufenlos nach Lichtsensor, Kalibrierknöpfe im Menü (Vorgabe Tag 60, Nacht 10).

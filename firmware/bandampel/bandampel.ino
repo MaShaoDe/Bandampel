@@ -34,8 +34,20 @@ static const int      BTN_PIN       = 0;
 #ifndef LDR_NIGHT_IS_HIGH
 #define LDR_NIGHT_IS_HIGH true     // true: grosser Messwert = dunkel
 #endif
-#ifndef BRIGHTNESS_NIGHT
-#define BRIGHTNESS_NIGHT 25        // 0 bis 255
+#ifndef BRIGHT_MODE
+#define BRIGHT_MODE 2              // 0 fest (Tageswert), 1 Tag/Nacht mit Schwelle, 2 stufenlos nach Lichtsensor
+#endif
+#ifndef BRIGHT_DAY_PCT
+#define BRIGHT_DAY_PCT 60          // Helligkeit am Tag in Prozent (5 bis 100)
+#endif
+#ifndef BRIGHT_NIGHT_PCT
+#define BRIGHT_NIGHT_PCT 10        // Helligkeit in der Nacht in Prozent (5 bis 100)
+#endif
+#ifndef LDR_BRIGHT
+#define LDR_BRIGHT 100             // Sensorwert bei hellem Raum (Kalibrierung, stufenlos)
+#endif
+#ifndef LDR_DARK
+#define LDR_DARK 700               // Sensorwert bei dunklem Raum (Kalibrierung, stufenlos)
 #endif
 static const int LDR_PIN  = 34;
 #ifndef LDR_HYST
@@ -762,11 +774,14 @@ static void autoAdvance() {
 }
 
 // ---------------- Nachtmodus ----------------
-static uint8_t curBrightness = 180;
+static uint8_t curBrightness = 150;
+
+static uint8_t pctToRaw(int pct) { return (uint8_t)(constrain(pct, 5, 100) * 255 / 100); }
 
 static void updateNight() {
   static uint32_t lastRead = 0, lastPrint = 0;
   static bool night = false;
+  static float filt = -1;
   uint32_t now = millis();
   if (now - lastRead < 1000) return;
   lastRead = now;
@@ -774,15 +789,24 @@ static void updateNight() {
   for (int i = 0; i < 8; i++) sum += analogRead(LDR_PIN);
   int v = (int)(sum / 8);
   ldrRaw = v;
-  if (cfg.ldrThreshold >= 0) {
+  filt = (filt < 0) ? (float)v : filt * 0.85f + v * 0.15f;   // glaetten gegen Flackern
+  int target = pctToRaw(cfg.brightPct);
+  if (cfg.brightMode == 1 && cfg.ldrThreshold >= 0) {
     int dark = cfg.ldrNightHigh ? (v - cfg.ldrThreshold) : (cfg.ldrThreshold - v);   // positiv = dunkler als Schwelle
     if (!night && dark > cfg.ldrHyst) night = true;
     else if (night && dark < -cfg.ldrHyst) night = false;
-    uint8_t target = night ? cfg.brightnessNight : cfg.brightness;
-    if (target != curBrightness) {
-      curBrightness = target;
-      tft.setBrightness(target);
-    }
+    target = pctToRaw(night ? cfg.brightNightPct : cfg.brightPct);
+  } else if (cfg.brightMode == 2) {
+    float span = (float)(cfg.ldrDark - cfg.ldrBright);
+    float t = (span != 0) ? (filt - cfg.ldrBright) / span : 0;   // 0 = hell, 1 = dunkel
+    t = constrain(t, 0.0f, 1.0f);
+    night = t > 0.5f;
+    target = pctToRaw((int)(cfg.brightPct + t * (cfg.brightNightPct - cfg.brightPct) + 0.5f));
+  }
+  if (target != curBrightness) {
+    int step = constrain(target - (int)curBrightness, -8, 8);   // sanfter Uebergang, 8 Stufen pro Sekunde
+    curBrightness = (uint8_t)(curBrightness + step);
+    tft.setBrightness(curBrightness);
   }
   if (now - lastPrint > 5000) {
     lastPrint = now;
@@ -806,8 +830,8 @@ void setup() {
   }
   tft.init();
   tft.setRotation(ROTATION);
-  curBrightness = cfg.brightness;
-  tft.setBrightness(cfg.brightness);
+  curBrightness = pctToRaw(cfg.brightPct);
+  tft.setBrightness(curBrightness);
   initColors();
   statusMsg = "WLAN suchen...";
   drawAll();
