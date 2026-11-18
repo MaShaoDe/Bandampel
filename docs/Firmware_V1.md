@@ -120,3 +120,9 @@ Verliert das Gerät das WLAN, versucht es automatisch erneut. Zwischen 2 Versuch
 
 Standard bleibt der ILI9341-Treiber ohne Änderungen. Getestet: `PANEL_ST7789 1` ergibt ein weisses Display, `PANEL_INVERT 1` kehrt alle Farben um, `PANEL_RGB_ORDER 1` vertauscht Rot und Blau. Die Farben sind etwas ungenau (leichter Blaustich), das ist nach Test so belassen.
 
+## Seite Info und Fusszeile
+
+Die Seite «Info» (zuletzt) zeigt WLAN-Name, IP-Adresse, Signalstärke, den Namen im Netz (`bandampel-001.local`), das Alter der Daten und die Laufzeit. Ausblenden mit `#define PAGE_INFO 0` oder im Web-Menü.
+
+Fusszeile: links steht das Alter der Daten («Daten vor 2 h 5 min», aus dem Zeitstempel von HamQSL, nicht die aktuelle Uhrzeit). Rechts steht das WLAN-Symbol: grün mit 1 bis 3 Bögen nach Signalstärke, rot ohne Verbindung. Die Uhrzeit steht nur noch in der Kopfzeile (Ortszeit und UTC).
+

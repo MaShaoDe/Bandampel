@@ -81,6 +81,9 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
+#ifndef PAGE_INFO
+#define PAGE_INFO 1               // Info (WLAN, IP, Signal, Name, Datenalter, Laufzeit)
+#endif
 #ifndef PAGE_SUN
 #define PAGE_SUN 1                // Sonne (Aufgang, Untergang, Grayline)
 #endif
@@ -122,9 +125,10 @@ static uint32_t lastPageChange = 0;
 static String   statusMsg   = "Start";
 static uint32_t nextFetch   = 0;
 static bool     fetchedOnce = false;
+static bool     apActive    = false;   // Notfall-WLAN Bandampel-Setup aktiv (siehe webcfg.h)
 
-enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN };
-static int pageIds[6];
+enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN, PG_INFO };
+static int pageIds[7];
 static int pageCount = 0;
 
 static void buildPages() {
@@ -135,6 +139,7 @@ static void buildPages() {
   if (cfg.pModes)    pageIds[pageCount++] = PG_MODES;
   if (cfg.pLive)     pageIds[pageCount++] = PG_LIVE;
   if (cfg.pDetails)  pageIds[pageCount++] = PG_DETAILS;
+  if (cfg.pInfo)     pageIds[pageCount++] = PG_INFO;
   if (pageCount == 0) pageIds[pageCount++] = PG_OVERVIEW;   // mindestens eine Seite
 }
 
@@ -328,18 +333,70 @@ static void drawHeader() {
   drawClock();
 }
 
+// Alter der Daten aus dem HamQSL-Zeitstempel ("18 Nov 2026 1611 GMT")
+static long daysFromCivil(int y, int m, int d) {
+  y -= m <= 2;
+  long era = (y >= 0 ? y : y - 399) / 400;
+  unsigned yoe = (unsigned)(y - era * 400);
+  unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+  unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+  return era * 146097 + (long)doe - 719468;
+}
+static bool parseUpdated(const String& s, time_t& out) {
+  int d, y, hh, mm;
+  char mon[4] = { 0 };
+  if (sscanf(s.c_str(), "%d %3s %d %2d%2d", &d, mon, &y, &hh, &mm) != 5) return false;
+  const char* M = "JanFebMarAprMayJunJulAugSepOctNovDec";
+  int mi = -1;
+  for (int i = 0; i < 12; i++) if (strncmp(mon, M + i * 3, 3) == 0) mi = i;
+  if (mi < 0) return false;
+  out = (time_t)(daysFromCivil(y, mi + 1, d) * 86400L + hh * 3600L + mm * 60L);
+  return true;
+}
+static String ageShort(long sec) {
+  if (sec < 0) sec = 0;
+  long m = sec / 60;
+  if (m < 1)    return String("<1 min");
+  if (m < 60)   return String(m) + " min";
+  if (m < 1440) return String(m / 60) + " h " + String(m % 60) + " min";
+  return String(m / 1440) + " d";
+}
+static String dataAgeText() {
+  time_t u, now = time(nullptr);
+  if (now > 1700000000 && parseUpdated(solar.updated, u)) return ageShort((long)(now - u));
+  return String("");
+}
+
+// WLAN-Symbol: 3 Baegen, gruen = verbunden (Staerke nach RSSI), rot = keine Verbindung
+static void drawWifiIcon(int cx, int cy, bool ok, int rssi) {
+  int lvl = !ok ? 0 : (rssi >= -60 ? 3 : (rssi >= -72 ? 2 : 1));
+  for (int L = 1; L <= 3; L++) {
+    uint16_t col = !ok ? COL_RED : (L <= lvl ? COL_GREEN : COL_GREY);
+    int r = 3 + L * 4;
+    int px = 0, py = 0;
+    for (int k = 0; k <= 8; k++) {
+      float a = (50 + k * 10) * 0.0174533f;
+      int x = cx + (int)(r * cosf(a)), y = cy - (int)(r * sinf(a));
+      if (k) { tft.drawLine(px, py, x, y, col); tft.drawLine(px, py + 1, x, y + 1, col); }
+      px = x; py = y;
+    }
+  }
+  tft.fillCircle(cx, cy, 2, ok ? COL_GREEN : COL_RED);
+}
+
 static void drawFooter() {
   tft.fillRect(0, 220, 320, 20, COL_BG);
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  String left = haveData ? solar.updated : statusMsg;
+  String left = statusMsg;
+  if (haveData) { String a = dataAgeText(); left = a.length() ? String("Daten vor ") + a : String("Daten OK"); }
   if (left.length() > 20) left = left.substring(0, 20);
   tft.drawString(left, 6, 222);
   tft.setTextColor(autoMode ? COL_DIM : COL_YELLOW, COL_BG);
   tft.drawString(autoMode ? "AUTO" : "HALT", 206, 222);
   tft.setTextColor(COL_DIM, COL_BG);
   bool ok = (WiFi.status() == WL_CONNECTED);
-  tft.fillCircle(262, 230, 5, ok ? COL_GREEN : COL_RED);
+  drawWifiIcon(262, 235, ok, ok ? WiFi.RSSI() : 0);
   char pg[8];
   snprintf(pg, sizeof(pg), "%d/%d", page + 1, pageCount);
   int w = tft.textWidth(pg);
@@ -754,6 +811,36 @@ static void drawPageDetails() {
   drawDetailCard(160, 124, "Rauschen",       solar.noise, "",     d ? levelNoise(solar.noise) : C_UNK, 3, "leise", "mittel", "laut");
 }
 
+// Seite Info: WLAN, IP, Signal, Name im Netz, Alter der Daten, Laufzeit
+static void drawInfoRow(int y, const char* label, const String& val, uint16_t col) {
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString(label, 10, y + 6);
+  tft.setFont(&lgfx::fonts::Font4);
+  tft.setTextColor(col, COL_BG);
+  tft.drawString(val, 310 - tft.textWidth(val), y);
+}
+
+static void drawPageInfo() {
+  bool ok = WiFi.status() == WL_CONNECTED;
+  String ssid = ok ? WiFi.SSID() : (apActive ? String("Bandampel-Setup") : String("getrennt"));
+  if (ssid.length() > 16) ssid = ssid.substring(0, 16);
+  String ip = ok ? WiFi.localIP().toString() : (apActive ? WiFi.softAPIP().toString() : String("--"));
+  int rssi = ok ? WiFi.RSSI() : 0;
+  uint16_t sc = !ok ? COL_RED : (rssi >= -60 ? COL_GREEN : (rssi >= -72 ? COL_YELLOW : COL_RED));
+  String sig = !ok ? String("--") : String(rssi) + " dBm " + (rssi >= -60 ? "gut" : (rssi >= -72 ? "mittel" : "schwach"));
+  String age = haveData ? dataAgeText() : String("");
+  long up = (long)(millis() / 1000UL);
+  String upt = (up >= 86400) ? String(up / 86400) + " d " + String((up % 86400) / 3600) + " h"
+             : (up >= 3600  ? String(up / 3600) + " h " + String((up % 3600) / 60) + " min" : String(up / 60) + " min");
+  drawInfoRow(30,  "WLAN",       ssid, ok ? COL_GREEN : COL_RED);
+  drawInfoRow(60,  "IP-Adresse", ip,   ok || apActive ? COL_TEXT : COL_DIM);
+  drawInfoRow(90,  "Signal",     sig,  sc);
+  drawInfoRow(120, "Name",       cfgHostname() + ".local", COL_TEXT);
+  drawInfoRow(150, "Daten",      age.length() ? String("vor ") + age : String("--"), COL_TEXT);
+  drawInfoRow(180, "Laufzeit",   upt,  COL_TEXT);
+}
+
 static void drawAll() {
   tft.fillScreen(COL_BG);
   drawHeader();
@@ -763,6 +850,7 @@ static void drawAll() {
     case PG_MODES:    drawPageModes();    break;
     case PG_LIVE:     drawPageLive();     break;
     case PG_SUN:      drawPageSun();      break;
+    case PG_INFO:     drawPageInfo();     break;
     default:          drawPageDetails();  break;
   }
   drawFooter();
@@ -950,7 +1038,8 @@ void loop() {
   if (getLocalTime(&t, 0) && t.tm_year > 120 && t.tm_min != lastMin) {
     lastMin = t.tm_min;
     drawClock();
-    if (pageIds[page] == PG_SUN) drawAll();   // Countdown minuetlich auffrischen
+    if (pageIds[page] == PG_SUN || pageIds[page] == PG_INFO) drawAll();   // Countdown, Laufzeit minuetlich auffrischen
+    else drawFooter();                                                    // Alter der Daten
   }
   updateNight();
   delay(20);
