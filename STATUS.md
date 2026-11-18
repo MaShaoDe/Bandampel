@@ -6,6 +6,8 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Repo steht (18.11.2026): README, Lizenzen, Ordner firmware, hardware, docs. Hilfstool `firmware/tools/cyd_id` vorhanden.
 - Phase 1: Board ESP32-2432S028 (CYD, 1x USB-C und 1x Micro-USB). Das Werksprogramm (lvgl-demo) meldet ILI9341, Chip Revision 3, 4MB Flash, Touch XPT2046 (GPIO 36 und 39). Display ist damit ILI9341, Auflösung 320x240 quer.
 - Firmware V1 geschrieben (PR offen, ungetestet): LovyanGFX, WLAN-Liste in secrets.h, HamQSL, 3 Seiten (Übersicht, Bänder, Details), Umschalten per Touch oder BOOT-Taste. Anleitung: docs/Firmware_V1.md.
+- Optik V2 (PR 5, ungetestet): dunkle Karten mit Farbrahmen, 9 Bänder (160m bis 10m) als schmale Balken ohne Text, Tag/Nacht als Symbole, Rufzeichen optional in secrets.h. 160m ist eine Schätzung aus 80m-40m Nacht und K-Index (Vorschlag, offen).
+- Nachtmodus (PR 6, ungetestet): Lichtsensor GPIO 34, Schwelle in secrets.h, ohne Schwelle nur Messwerte. Polarität des Sensors noch nicht gemessen (offen).
 - Port am MacBook: `/dev/cu.wchusbserial110`. Werkzeug: arduino-cli, FQBN `esp32:esp32:esp32`.
 
 ## Als Nächstes
