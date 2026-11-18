@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (c) 2026 FerienBSD aka Marcel Sauder
-# Legt die Tags und Releases v1.0.0 bis v1.18.2 rückwirkend an (je auf dem Merge-Commit des PR).
+# Legt die Tags und Releases v1.0.0 bis v1.18.5 rückwirkend an (je auf dem Merge-Commit des PR).
 # Voraussetzung: gh ist installiert und angemeldet (gh auth login). Einmal ausführen. Bereits vorhandene Tags melden einen Fehler und werden übersprungen.
 # Aufruf im Repository-Ordner: sh tools/releases_anlegen.sh
 
@@ -37,4 +37,7 @@ gh release create v1.17.2 --repo $R --target d92938dbb6a15900af31bd8e0364cfacc68
 gh release create v1.17.3 --repo $R --target 50b4892e93cde6ad310a1ee15622a4154f88434e --title "Bandampel 1.17.3" --latest=false --notes "Changelog, Versionsnummer im Programm, Regel zur Versionszählung. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/29. Alle Versionen: CHANGELOG.md"
 gh release create v1.18.0 --repo $R --target 37018334ce6a5e0683073d6af945d02741f023db --title "Bandampel 1.18.0" --latest=false --notes "Seitenname in der Kopfzeile, klarere Namen im Web-Menü. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/30. Alle Versionen: CHANGELOG.md"
 gh release create v1.18.1 --repo $R --target d573757af991c5b7ef558e6406ccd122054085cb --title "Bandampel 1.18.1" --latest=false --notes "Web-Menü: Rückfrage vor Speichern und neu starten. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/31. Alle Versionen: CHANGELOG.md"
-gh release create v1.18.2 --repo $R --target 6eaedcf6d5423aaa77c12e53c7fd9f469ce88189 --title "Bandampel 1.18.2" --latest --notes "Seitenname auch bei Baender und Details. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/32. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.2 --repo $R --target 6eaedcf6d5423aaa77c12e53c7fd9f469ce88189 --title "Bandampel 1.18.2" --latest=false --notes "Seitenname auch bei Baender und Details. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/32. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.3 --repo $R --target f38536c955d4920a547982edaef740622edea9b3 --title "Bandampel 1.18.3" --latest=false --notes "STATUS aufgeräumt, Release-Skript bis v1.18.2. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/33. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.4 --repo $R --target 264e311b3fe62710b63e025c08d0d676c29e7d97 --title "Bandampel 1.18.4" --latest=false --notes "STATUS: Name Bandampel Firmware. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/34. Alle Versionen: CHANGELOG.md"
+gh release create v1.18.5 --repo $R --target 993d6b2b505a9052779c4f2c4e84c2f7b4db0795 --title "Bandampel 1.18.5" --latest --notes "Seite Info zeigt die Firmware-Version. Pull Request: https://github.com/MaShaoDe/Bandampel/pull/35. Alle Versionen: CHANGELOG.md"
