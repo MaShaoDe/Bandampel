@@ -40,7 +40,7 @@ static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/ME
 #endif
 static const int LDR_PIN  = 34;
 static const int LDR_HYST = 150;
-static const int      PAGES          = 3;
+static const int      PAGES          = 4;
 
 // ---------------- Typen und Zustand ----------------
 enum Cond { C_UNK, C_POOR, C_FAIR, C_GOOD };
@@ -324,6 +324,46 @@ static void drawPageBands() {
   }
 }
 
+// Betriebsart (Vorschlag, noch zu pruefen): HamQSL kennt keine Betriebsarten.
+// CW und Digital (FT8) kommen mit ca. 10 bis 15 dB weniger Signal aus als SSB, daher eine Stufe besser.
+// Bei K >= 5 (gestoert) fuer beide eine Stufe schlechter.
+static Cond stepUp(Cond c)      { return c == C_POOR ? C_FAIR : (c == C_FAIR ? C_GOOD : c); }
+static Cond modeCw(Cond c)      { return c == C_UNK ? c : stepUp(c); }
+static Cond disturbed(Cond c)   { return (c != C_UNK && solar.k.toInt() >= 5) ? stepDown(c) : c; }
+
+static void drawPageModes() {
+  const int X0 = 56, CW = 28, BW = 22, BH = 26;
+  const int Y_CW_D = 48, Y_CW_N = 78, Y_SSB_D = 118, Y_SSB_N = 148;
+  tft.setFont(&lgfx::fonts::Font2);
+  for (int i = 0; i < 9; i++) {
+    int cx = X0 + i * CW + CW / 2;
+    tft.setTextColor(COL_DIM, COL_BG);
+    int tw = tft.textWidth(BAND9_LABELS[i]);
+    tft.drawString(BAND9_LABELS[i], cx - tw / 2, 28);
+    int g = BAND9_GROUP[i];
+    bool est = (g < 0);
+    Cond d = !haveData ? C_UNK : disturbed(est ? est160Day()   : bandDay[g]);
+    Cond n = !haveData ? C_UNK : disturbed(est ? est160Night() : bandNight[g]);
+    drawBand(cx - BW / 2, Y_CW_D,  BW, BH, modeCw(d), est);
+    drawBand(cx - BW / 2, Y_CW_N,  BW, BH, modeCw(n), est);
+    drawBand(cx - BW / 2, Y_SSB_D, BW, BH, d, est);
+    drawBand(cx - BW / 2, Y_SSB_N, BW, BH, n, est);
+  }
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  tft.drawString("CW",  2, Y_CW_D  + 28 - tft.fontHeight() / 2);
+  tft.drawString("SSB", 2, Y_SSB_D + 28 - tft.fontHeight() / 2);
+  drawIcon(1, 42, Y_CW_D  + BH / 2, COL_YELLOW);
+  drawIcon(5, 42, Y_CW_N  + BH / 2, COL_DIM);
+  drawIcon(1, 42, Y_SSB_D + BH / 2, COL_YELLOW);
+  drawIcon(5, 42, Y_SSB_N + BH / 2, COL_DIM);
+  tft.drawFastHLine(8, 108, 304, COL_GREY);
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString("CW inkl. Digital (FT8)", 8, 184);
+  tft.drawString("Faustregel, keine Prognose", 8, 200);
+}
+
 static void drawRow(int y, const char* label, const String& val, const char* unit) {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
@@ -347,6 +387,7 @@ static void drawAll() {
   drawHeader();
   if (page == 0)      drawPageOverview();
   else if (page == 1) drawPageBands();
+  else if (page == 2) drawPageModes();
   else                drawPageDetails();
   drawFooter();
 }
