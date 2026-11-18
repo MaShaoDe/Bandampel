@@ -3,26 +3,25 @@
 Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streichen.
 
 ## Stand
-- Läuft auf dem CYD (ESP32-2432S028, ILI9341, Port `/dev/cu.wchusbserial110`, arduino-cli, FQBN `esp32:esp32:esp32:PartitionScheme=huge_app`, steht in `sketch.yaml`). Stand 18.11.2026.
-- Läuft (am Gerät bestätigt): Seiten Übersicht, Sonne (Bogen, Zeiten, Grayline), Bänder, Betriebsart, Live (WSPR, inkl. 160m), Details (4 Farbkarten), Info. Auto-Wechsel, Halten per langem Druck, WLAN-Symbol und Datenalter in der Fusszeile.
-- Läuft: Web-Menü mit 6 Reitern (bandampel-001.local), Einstellungen im Flash (Vorrang vor secrets.h), Notfall-WLAN Bandampel-Setup nach 60 s ohne Netz, WLAN-Scan, Helligkeit in Prozent (stufenlos nach Lichtsensor).
-- Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt, ST7789 weiss, INVERT 1 negativ, RGB_ORDER 1 vertauscht Rot und Blau.
-- Ungetestet: Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen.
-- Getestet: BOOT-Taste 10 s, Countdown ab 5 s und Abbruch durch Loslassen funktionieren. Der volle Reset bei 10 s ist noch nicht ausprobiert. Die andere Taste (RESET) startet das Gerät nur neu.
-- Neu (ungetestet): Seitenname in der Kopfzeile (Ampel, Baender, Modus, Live, Details, Sonne, Info, Lizenz), gleiche Namen im Web-Menü. Rückfrage vor dem Speichern im Web-Menü. Version 1.18.2.
-- Läuft: Seite Über (Urheber, Lizenzen, Datenquellen, QR-Code zu GitHub) auf dem Display und als Reiter im Web-Menü, Version 1.0.0 fest im Code.
+- Firmware Version 1.18.3 läuft auf dem CYD (ESP32-2432S028, ILI9341, Port `/dev/cu.wchusbserial110`, arduino-cli, FQBN `esp32:esp32:esp32:PartitionScheme=huge_app`, steht in `sketch.yaml`). Stand 18.11.2026.
+- Läuft (am Gerät bestätigt): 8 Seiten mit Namen in der Kopfzeile (Ampel, Sonne, Baender, Modus, Live, Details, Info, Lizenz), alle im Web-Menü abwählbar, gleiche Reihenfolge wie am Gerät. Auto-Wechsel, Halten per langem Druck, WLAN-Symbol, Datenalter.
+- Läuft: Web-Menü mit 7 Reitern (bandampel-001.local), Rückfrage vor «Speichern und neu starten», Einstellungen im Flash (Vorrang vor secrets.h), Notfall-WLAN Bandampel-Setup nach 60 s ohne Netz, WLAN-Scan, Helligkeit in Prozent (stufenlos nach Lichtsensor).
+- Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt.
+- BOOT-Taste 10 s: Countdown und Abbruch getestet, voller Reset noch nicht ausprobiert. Ungetestet: Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen.
 - Einstufungen (Live-Schwellen, Details-Karten, CW und SSB, Grayline) sind Faustregeln (Vorschlag), keine Prognose.
+- Beobachtung (offen): Das Menü wird nur zwischen Datenabrufen bedient (bis 20 s Wartezeit). Nach «Speichern» etwa 30 s warten. Umbau erst auf Wunsch.
 
 ## Als Nächstes
+- Phase 1 (Firmware auf dem CYD) gilt als fertig, Einfrieren nach dem Test der Kopfzeile (Vorschlag).
+- Neuer Chat: Spannung, Strom, Akku und Stabilisierung. Akku vorhanden: XMY 103665, 3,7 V, 3000 mAh, 11,1 Wh, mit Schutzschaltung. Danach 3D-gedrucktes Gehäuse. Weiter mit eigenem Board «Bandampel Neo» (offen, Repo-Form offen).
 - Live-Schwellen kalibrieren: Fotos der Live-Seite morgens, abends, nachts (offen, abwarten).
-- Phase 2: Drehgeber (GPIO 22, 27, 35) und Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD).
+- Name der Firmware: offen. Vorschlag: «Bandampel Firmware» mit Versionsnummer.
 
 ## Entscheide (Marcel Sauder)
 - 18.11.2026: Repo heisst Bandampel. Doku Deutsch zuerst, kurze englische Zusammenfassung. Firmware GPL-3.0-only.
-- 18.11.2026: SSB oben, konfigurierbar. Prognose und gemessene Daten getrennt, 160m nur live. Alle Seiten schaltbar.
-- 18.11.2026: Nur privat, zum Materialpreis, Bastlerprojekt (siehe README). Kontakt über GitHub und Rufzeichen, keine Personendaten im Repository.
+- 18.11.2026: Nur privat, zum Materialpreis, Bastlerprojekt (siehe README). Keine Personendaten im Repository.
 
 ## Stolpersteine
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
-- Neu (PR offen): Versionsbaum 1.0.0 bis 1.18.2 in CHANGELOG.md, Tags und Releases v1.0.0 bis v1.17.2: Marcel führt `tools/releases_anlegen.sh` aus (offen). Handbuch liegt in docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).
+- Marcel führt `sh tools/releases_anlegen.sh` aus (Releases v1.0.0 bis v1.18.2, offen). Handbuch: docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).
