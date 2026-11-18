@@ -44,7 +44,7 @@ Bandprognose: HamQSL (N0NBH), Abruf alle 30 Minuten.
 
 ## Betriebsart (CW und SSB)
 
-HamQSL liefert keine Prognose pro Betriebsart. Die Seite ist eine Faustregel (Vorschlag): CW und Digital (FT8) kommen mit ca. 10 bis 15 dB weniger Signal aus als SSB und werden deshalb eine Stufe besser bewertet. Bei K ab 5 (gestört) werden beide eine Stufe schlechter bewertet. 160m ist wie auf der Bänderseite eine Schätzung (hohl).
+HamQSL liefert keine Prognose pro Betriebsart. Die Seite ist eine Faustregel (Vorschlag): CW und Digital (FT8) kommen mit ca. 10 bis 15 dB weniger Signal aus als SSB und werden deshalb eine Stufe besser bewertet. Bei K ab 5 (gestört) werden beide eine Stufe schlechter bewertet.
 
 ## Rufzeichen
 
@@ -59,3 +59,24 @@ In `secrets.h`: `#define CALLSIGN "HE9QCU"`. Es steht dann in der Kopfzeile alle
 ## Reihenfolge SSB und CW
 
 Standard: SSB oben, CW unten. Umkehren in `secrets.h` mit `#define SSB_FIRST 0`.
+
+## Seiten ein- und ausschalten
+
+Alle Seiten sind einzeln schaltbar, in `secrets.h` (1 = an, 0 = aus, Standard alle an):
+
+```cpp
+#define PAGE_OVERVIEW 1   // Übersicht
+#define PAGE_FORECAST 1   // Prognose Bänder (80m bis 10m)
+#define PAGE_MODES 1      // Prognose Betriebsart
+#define PAGE_LIVE 1       // Live-Aktivität (inkl. 160m)
+#define PAGE_DETAILS 1    // Details
+```
+
+Auf der Seite Betriebsart lassen sich SSB und CW einzeln schalten: `#define SHOW_SSB 0` oder `#define SHOW_CW 0`. Ist nur eine Betriebsart an, werden die Balken grösser. Sind alle Seiten aus, bleibt die Übersicht. Ist `PAGE_LIVE` aus, wird wspr.live auch nicht abgefragt.
+
+## Live-Aktivität (WSPR)
+
+- 160m liefert HamQSL nicht. Die Live-Seite zeigt deshalb **gemessene Aktivität** aller 9 Bänder (160m bis 10m): Anzahl WSPR-Spots der letzten 30 Minuten, bei denen Sender oder Empfänger in der Region liegt (Standard Locator-Felder JN und JO).
+- Quelle: wspr.live (Abfrage alle 15 Minuten, eine kleine Abfrage für alle Bänder). Der Dienst wird von Freiwilligen betrieben, bitte nicht öfter abfragen.
+- Region und Zeitfenster: `#define LIVE_FIELDS "'JN','JO'"` und `#define LIVE_MINUTES 30`.
+- Es ist Aktivität, keine Prognose, und sagt nichts über Betriebsart. Die Farbschwellen (rot, gelb, grün) pro Band sind ein Vorschlag und müssen im Betrieb eingestellt werden (`LIVE_FAIR` und `LIVE_GOOD` in `bandampel.ino`). Die gemessenen Zahlen stehen im seriellen Monitor (`wspr.live (...)`).
