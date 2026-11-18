@@ -5,14 +5,14 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 ## Stand
 - Läuft auf dem CYD (ESP32-2432S028, ILI9341, Port `/dev/cu.wchusbserial110`, arduino-cli, FQBN `esp32:esp32:esp32`). Stand 18.11.2026.
 - Läuft: Übersicht, Prognose Bänder, Prognose Betriebsart (SSB oben, CW unten), Details. Auto-Wechsel alle 10 s, langer Druck schaltet auf Halten. Kopfzeile: Rufzeichen, Zürcher Zeit und UTC. WLAN-Liste und Rufzeichen in secrets.h.
-- Neu (PR offen, ungetestet): Live-Seite mit gemessener WSPR-Aktivität aller 9 Bänder inkl. 160m (wspr.live, Abruf alle 15 min, Region JN und JO). Prognose-Seiten ohne 160m. Alle Seiten und SSB/CW einzeln in secrets.h schaltbar.
-- Abfrage geprüft: `db1.wspr.live/?query=` liefert Bandcodes (1=160m, 3=80m, 7=40m, 10=30m, 14=20m, 18=17m, 21=15m, 24=12m, 28=10m). Der Regionsfilter (JN, JO) ist noch nicht verifiziert, Prüfung am Gerät über den seriellen Monitor.
+- Läuft und getestet: Live-Seite mit gemessener WSPR-Aktivität aller 9 Bänder inkl. 160m (wspr.live, Abruf alle 15 min, Region JN und JO). Prognose-Seiten ohne 160m. Alle Seiten und SSB/CW einzeln in secrets.h schaltbar.
+- Abfrage geprüft: `db1.wspr.live/?query=` liefert Bandcodes (1=160m, 3=80m, 7=40m, 10=30m, 14=20m, 18=17m, 21=15m, 24=12m, 28=10m). Der Regionsfilter (JN, JO) funktioniert (Zahlen 30 bis 58 Prozent der Weltzahlen).
 - Farbschwellen der Live-Seite sind geschätzt (Vorschlag), nach Beobachtung einstellen. CW und SSB sind eine Faustregel (Vorschlag, offen).
-- Nachtmodus: Sensor GPIO 34, dunkel = grosser Wert, Schwelle 400 in secrets.h. Test im Dunkeln offen.
+- Nachtmodus: Sensor GPIO 34, dunkel = grosser Wert, Schwelle 400 in secrets.h. Getestet, funktioniert. Empfindlichkeit über LDR_THRESHOLD und LDR_HYST in secrets.h.
 
 ## Als Nächstes
-- Marcel: Live-Seite testen (serielle Ausgabe `wspr.live`), Haus-WLAN freigeben (MAC `a4:f0:0f:5b:e9:9c`), Nachtmodus testen.
-- Offen: Schwellen der Live-Seite einstellen. Sonnenauf- und -untergang per Locator JN47. Einstellungsseite für WLAN per Browser. Farben Türkis statt Grün und Rosa statt Rot (rgb_order oder invert in lgfx_cyd.h).
+- Marcel: Haus-WLAN freigeben (MAC `a4:f0:0f:5b:e9:9c`), Live-Seite morgens, abends und nachts fotografieren (Schwellen einstellen), Farbtest mit `PANEL_ST7789 1`.
+- Offen: Schwellen der Live-Seite einstellen. Sonnenauf- und -untergang per Locator JN47. Einstellungsseite für WLAN per Browser. Farben Türkis statt Grün und Rosa statt Rot: Test mit PANEL_ST7789, PANEL_INVERT, PANEL_RGB_ORDER in secrets.h (PR offen). Konfigurator im Browser (Web-Menü, Einstellungen im Flash) beschlossen, noch nicht gebaut.
 - Phase 2: Drehgeber (GPIO 22, 27, 35) und Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD).
 
 ## Entscheide (Marcel Sauder)
