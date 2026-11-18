@@ -25,4 +25,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Gemergt, ungetestet: Web-Menü nach Speichern auf neutraler Seite (kein doppeltes Senden bei Reload).
 - Gemergt, ungetestet: Werkseinstellung verlangt Bestätigung (Menü-Passwort, sonst 000000).
 - Neu (PR offen, ungetestet): Helligkeit in Prozent, 3 Modi inkl. stufenlos nach Lichtsensor, Kalibrierknöpfe im Menü (Vorgabe Tag 60, Nacht 10). Details-Seite als 4 Karten mit Farbrahmen (Einstufung ist Vorschlag).
-- Neu (PR offen, ungetestet): Seite Info (WLAN, IP, Signal, Name, Datenalter, Laufzeit), WLAN-Symbol in der Fusszeile, Datenalter statt Zeitstempel.
+- Neu (PR offen, ungetestet): BOOT-Taste 10 s halten setzt die Einstellungen zurück (Countdown ab 5 s, danach gelten die Werte aus secrets.h). Offen: Web-GUI Redesign und WLAN-Scan im Menü.
