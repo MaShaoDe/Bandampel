@@ -14,6 +14,8 @@ cp secrets.h.example secrets.h   # WLAN-Daten eintragen
 
 ## Bauen und hochladen
 
+Diese Seite beschreibt den Weg mit `arduino-cli`. Mit der Arduino IDE (mit Maus) geht es auch, siehe [Nachbauen.md](Nachbauen.md).
+
 ```bash
 arduino-cli compile firmware/bandampel && arduino-cli upload -p /dev/cu.wchusbserial110 firmware/bandampel
 arduino-cli monitor -p /dev/cu.wchusbserial110 -c baudrate=115200
