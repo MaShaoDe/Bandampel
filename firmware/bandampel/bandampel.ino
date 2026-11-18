@@ -25,6 +25,20 @@ static const uint32_t FETCH_OK_MS    = 30UL * 60UL * 1000UL;
 static const uint32_t FETCH_RETRY_MS = 2UL * 60UL * 1000UL;
 static const char*    FEED_URL       = "https://www.hamqsl.com/solarxml.php";
 static const int      BTN_PIN       = 0;
+
+// Nachtmodus per Lichtsensor (CYD: GPIO 34). Einstellungen koennen in secrets.h ueberschrieben werden.
+// LDR_THRESHOLD = -1: aus (nur Messwerte auf der seriellen Schnittstelle).
+#ifndef LDR_THRESHOLD
+#define LDR_THRESHOLD -1
+#endif
+#ifndef LDR_NIGHT_IS_HIGH
+#define LDR_NIGHT_IS_HIGH true     // true: grosser Messwert = dunkel
+#endif
+#ifndef BRIGHTNESS_NIGHT
+#define BRIGHTNESS_NIGHT 25        // 0 bis 255
+#endif
+static const int LDR_PIN  = 34;
+static const int LDR_HYST = 150;
 static const int      PAGES          = 3;
 
 // ---------------- Typen und Zustand ----------------
@@ -339,6 +353,34 @@ static bool pageSwitchRequested() {
   return false;
 }
 
+// ---------------- Nachtmodus ----------------
+static uint8_t curBrightness = BRIGHTNESS;
+
+static void updateNight() {
+  static uint32_t lastRead = 0, lastPrint = 0;
+  static bool night = false;
+  uint32_t now = millis();
+  if (now - lastRead < 1000) return;
+  lastRead = now;
+  long sum = 0;
+  for (int i = 0; i < 8; i++) sum += analogRead(LDR_PIN);
+  int v = (int)(sum / 8);
+  if (LDR_THRESHOLD >= 0) {
+    int dark = LDR_NIGHT_IS_HIGH ? (v - LDR_THRESHOLD) : (LDR_THRESHOLD - v);   // positiv = dunkler als Schwelle
+    if (!night && dark > LDR_HYST) night = true;
+    else if (night && dark < -LDR_HYST) night = false;
+    uint8_t target = night ? BRIGHTNESS_NIGHT : BRIGHTNESS;
+    if (target != curBrightness) {
+      curBrightness = target;
+      tft.setBrightness(target);
+    }
+  }
+  if (now - lastPrint > 5000) {
+    lastPrint = now;
+    Serial.printf("LDR roh: %d  Nacht: %s\n", v, night ? "ja" : "nein");
+  }
+}
+
 // ---------------- Setup und Loop ----------------
 void setup() {
   Serial.begin(115200);
@@ -406,5 +448,6 @@ void loop() {
     lastMin = t.tm_min;
     drawClock();
   }
+  updateNight();
   delay(20);
 }
