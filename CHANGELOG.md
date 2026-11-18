@@ -8,7 +8,8 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.18.17 | 2026-11-19 | dieser PR | Tabelle der 8 Seiten im README und im Handbuch |
+| 1.18.18 | 2026-11-19 | dieser PR | Bild 10_web_handy: Web-Menü auf dem Handy |
+| 1.18.17 | 2026-11-19 | [#47](https://github.com/MaShaoDe/Bandampel/pull/47) | Tabelle der 8 Seiten im README und im Handbuch |
 | 1.18.16 | 2026-11-19 | [#46](https://github.com/MaShaoDe/Bandampel/pull/46) | Handbuch Kapitel 9: Arduino IDE und arduino-cli, Verweis auf Nachbauen.md |
 | 1.18.15 | 2026-11-18 | [#45](https://github.com/MaShaoDe/Bandampel/pull/45) | Teaser-Bild im README ersetzt (Fehler im ersten Bild) |
 | 1.18.14 | 2026-11-18 | [#44](https://github.com/MaShaoDe/Bandampel/pull/44) | Teaser- und Header-Bild im README |

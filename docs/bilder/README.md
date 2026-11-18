@@ -17,7 +17,7 @@ Hier liegen die Fotos und Bildschirmfotos. Die Namen sind im [Benutzerhandbuch](
 | `07_details.jpg` | Seite 6 Details |
 | `08_info.jpg` | Seite 7 Info |
 | `09_ueber.jpg` | Seite 8 Lizenz |
-| `10_web_handy.jpg` | |
+| `10_web_handy.jpg` | Web-Menü auf dem Handy, Reiter Status, Anzeige und Funk |
 | `11_web_status.png` | Web-Menü, Reiter Status |
 | `12_web_anzeige.png` | Web-Menü, Reiter Anzeige |
 | `13_web_helligkeit.png` | Web-Menü, Reiter Helligkeit |
