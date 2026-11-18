@@ -34,3 +34,10 @@ Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A,
 ## Quelle
 
 Bandprognose: HamQSL (N0NBH), Abruf alle 30 Minuten.
+
+## Nachtmodus einstellen
+
+1. Firmware hochladen, Monitor öffnen: Alle 5 Sekunden erscheint `LDR roh: <Wert>`.
+2. Wert bei Tageslicht notieren, dann den Lichtsensor (kleiner Fotowiderstand neben dem Display) mit dem Finger abdecken und den Wert im Dunkeln notieren.
+3. In `secrets.h` die Mitte als `LDR_THRESHOLD` eintragen. Wird der Wert im Dunkeln kleiner, zusätzlich `#define LDR_NIGHT_IS_HIGH false`.
+4. Neu hochladen. Im Dunkeln wird die Helligkeit auf `BRIGHTNESS_NIGHT` gesenkt.
