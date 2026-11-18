@@ -1,0 +1,5 @@
+# Zugangsdaten, nie committen
+secrets.h
+
+# Build
+build/
