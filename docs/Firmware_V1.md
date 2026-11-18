@@ -81,3 +81,7 @@ Auf der Seite Betriebsart lassen sich SSB und CW einzeln schalten: `#define SHOW
 - Quelle: wspr.live (Abfrage alle 15 Minuten, eine kleine Abfrage für alle Bänder). Der Dienst wird von Freiwilligen betrieben, bitte nicht öfter abfragen.
 - Region und Zeitfenster: `#define LIVE_FIELDS "'JN','JO'"` und `#define LIVE_MINUTES 30`.
 - Es ist Aktivität, keine Prognose, und sagt nichts über Betriebsart. Die Farbschwellen (rot, gelb, grün) pro Band sind ein Vorschlag und müssen im Betrieb eingestellt werden (`LIVE_FAIR` und `LIVE_GOOD` in `bandampel.ino`). Die gemessenen Zahlen stehen im seriellen Monitor (`wspr.live (...)`).
+
+## Sonnenaufgang und Sonnenuntergang
+
+Auf der Seite «Bänder» steht unten «Sonne auf HH:MM unter HH:MM» in Ortszeit (Zürich, mit Sommerzeit). Die Zeile Tag (Sonne) oder Nacht (Mond) ist hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), es braucht keine Datenquelle. Standort in `secrets.h` mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), ausblenden mit `#define SHOW_SUN 0`. Vor der Zeitsynchronisation steht «warte auf Uhrzeit».
