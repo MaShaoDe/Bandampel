@@ -133,3 +133,7 @@ Das Menü hat 6 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige
 
 «Netze suchen» im Reiter WLAN listet die gefundenen Netze zur Auswahl in den Namensfeldern, so werden Tippfehler bei Gross und Kleinschreibung vermieden. Das Suchen kann die Verbindung kurz stören.
 
+## Seite Über
+
+Die letzte Seite zeigt Version, Urheber (`FerienBSD aka Marcel Sauder`), Rufzeichen, die 3 Lizenzen (Firmware GPL-3.0-only, Hardware CERN-OHL-P-2.0, Doku CC-BY-4.0), die Datenquellen und einen QR-Code zum GitHub-Projekt. Im Web-Menü gibt es dazu den Reiter «Über» mit denselben Angaben und einem Link. Die Texte stehen fest im Code (`FW_VERSION`, `FW_URL`, `bandampel.ino` und `webcfg.h`) und sind im Menü nicht änderbar. Die Seite auf dem Display lässt sich wie die anderen mit `PAGE_ABOUT` oder im Menü ausblenden, der Reiter im Web-Menü bleibt immer. Kontakt: Rufzeichen und GitHub, keine Personendaten im Repository.
+
