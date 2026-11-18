@@ -9,7 +9,8 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt, ST7789 weiss, INVERT 1 negativ, RGB_ORDER 1 vertauscht Rot und Blau.
 - Ungetestet: Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen.
 - Getestet: BOOT-Taste 10 s, Countdown ab 5 s und Abbruch durch Loslassen funktionieren. Der volle Reset bei 10 s ist noch nicht ausprobiert. Die andere Taste (RESET) startet das Gerät nur neu.
-- Neu (PR offen, ungetestet): Seite Über (Urheber, Lizenzen, Datenquellen, QR-Code zu GitHub) auf dem Display und als Reiter im Web-Menü, Version 1.0.0 fest im Code.
+- Neu (ungetestet): Seitenname in der Kopfzeile (Ampel, Baender, Modus, Live, Details, Sonne, Info, Lizenz), gleiche Namen im Web-Menü. Version 1.18.0.
+- Läuft: Seite Über (Urheber, Lizenzen, Datenquellen, QR-Code zu GitHub) auf dem Display und als Reiter im Web-Menü, Version 1.0.0 fest im Code.
 - Einstufungen (Live-Schwellen, Details-Karten, CW und SSB, Grayline) sind Faustregeln (Vorschlag), keine Prognose.
 
 ## Als Nächstes
@@ -24,4 +25,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 ## Stolpersteine
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
-- Neu (PR offen): Versionsbaum 1.0.0 bis 1.17.3 in CHANGELOG.md, Tags und Releases v1.0.0 bis v1.17.2: Marcel führt `tools/releases_anlegen.sh` aus (offen). Handbuch liegt in docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).
+- Neu (PR offen): Versionsbaum 1.0.0 bis 1.18.0 in CHANGELOG.md, Tags und Releases v1.0.0 bis v1.17.2: Marcel führt `tools/releases_anlegen.sh` aus (offen). Handbuch liegt in docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).

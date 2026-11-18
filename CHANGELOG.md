@@ -8,7 +8,8 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.17.3 | 2026-11-18 | dieser PR | Changelog, Versionsnummer im Programm, Regel zur Versionszählung |
+| 1.18.0 | 2026-11-18 | dieser PR | Seitenname in der Kopfzeile, klarere Namen der Seiten im Web-Menü |
+| 1.17.3 | 2026-11-18 | [#29](https://github.com/MaShaoDe/Bandampel/pull/29) | Changelog, Versionsnummer im Programm, Regel zur Versionszählung |
 | 1.17.2 | 2026-11-18 18:55 | [#28](https://github.com/MaShaoDe/Bandampel/pull/28) | Benutzerhandbuch |
 | 1.17.1 | 2026-11-18 18:51 | [#27](https://github.com/MaShaoDe/Bandampel/pull/27) | STATUS: BOOT-Taste getestet |
 | 1.17.0 | 2026-11-18 18:45 | [#22](https://github.com/MaShaoDe/Bandampel/pull/22) | BOOT-Taste 10 Sekunden: Werkseinstellung |
