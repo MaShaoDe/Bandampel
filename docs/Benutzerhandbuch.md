@@ -127,7 +127,7 @@ Bei den Balken steht die Anzahl der Meldungen. Die Region ist standardmässig Mi
 
 ### Seite 7: Info
 
-Die technische Seite für Neugierige: WLAN-Name, IP-Adresse, Signalstärke, der Name des Geräts im Netz, das Alter der Daten und die Laufzeit seit dem Einschalten. Praktisch, wenn du das Web-Menü öffnen willst und die Adresse suchst.
+Die technische Seite für Neugierige: ganz oben die Firmware-Version (die Nummer brauchst du, wenn du Hilfe suchst), dann WLAN-Name, IP-Adresse, Signalstärke, der Name des Geräts im Netz, das Alter der Daten und die Laufzeit seit dem Einschalten. Praktisch, wenn du das Web-Menü öffnen willst und die Adresse suchst.
 
 ![Seite Info](bilder/08_info.jpg)
 

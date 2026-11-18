@@ -81,7 +81,7 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
-#define FW_VERSION "1.18.4"         // Firmware-Version (fest im Code)
+#define FW_VERSION "1.18.5"         // Firmware-Version (fest im Code)
 #define FW_URL "https://github.com/MaShaoDe/Bandampel"
 #ifndef PAGE_ABOUT
 #define PAGE_ABOUT 1              // Ueber (Urheber, Lizenz, Kontakt, QR-Code)
@@ -829,10 +829,12 @@ static void drawPageDetails() {
 static void drawInfoRow(int y, const char* label, const String& val, uint16_t col) {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString(label, 10, y + 6);
+  tft.drawString(label, 10, y + 4);
   tft.setFont(&lgfx::fonts::Font4);
+  tft.setTextSize(0.8f);                          // eine Stufe kleiner, damit 7 Zeilen passen
   tft.setTextColor(col, COL_BG);
   tft.drawString(val, 310 - tft.textWidth(val), y);
+  tft.setTextSize(1.0f);
 }
 
 static void drawPageInfo() {
@@ -847,12 +849,13 @@ static void drawPageInfo() {
   long up = (long)(millis() / 1000UL);
   String upt = (up >= 86400) ? String(up / 86400) + " d " + String((up % 86400) / 3600) + " h"
              : (up >= 3600  ? String(up / 3600) + " h " + String((up % 3600) / 60) + " min" : String(up / 60) + " min");
-  drawInfoRow(30,  "WLAN",       ssid, ok ? COL_GREEN : COL_RED);
-  drawInfoRow(60,  "IP-Adresse", ip,   ok || apActive ? COL_TEXT : COL_DIM);
-  drawInfoRow(90,  "Signal",     sig,  sc);
-  drawInfoRow(120, "Name",       cfgHostname() + ".local", COL_TEXT);
-  drawInfoRow(150, "Daten",      age.length() ? String("vor ") + age : String("--"), COL_TEXT);
-  drawInfoRow(180, "Laufzeit",   upt,  COL_TEXT);
+  drawInfoRow(30,  "Firmware",   String(FW_VERSION), COL_YELLOW);
+  drawInfoRow(57,  "WLAN",       ssid, ok ? COL_GREEN : COL_RED);
+  drawInfoRow(84,  "IP-Adresse", ip,   ok || apActive ? COL_TEXT : COL_DIM);
+  drawInfoRow(111, "Signal",     sig,  sc);
+  drawInfoRow(138, "Name",       cfgHostname() + ".local", COL_TEXT);
+  drawInfoRow(165, "Daten",      age.length() ? String("vor ") + age : String("--"), COL_TEXT);
+  drawInfoRow(192, "Laufzeit",   upt,  COL_TEXT);
 }
 
 // Seite Ueber: Urheber, Lizenz, Kontakt (fest im Code, nicht aenderbar)
