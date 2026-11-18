@@ -1,6 +1,6 @@
 # Firmware V1 (CYD)
 
-Status: ungetestet, am Gerät zu prüfen.
+Status: läuft am Gerät (CYD). Bedienung und Funktionsumfang: [Benutzerhandbuch](Benutzerhandbuch.md).
 
 ## Einrichten (einmalig)
 
@@ -23,11 +23,11 @@ Die Datei `firmware/bandampel/sketch.yaml` setzt das Board (`esp32:esp32:esp32`)
 
 ## Bedienung
 
-Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A, Sunspots), Bänder (Tag und Nacht), Betriebsart (CW und SSB), Details.
+Seite wechseln: Display antippen oder BOOT-Taste. 8 Seiten: Übersicht, Sonne, Bänder, Betriebsart, Live, Details, Info, Über. Ausführlich im [Benutzerhandbuch](Benutzerhandbuch.md).
 
 ## Anpassen
 
-- Zeit: Hauptuhr in Zürcher Zeit (MEZ/MESZ, automatische Sommerzeit), daneben klein die UTC-Zeit mit Z. Andere Zeitzone: `TZ_ZURICH` in `bandampel.ino` ändern.
+- Zeit: Hauptuhr in Zürcher Zeit (MEZ/MESZ, automatische Sommerzeit), daneben klein die UTC-Zeit mit Z. Andere Zeitzone: im Web-Menü (Reiter Funk) oder mit `TZ_DEFAULT` in `secrets.h`.
 - Bild gedreht: `ROTATION` in `bandampel.ino` von 1 auf 3.
 - Farbstich: Beim CYD mit 2 USB-Anschlüssen hat sich keine Einstellung bewährt, der Standard bleibt (siehe Abschnitt «Anzeige-Treiber» unten). Zum Ausprobieren stehen `PANEL_ST7789`, `PANEL_INVERT` und `PANEL_RGB_ORDER` in `secrets.h` bereit.
 - Nachtmodus: Empfindlichkeit über `LDR_THRESHOLD` (Schwelle) und `LDR_HYST` (Toleranz, Standard 150) in `secrets.h`.

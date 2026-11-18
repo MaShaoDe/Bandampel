@@ -24,3 +24,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 ## Stolpersteine
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
+- Neu (PR offen): Benutzerhandbuch (docs/Benutzerhandbuch.md). Marcel legt die Fotos unter docs/bilder/ ab (Namen siehe docs/bilder/README.md).
