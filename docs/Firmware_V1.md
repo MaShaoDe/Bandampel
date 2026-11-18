@@ -15,10 +15,11 @@ cp secrets.h.example secrets.h   # WLAN-Daten eintragen
 ## Bauen und hochladen
 
 ```bash
-arduino-cli compile --fqbn esp32:esp32:esp32 firmware/bandampel
-arduino-cli upload -p /dev/cu.wchusbserial110 --fqbn esp32:esp32:esp32 firmware/bandampel
+arduino-cli compile firmware/bandampel && arduino-cli upload -p /dev/cu.wchusbserial110 firmware/bandampel
 arduino-cli monitor -p /dev/cu.wchusbserial110 -c baudrate=115200
 ```
+
+Die Datei `firmware/bandampel/sketch.yaml` setzt das Board (`esp32:esp32:esp32`) und die Flash-Aufteilung «Huge APP» (3 MB für das Programm, ohne OTA). Mit der Standard-Aufteilung (1,3 MB) ist der Sketch zu gross und das Kompilieren bricht mit «Textbereich überschreitet den verfügbaren Platz» ab. Gibst du `--fqbn` selbst an, ergänze `:PartitionScheme=huge_app`.
 
 ## Bedienung
 
@@ -125,6 +126,16 @@ Standard bleibt der ILI9341-Treiber ohne Änderungen. Getestet: `PANEL_ST7789 1`
 Die Seite «Info» (zuletzt) zeigt WLAN-Name, IP-Adresse, Signalstärke, den Namen im Netz (`bandampel-001.local`), das Alter der Daten und die Laufzeit. Ausblenden mit `#define PAGE_INFO 0` oder im Web-Menü.
 
 Fusszeile: links steht das Alter der Daten («Daten vor 2 h 5 min», aus dem Zeitstempel von HamQSL, nicht die aktuelle Uhrzeit). Rechts steht das WLAN-Symbol: grün mit 1 bis 3 Bögen nach Signalstärke, rot ohne Verbindung. Die Uhrzeit steht nur noch in der Kopfzeile (Ortszeit und UTC).
+
+## Web-Menü mit Reitern
+
+Das Menü hat 6 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige (Seiten, Seitenwechsel, SSB/CW), Helligkeit (Modus, Prozent, Lichtsensor mit Kalibrierknöpfen), WLAN (Liste, Netze suchen, Pause), Funk (Rufzeichen, Zeitzone, Standort, Live-Schwellen), System (Gerätenummer, Menü-Passwort, Werkseinstellung). Das Passwort steht bewusst zuletzt. Der Knopf «Speichern und neu starten» ist unten fest eingeblendet und speichert alle Reiter auf einmal. Das Layout passt sich Handy hoch und quer sowie grossen Bildschirmen an.
+
+«Netze suchen» im Reiter WLAN listet die gefundenen Netze zur Auswahl in den Namensfeldern, so werden Tippfehler bei Gross und Kleinschreibung vermieden. Das Suchen kann die Verbindung kurz stören.
+
+## Seite Über
+
+Die letzte Seite zeigt Version, Urheber (`FerienBSD aka Marcel Sauder`), Rufzeichen, die 3 Lizenzen (Firmware GPL-3.0-only, Hardware CERN-OHL-P-2.0, Doku CC-BY-4.0), die Datenquellen und einen QR-Code zum GitHub-Projekt. Im Web-Menü gibt es dazu den Reiter «Über» mit denselben Angaben und einem Link. Die Texte stehen fest im Code (`FW_VERSION`, `FW_URL`, `bandampel.ino` und `webcfg.h`) und sind im Menü nicht änderbar. Die Seite auf dem Display lässt sich wie die anderen mit `PAGE_ABOUT` oder im Menü ausblenden, der Reiter im Web-Menü bleibt immer. Kontakt: Rufzeichen und GitHub, keine Personendaten im Repository.
 
 ## Notausgang: BOOT-Taste 10 Sekunden
 
