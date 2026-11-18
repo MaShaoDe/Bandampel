@@ -24,4 +24,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 ## Stolpersteine
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
-- Neu (PR offen): Versionsbaum 1.0.0 bis 1.17.3 in CHANGELOG.md, Tags und Releases v1.0.0 bis v1.17.2 angelegt. Handbuch liegt in docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).
+- Neu (PR offen): Versionsbaum 1.0.0 bis 1.17.3 in CHANGELOG.md, Tags und Releases v1.0.0 bis v1.17.2: Marcel führt `tools/releases_anlegen.sh` aus (offen). Handbuch liegt in docs/Benutzerhandbuch.md, Fotos fehlen noch (docs/bilder/).

@@ -4,7 +4,7 @@
 
 Alle Versionen von Bandampel (CYD-Ausführung), neueste zuerst. Die Zeiten sind UTC.
 
-Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fehlerbehebung, eine kleine Anpassung oder reine Doku erhöht die letzte Zahl (1.5.0 zu 1.5.1). Jeder gemergte Pull Request bekommt eine Version, ausser dem Projektgerüst (PR 1: CLAUDE.md und STATUS.md). Die Version steht in `bandampel.ino` (`FW_VERSION`) und wird auf der Seite «Über» und im Web-Menü angezeigt. Alle Versionen entstanden am 18.11.2026 und sind nachträglich in der Reihenfolge der Merges nummeriert. Sie tragen als Tag `v1.x.y` auf dem jeweiligen Merge-Commit.
+Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fehlerbehebung, eine kleine Anpassung oder reine Doku erhöht die letzte Zahl (1.5.0 zu 1.5.1). Jeder gemergte Pull Request bekommt eine Version, ausser dem Projektgerüst (PR 1: CLAUDE.md und STATUS.md). Die Version steht in `bandampel.ino` (`FW_VERSION`) und wird auf der Seite «Über» und im Web-Menü angezeigt. Alle Versionen entstanden am 18.11.2026 und sind nachträglich in der Reihenfolge der Merges nummeriert. Tag und Release `v1.x.y` liegen auf dem jeweiligen Merge-Commit. Marcel Sauder legt sie mit `tools/releases_anlegen.sh` an (Claude darf in der Sitzung keine Releases anlegen).
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
