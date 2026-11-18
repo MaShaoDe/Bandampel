@@ -81,7 +81,7 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
-#define FW_VERSION "1.18.1"         // Firmware-Version (fest im Code)
+#define FW_VERSION "1.18.2"         // Firmware-Version (fest im Code)
 #define FW_URL "https://github.com/MaShaoDe/Bandampel"
 #ifndef PAGE_ABOUT
 #define PAGE_ABOUT 1              // Ueber (Urheber, Lizenz, Kontakt, QR-Code)
@@ -312,7 +312,7 @@ static bool fetchLive() {
 
 // ---------------- Zeichnen ----------------
 static void drawClock() {
-  tft.fillRect(160, 0, 160, 26, COL_HDR);
+  tft.fillRect(196, 0, 124, 26, COL_HDR);   // Uhr beginnt rechts von x=202, links davon steht der Seitenname
   struct tm t;
   char loc[8] = "--:--";
   char utc[10] = "";
@@ -343,7 +343,7 @@ static void drawHeader() {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_YELLOW, COL_HDR);
   const char* nm = PAGE_NAMES[pageIds[page]];
-  if (x + tft.textWidth(nm) <= 158) tft.drawString(nm, x, 7);
+  if (x + tft.textWidth(nm) <= 194) tft.drawString(nm, x, 7);
   drawClock();
 }
 
