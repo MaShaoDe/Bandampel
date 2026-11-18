@@ -40,7 +40,6 @@ static WiFiMulti wifiMulti;
 static Solar solar;
 static bool  haveData = false;
 static const char* BAND_NAMES[4] = { "80m-40m", "30m-20m", "17m-15m", "12m-10m" };
-static const char* BAND_LABELS[4] = { "80-40m", "30-20m", "17-15m", "12-10m" };
 static Cond bandDay[4]   = { C_UNK, C_UNK, C_UNK, C_UNK };
 static Cond bandNight[4] = { C_UNK, C_UNK, C_UNK, C_UNK };
 
@@ -70,9 +69,6 @@ static uint16_t colFor(Cond c) {
     case C_POOR: return COL_RED;
     default:     return COL_GREY;
   }
-}
-static uint16_t fgFor(Cond c) {
-  return (c == C_GOOD || c == C_FAIR) ? TFT_BLACK : TFT_WHITE;
 }
 
 // Schwellen (Vorschlag, noch zu pruefen)
@@ -184,14 +180,7 @@ static void drawFooter() {
   tft.drawString(pg, 314 - w, 222);
 }
 
-static uint16_t shade(uint16_t c, int pct) {
-  int r = ((c >> 11) & 31) * pct / 100;
-  int g = ((c >> 5) & 63) * pct / 100;
-  int b = (c & 31) * pct / 100;
-  return (uint16_t)((r << 11) | (g << 5) | b);
-}
-
-// Symbole: 1 Sonne, 2 Sonnenflecken, 3 Pegel, 4 Welle
+// Symbole: 1 Sonne, 2 Sonnenflecken, 3 Pegel, 4 Welle, 5 Mond
 static void drawIcon(int type, int cx, int cy, uint16_t col) {
   if (type == 1) {
     tft.fillCircle(cx, cy, 5, col);
@@ -216,18 +205,25 @@ static void drawIcon(int type, int cx, int cy, uint16_t col) {
       tft.drawLine(px, py, nx, ny, col);
       px = nx; py = ny;
     }
+  } else if (type == 5) {
+    tft.fillCircle(cx, cy, 7, col);
+    tft.fillCircle(cx + 4, cy - 3, 6, COL_BG);
   }
 }
 
+// Filigrane Kachel: dunkle Karte, Farbe nur im Rahmen, im Symbol und im Wert
 static void drawTile(int x, int y, int w, int h, const char* label, const String& val, Cond c, int icon) {
-  uint16_t bg = colFor(c), fg = fgFor(c);
-  tft.fillRoundRect(x, y + 3, w, h - 3, 8, shade(bg, 60));
-  tft.fillRoundRect(x, y, w, h - 4, 8, bg);
-  tft.setTextColor(fg, bg);
+  uint16_t col = colFor(c);
+  int ch = h - 4;
+  tft.fillRoundRect(x, y, w, ch, 8, COL_HDR);
+  tft.drawRoundRect(x, y, w, ch, 8, col);
+  tft.drawRoundRect(x + 1, y + 1, w - 2, ch - 2, 7, col);
   tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_HDR);
   tft.drawString(label, x + 8, y + 6);
-  drawIcon(icon, x + w - 24, y + 20, fg);
+  drawIcon(icon, x + w - 24, y + 20, col);
   tft.setFont(&lgfx::fonts::Font7);
+  tft.setTextColor(col, COL_HDR);
   String v = val.length() ? val : String("--");
   int tw = tft.textWidth(v);
   tft.drawString(v, x + (w - tw) / 2, y + h - tft.fontHeight() - 12);
@@ -241,38 +237,64 @@ static void drawPageOverview() {
   drawTile(160, 122, 156, 90, "A-Index",          solar.a,   d && solar.a.length()   ? levelA(solar.a.toInt())     : C_UNK, 4);
 }
 
-static const char* condText(Cond c) {
-  switch (c) {
-    case C_GOOD: return "Gut";
-    case C_FAIR: return "Mittel";
-    case C_POOR: return "Schlecht";
-    default:     return "--";
+// 9 Baender in 4 HamQSL-Gruppen. 160m liefert HamQSL nicht: Schaetzung (Vorschlag), hohl gezeichnet.
+static const char* BAND9_LABELS[9] = { "160", "80", "40", "30", "20", "17", "15", "12", "10" };
+static const int   BAND9_GROUP[9]  = { -1, 0, 0, 1, 1, 2, 2, 3, 3 };   // Index in bandDay/bandNight, -1 = Schaetzung
+
+static Cond stepDown(Cond c) { return c == C_GOOD ? C_FAIR : (c == C_FAIR ? C_POOR : c); }
+static Cond est160Day()   { return C_POOR; }
+static Cond est160Night() {
+  if (solar.k.toInt() >= 4) return C_POOR;
+  return stepDown(bandNight[0]);   // eine Stufe schlechter als 80m-40m Nacht
+}
+
+static void drawBand(int x, int y, int w, int h, Cond c, bool estimated) {
+  uint16_t col = colFor(c);
+  if (estimated) {
+    tft.fillRoundRect(x, y, w, h, 4, COL_BG);
+    tft.drawRoundRect(x, y, w, h, 4, col);
+    tft.drawRoundRect(x + 1, y + 1, w - 2, h - 2, 3, col);
+  } else {
+    tft.fillRoundRect(x, y, w, h, 4, col);
   }
 }
 
-static void drawBar(int x, int y, int w, int h, Cond c) {
-  uint16_t bg = colFor(c);
-  tft.fillRoundRect(x, y + 3, w, h - 3, 6, shade(bg, 60));
-  tft.fillRoundRect(x, y, w, h - 4, 6, bg);
-  tft.setFont(&lgfx::fonts::Font2);
-  tft.setTextColor(fgFor(c), bg);
-  const char* s = condText(c);
-  int tw = tft.textWidth(s);
-  tft.drawString(s, x + (w - tw) / 2, y + (h - 4 - tft.fontHeight()) / 2);
-}
-
 static void drawPageBands() {
+  const int X0 = 40, CW = 30, BW = 24;
+  const int YD = 52, YN = 106, BH = 46;
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
-  tft.drawString("Tag",   98 + 53 - tft.textWidth("Tag") / 2,   28);
-  tft.drawString("Nacht", 208 + 53 - tft.textWidth("Nacht") / 2, 28);
-  for (int i = 0; i < 4; i++) {
-    int y = 46 + i * 44;
+  for (int i = 0; i < 9; i++) {
+    int cx = X0 + i * CW + CW / 2;
+    int tw = tft.textWidth(BAND9_LABELS[i]);
+    tft.drawString(BAND9_LABELS[i], cx - tw / 2, 30);
+    int g = BAND9_GROUP[i];
+    bool est = (g < 0);
+    Cond d = !haveData ? C_UNK : (est ? est160Day()   : bandDay[g]);
+    Cond n = !haveData ? C_UNK : (est ? est160Night() : bandNight[g]);
+    drawBand(cx - BW / 2, YD, BW, BH, d, est);
+    drawBand(cx - BW / 2, YN, BW, BH, n, est);
+  }
+  drawIcon(1, 18, YD + BH / 2, COL_YELLOW);
+  drawIcon(5, 18, YN + BH / 2, COL_DIM);
+
+  // Kennwerte darunter
+  tft.drawFastHLine(8, 162, 304, COL_GREY);
+  const char* lab[3] = { "SFI", "K", "A" };
+  String val[3] = { solar.sfi, solar.k, solar.a };
+  Cond cc[3] = {
+    haveData && solar.sfi.length() ? levelSfi(solar.sfi.toInt()) : C_UNK,
+    haveData && solar.k.length()   ? levelK(solar.k.toInt())     : C_UNK,
+    haveData && solar.a.length()   ? levelA(solar.a.toInt())     : C_UNK };
+  for (int i = 0; i < 3; i++) {
+    int x = 8 + i * 104;
+    tft.setFont(&lgfx::fonts::Font2);
+    tft.setTextColor(COL_DIM, COL_BG);
+    tft.drawString(lab[i], x, 178);
+    int lw = tft.textWidth(lab[i]);
     tft.setFont(&lgfx::fonts::Font4);
-    tft.setTextColor(COL_TEXT, COL_BG);
-    tft.drawString(BAND_LABELS[i], 4, y + (36 - tft.fontHeight()) / 2);
-    drawBar(98,  y, 106, 40, haveData ? bandDay[i]   : C_UNK);
-    drawBar(208, y, 106, 40, haveData ? bandNight[i] : C_UNK);
+    tft.setTextColor(colFor(cc[i]), COL_BG);
+    tft.drawString(val[i].length() ? val[i] : String("--"), x + lw + 8, 172);
   }
 }
 
