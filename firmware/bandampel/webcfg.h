@@ -76,7 +76,7 @@ static void webRoot() {
   h += "<header><h1>" + he(cfgHostname()) + " <small>" + he(cfg.callsign) + "</small></h1></header>";
   h += F("<nav><button type=button>Status</button><button type=button>Anzeige</button><button type=button>Helligkeit</button>"
          "<button type=button>WLAN</button><button type=button>Funk</button><button type=button>System</button><button type=button>Über</button></nav>");
-  h += "<main><form id=f method=post action=/save>";
+  h += "<main><form id=f method=post action=/save onsubmit=\"return confirm('Einstellungen speichern und Gerät neu starten?')\">";
 
   // 1 Status (nur lesen)
   long up = (long)(millis() / 1000UL);
