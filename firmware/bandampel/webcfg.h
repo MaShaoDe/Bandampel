@@ -75,7 +75,7 @@ static void webRoot() {
          "</style></head><body>");
   h += "<header><h1>" + he(cfgHostname()) + " <small>" + he(cfg.callsign) + "</small></h1></header>";
   h += F("<nav><button type=button>Status</button><button type=button>Anzeige</button><button type=button>Helligkeit</button>"
-         "<button type=button>WLAN</button><button type=button>Funk</button><button type=button>System</button></nav>");
+         "<button type=button>WLAN</button><button type=button>Funk</button><button type=button>System</button><button type=button>Über</button></nav>");
   h += "<main><form id=f method=post action=/save>";
 
   // 1 Status (nur lesen)
@@ -87,6 +87,7 @@ static void webRoot() {
   h += statusRow("WLAN", ok ? WiFi.SSID() : (apActive ? String("Notfall: Bandampel-Setup") : String("getrennt")));
   h += statusRow("IP-Adresse", ok ? WiFi.localIP().toString() : (apActive ? WiFi.softAPIP().toString() : String("--")));
   h += statusRow("Signal", ok ? String(WiFi.RSSI()) + " dBm" : String("--"));
+  h += statusRow("Version", FW_VERSION);
   h += statusRow("Name im Netz", cfgHostname() + ".local");
   h += statusRow("Daten", age.length() ? String("vor ") + age : String("--"));
   h += statusRow("Laufzeit", upt);
@@ -97,7 +98,7 @@ static void webRoot() {
   h += "<section class=tab><div class=card><h2>Seiten</h2><div class=g>";
   h += fCheck("Übersicht", "pOv", cfg.pOverview) + fCheck("Sonne", "pSu", cfg.pSun) + fCheck("Prognose Bänder", "pFc", cfg.pForecast)
      + fCheck("Betriebsart", "pMo", cfg.pModes) + fCheck("Live-Aktivität", "pLi", cfg.pLive) + fCheck("Details", "pDe", cfg.pDetails)
-     + fCheck("Info", "pIn", cfg.pInfo);
+     + fCheck("Info", "pIn", cfg.pInfo) + fCheck("Über (Lizenz, QR-Code)", "pAb", cfg.pAbout);
   h += "</div></div><div class=card><h2>Ablauf und Betriebsart</h2><div class=g>";
   h += fInput("Seitenwechsel (Sekunden)", "automs", String(cfg.autoMs / 1000), "number", "min=2 max=600");
   h += "</div>" + fCheck("SSB zeigen", "ssb", cfg.showSsb) + fCheck("CW zeigen", "cw", cfg.showCw) + fCheck("SSB oben, CW unten", "ssbf", cfg.ssbFirst);
@@ -154,6 +155,27 @@ static void webRoot() {
          "<label>Bestätigung: Menü-Passwort, wenn keines gesetzt ist 000000<input type=password name=code form=rf autocomplete=off></label>"
          "<button type=submit form=rf class='b d'>Alle Einstellungen löschen</button>"
          "<small>Danach gelten wieder die Werte aus secrets.h. Notausgang am Gerät: BOOT-Taste 10 Sekunden halten.</small></div></section>");
+
+  // 7 Ueber (fest im Code, nicht aenderbar)
+  h += F("<section class=tab><div class=card><h2>Bandampel</h2>"
+         "<div class=kv><span>Version</span><b>" FW_VERSION "</b></div>"
+         "<div class=kv><span>Urheber</span><b>FerienBSD aka Marcel Sauder</b></div>"
+         "<div class=kv><span>Rufzeichen</span><b>HE9QCU</b></div>"
+         "<div class=kv><span>Projekt</span><b><a style='color:#fc0' href='" FW_URL "' target=_blank>GitHub</a></b></div>"
+         "<small>Fehler melden und Ideen einbringen: auf GitHub unter «Issues».</small></div>"
+         "<div class=card><h2>Lizenzen</h2>"
+         "<div class=kv><span>Firmware</span><b>GPL-3.0-only</b></div>"
+         "<div class=kv><span>Hardware</span><b>CERN-OHL-P-2.0</b></div>"
+         "<div class=kv><span>Dokumentation</span><b>CC-BY-4.0</b></div>"
+         "<small>Copyright (c) 2026 FerienBSD aka Marcel Sauder. Dieses Programm ist freie Software und darf unter den Bedingungen der GPL "
+         "weitergegeben und verändert werden. Es gibt keine Gewährleistung. Den Quelltext gibt es auf GitHub. "
+         "Der Urhebervermerk muss erhalten bleiben.</small></div>"
+         "<div class=card><h2>Datenquellen</h2>"
+         "<small>Sonnen- und Bandwerte: HamQSL (hamqsl.com, N0NBH) mit Daten von NOAA. Live-Aktivität: wspr.live (WSPR-Spots). "
+         "Vielen Dank an die Betreiber. Die Daten werden höchstens alle 15 bis 30 Minuten abgefragt.</small></div>"
+         "<div class=card><h2>Verwendete Software</h2>"
+         "<small>LovyanGFX (Anzeige) und das ESP32-Arduino-Paket von Espressif, jeweils unter ihren eigenen Open-Source-Lizenzen. "
+         "Die Einstufungen der Bandbedingungen sind Faustregeln und keine Prognose.</small></div></section>");
 
   h += F("</form><form id=rf method=post action=/reset></form></main>"
          "<div class=bar><button type=submit form=f class='b s'>Speichern und neu starten</button></div>"
@@ -216,7 +238,7 @@ static void webSave() {
   cfg.pOverview = argOn("pOv"); cfg.pForecast = argOn("pFc"); cfg.pModes = argOn("pMo");
   cfg.pLive = argOn("pLi");     cfg.pDetails = argOn("pDe");
   cfg.showSsb = argOn("ssb");   cfg.showCw = argOn("cw");
-  cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu"); cfg.pInfo = argOn("pIn");
+  cfg.ssbFirst = argOn("ssbf"); cfg.pSun = argOn("pSu"); cfg.pInfo = argOn("pIn"); cfg.pAbout = argOn("pAb");
   cfg.autoMs = web.arg("automs").toInt() * 1000;
   cfg.sunLat = web.arg("lat").toFloat(); cfg.sunLon = web.arg("lon").toFloat();
   cfg.brightMode = web.arg("bmode").toInt();
