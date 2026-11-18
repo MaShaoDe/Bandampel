@@ -126,3 +126,9 @@ Die Seite «Info» (zuletzt) zeigt WLAN-Name, IP-Adresse, Signalstärke, den Nam
 
 Fusszeile: links steht das Alter der Daten («Daten vor 2 h 5 min», aus dem Zeitstempel von HamQSL, nicht die aktuelle Uhrzeit). Rechts steht das WLAN-Symbol: grün mit 1 bis 3 Bögen nach Signalstärke, rot ohne Verbindung. Die Uhrzeit steht nur noch in der Kopfzeile (Ortszeit und UTC).
 
+## Web-Menü mit Reitern
+
+Das Menü hat 6 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige (Seiten, Seitenwechsel, SSB/CW), Helligkeit (Modus, Prozent, Lichtsensor mit Kalibrierknöpfen), WLAN (Liste, Netze suchen, Pause), Funk (Rufzeichen, Zeitzone, Standort, Live-Schwellen), System (Gerätenummer, Menü-Passwort, Werkseinstellung). Das Passwort steht bewusst zuletzt. Der Knopf «Speichern und neu starten» ist unten fest eingeblendet und speichert alle Reiter auf einmal. Das Layout passt sich Handy hoch und quer sowie grossen Bildschirmen an.
+
+«Netze suchen» im Reiter WLAN listet die gefundenen Netze zur Auswahl in den Namensfeldern, so werden Tippfehler bei Gross und Kleinschreibung vermieden. Das Suchen kann die Verbindung kurz stören.
+
