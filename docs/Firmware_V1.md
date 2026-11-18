@@ -55,3 +55,7 @@ In `secrets.h`: `#define CALLSIGN "HE9QCU"`. Es steht dann in der Kopfzeile alle
 - Kurz tippen oder BOOT-Taste kurz drücken: nächste Seite.
 - Lang drücken (ca. 0,8 s): zwischen **AUTO** (Seiten wechseln alle 10 Sekunden) und **HALT** (bleibt auf der Seite) umschalten. Der Zustand steht unten im Display und wird im Gerät gespeichert.
 - Intervall ändern: in `secrets.h` `#define AUTO_PAGE_MS 15000` (in Millisekunden).
+
+## Reihenfolge SSB und CW
+
+Standard: SSB oben, CW unten. Umkehren in `secrets.h` mit `#define SSB_FIRST 0`.
