@@ -22,7 +22,7 @@ arduino-cli monitor -p /dev/cu.wchusbserial110 -c baudrate=115200
 
 ## Bedienung
 
-Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A, Sunspots), Bänder (Tag und Nacht), Details.
+Seite wechseln: Display antippen oder BOOT-Taste. Seiten: Übersicht (SFI, K, A, Sunspots), Bänder (Tag und Nacht), Betriebsart (CW und SSB), Details.
 
 ## Anpassen
 
@@ -41,3 +41,11 @@ Bandprognose: HamQSL (N0NBH), Abruf alle 30 Minuten.
 2. Wert bei Tageslicht notieren, dann den Lichtsensor (kleiner Fotowiderstand neben dem Display) mit dem Finger abdecken und den Wert im Dunkeln notieren.
 3. In `secrets.h` die Mitte als `LDR_THRESHOLD` eintragen. Wird der Wert im Dunkeln kleiner, zusätzlich `#define LDR_NIGHT_IS_HIGH false`.
 4. Neu hochladen. Im Dunkeln wird die Helligkeit auf `BRIGHTNESS_NIGHT` gesenkt.
+
+## Betriebsart (CW und SSB)
+
+HamQSL liefert keine Prognose pro Betriebsart. Die Seite ist eine Faustregel (Vorschlag): CW und Digital (FT8) kommen mit ca. 10 bis 15 dB weniger Signal aus als SSB und werden deshalb eine Stufe besser bewertet. Bei K ab 5 (gestört) werden beide eine Stufe schlechter bewertet. 160m ist wie auf der Bänderseite eine Schätzung (hohl).
+
+## Rufzeichen
+
+In `secrets.h`: `#define CALLSIGN "HE9QCU"`. Es steht dann in der Kopfzeile aller Seiten. Die Datei bleibt privat.
