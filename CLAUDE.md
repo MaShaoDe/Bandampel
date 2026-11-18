@@ -16,3 +16,4 @@ Quelle der Wahrheit ist dieses Repository auf GitHub, nicht ein lokaler Stand un
 10. Antworten ohne Nebeninfos, mit denen Marcel Sauder nichts anfangen kann (Prüfsummen, Dateigrössen, Hashes). Nur zeigen, was er braucht oder tun kann.
 11. Lizenzen: Firmware GPL-3.0-only, Hardware CERN-OHL-P-2.0, Doku CC-BY-4.0. Neue Dateien tragen den passenden SPDX-Hinweis.
 12. Datenquellen (HamQSL, NOAA) schonend abfragen: höchstens alle 30 Minuten, Quelle im README nennen.
+13. Versionen: Jeder gemergte PR bekommt eine Version 1.x.y (neue Funktion: x erhöhen, Fehlerbehebung oder Doku: y erhöhen). `FW_VERSION` in `bandampel.ino` und `CHANGELOG.md` im selben PR nachführen. Nach dem Merge legt Claude auf Wunsch von Marcel Sauder Tag und Release `v1.x.y` an.
