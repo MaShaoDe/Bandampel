@@ -21,6 +21,7 @@ static const uint32_t FETCH_OK_MS    = 30UL * 60UL * 1000UL;
 static const uint32_t FETCH_RETRY_MS = 2UL * 60UL * 1000UL;
 static const char*    FEED_URL       = "https://www.hamqsl.com/solarxml.php";
 static const int      BTN_PIN       = 0;
+static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/MESZ mit Sommerzeit
 static const int      PAGES          = 3;
 
 // ---------------- Typen und Zustand ----------------
@@ -146,14 +147,25 @@ static bool fetchSolar() {
 
 // ---------------- Zeichnen ----------------
 static void drawClock() {
-  tft.fillRect(200, 0, 120, 26, COL_HDR);
+  tft.fillRect(160, 0, 160, 26, COL_HDR);
   struct tm t;
-  char buf[16] = "--:-- UTC";
-  if (getLocalTime(&t, 0) && t.tm_year > 120) strftime(buf, sizeof(buf), "%H:%M UTC", &t);
+  char loc[8] = "--:--";
+  char utc[10] = "";
+  if (getLocalTime(&t, 0) && t.tm_year > 120) {
+    strftime(loc, sizeof(loc), "%H:%M", &t);          // Zuerich (MEZ/MESZ)
+    time_t now = time(nullptr);
+    struct tm u;
+    gmtime_r(&now, &u);
+    strftime(utc, sizeof(utc), "%H:%MZ", &u);          // UTC fuer den Funk
+  }
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_HDR);
+  int wu = tft.textWidth(utc);
+  tft.drawString(utc, 314 - wu, 7);
   tft.setFont(&lgfx::fonts::Font4);
   tft.setTextColor(COL_TEXT, COL_HDR);
-  int w = tft.textWidth(buf);
-  tft.drawString(buf, 314 - w, 3);
+  int wl = tft.textWidth(loc);
+  tft.drawString(loc, 314 - wu - (wu ? 8 : 0) - wl, 3);
 }
 
 static void drawHeader() {
@@ -295,7 +307,7 @@ void setup() {
   for (int i = 0; i < n; i++) {
     Serial.printf("  [%s]  RSSI %d  Kanal %d\n", WiFi.SSID(i).c_str(), WiFi.RSSI(i), WiFi.channel(i));
   }
-  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+  configTzTime(TZ_ZURICH, "pool.ntp.org", "time.nist.gov");
 }
 
 void loop() {
