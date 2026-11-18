@@ -132,23 +132,31 @@ static void webSave() {
     cfg.liveGood[i] = max(1L, web.arg("lgo" + String(i)).toInt());
   }
   cfgSave();
-  web.send(200, "text/html; charset=utf-8",
-           "<!DOCTYPE html><html lang=de><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
-           "<body style='font-family:sans-serif;background:#111;color:#eee;padding:20px'><h2>Gespeichert</h2>"
-           "<p>Das Gerät startet neu. Danach erreichbar unter <b>http://" + he(cfgHostname()) + ".local</b></p></body></html>");
-  restartAt = millis() + 1500;
+  web.sendHeader("Location", "/saved");   // Post-Redirect-Get: Reload sendet das Formular nicht nochmals
+  web.send(303, "text/plain", "");
+  restartAt = millis() + 3000;
 }
 
 static void webReset() {
   if (!webAuth()) return;
   cfgFactoryReset();
+  web.sendHeader("Location", "/saved");
+  web.send(303, "text/plain", "");
+  restartAt = millis() + 3000;
+}
+
+// Neutrale Seite nach Speichern oder Werkseinstellung (GET, ohne Passwort, ohne Einstellungen)
+static void webSaved() {
   web.send(200, "text/html; charset=utf-8",
-           "<!DOCTYPE html><html lang=de><meta charset=utf-8><body style='font-family:sans-serif;background:#111;color:#eee;padding:20px'>"
-           "<h2>Werkseinstellung</h2><p>Das Gerät startet neu.</p></body></html>");
-  restartAt = millis() + 1500;
+           "<!DOCTYPE html><html lang=de><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
+           "<meta http-equiv=refresh content='15;url=/'></head>"
+           "<body style='font-family:sans-serif;background:#111;color:#eee;padding:20px'><h2>Gespeichert</h2>"
+           "<p>Das Gerät startet neu. Diese Seite lädt in 15 Sekunden das Menü.</p>"
+           "<p><a style='color:#fc0' href='/'>Zum Menü</a></p></body></html>");
 }
 
 static void webInit() {
+  web.on("/saved", HTTP_GET, webSaved);
   web.on("/", HTTP_GET, webRoot);
   web.on("/save", HTTP_POST, webSave);
   web.on("/reset", HTTP_POST, webReset);
