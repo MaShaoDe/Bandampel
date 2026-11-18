@@ -8,7 +8,8 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.18.3 | 2026-11-18 | dieser PR | STATUS aufgeräumt, Release-Skript bis v1.18.2 |
+| 1.18.4 | 2026-11-18 | dieser PR | STATUS: Name «Bandampel Firmware» |
+| 1.18.3 | 2026-11-18 | [#33](https://github.com/MaShaoDe/Bandampel/pull/33) | STATUS aufgeräumt, Release-Skript bis v1.18.2 |
 | 1.18.2 | 2026-11-18 | [#32](https://github.com/MaShaoDe/Bandampel/pull/32) | Seitenname in der Kopfzeile auch bei Baender und Details (mehr Platz) |
 | 1.18.1 | 2026-11-18 | [#31](https://github.com/MaShaoDe/Bandampel/pull/31) | Web-Menü: Rückfrage vor «Speichern und neu starten» |
 | 1.18.0 | 2026-11-18 | [#30](https://github.com/MaShaoDe/Bandampel/pull/30) | Seitenname in der Kopfzeile, klarere Namen der Seiten im Web-Menü |
