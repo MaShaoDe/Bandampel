@@ -3,7 +3,7 @@
 
 # Bandampel: Das Benutzerhandbuch
 
-*Version 1.0.0. Die Ampel für den Äther: Was läuft gerade auf Kurzwelle, und wofür?*
+*Version 1.17.3. Die Ampel für den Äther: Was läuft gerade auf Kurzwelle, und wofür?*
 
 Dieses Handbuch ist für alle gedacht: für Funkamateure mit 40 Jahren Erfahrung genauso wie für die Person, die sich fragt, warum sich ihre Familie dauernd über «S-Meter» und «K-Index» unterhält. Es ist nach dem Prinzip gebaut: erst was die Bandampel kann, dann wie man sie bedient, dann wie man sie einstellt. Bei Problemen hilft das Kapitel «Wenn etwas klemmt» weiter hinten.
 
