@@ -85,3 +85,10 @@ Auf der Seite Betriebsart lassen sich SSB und CW einzeln schalten: `#define SHOW
 ## Sonnenaufgang und Sonnenuntergang
 
 Auf der Seite «Bänder» steht unten «Sonne auf HH:MM unter HH:MM» in Ortszeit (Zürich, mit Sommerzeit). Die Zeile Tag (Sonne) oder Nacht (Mond) ist hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), es braucht keine Datenquelle. Standort in `secrets.h` mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), ausblenden mit `#define SHOW_SUN 0`. Vor der Zeitsynchronisation steht «warte auf Uhrzeit».
+
+## Einstellungen im Flash
+
+Alle Einstellungen laufen jetzt über eine Laufzeit-Konfiguration (`settings.h`). Die Werte in `secrets.h` sind die Vorgabe. Was später im Web-Menü gespeichert wird, liegt im Flash (Bereich «cfg») und hat Vorrang. Das Web-Menü selbst folgt in einem weiteren Schritt, bis dahin ändert sich im Verhalten nichts.
+
+Neu: Geräte-Nummer `UNIT_NUMBER` (1 bis 999, Standard 1). Der Gerätename im Netz ist `bandampel-001`, damit mehrere Geräte parallel laufen können. Ausserdem `MENU_PASSWORD` (leer = kein Passwort) und `TZ_DEFAULT`.
+
