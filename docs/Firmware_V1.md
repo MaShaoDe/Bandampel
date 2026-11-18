@@ -137,3 +137,7 @@ Das Menü hat 6 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige
 
 Die letzte Seite zeigt Version, Urheber (`FerienBSD aka Marcel Sauder`), Rufzeichen, die 3 Lizenzen (Firmware GPL-3.0-only, Hardware CERN-OHL-P-2.0, Doku CC-BY-4.0), die Datenquellen und einen QR-Code zum GitHub-Projekt. Im Web-Menü gibt es dazu den Reiter «Über» mit denselben Angaben und einem Link. Die Texte stehen fest im Code (`FW_VERSION`, `FW_URL`, `bandampel.ino` und `webcfg.h`) und sind im Menü nicht änderbar. Die Seite auf dem Display lässt sich wie die anderen mit `PAGE_ABOUT` oder im Menü ausblenden, der Reiter im Web-Menü bleibt immer. Kontakt: Rufzeichen und GitHub, keine Personendaten im Repository.
 
+## Notausgang: BOOT-Taste 10 Sekunden
+
+Ist das Web-Menü nicht erreichbar oder sind falsche Werte gespeichert (zum Beispiel ein Tippfehler im WLAN-Namen), hilft die BOOT-Taste: Im Betrieb 10 Sekunden gedrückt halten. Ab 5 Sekunden erscheint ein Countdown, Loslassen bricht ab. Bei 0 löscht das Gerät alle im Menü gespeicherten Werte und startet neu. Danach gelten wieder die Werte aus `secrets.h` (nicht leer). Steht dort kein WLAN, öffnet das Gerät nach 60 Sekunden das Notfall-WLAN «Bandampel-Setup». Nur die BOOT-Taste löst das aus, Berührung des Displays nicht. Die Taste darf beim Einschalten nicht gedrückt sein, sonst startet der ESP32 in den Flash-Modus.
+

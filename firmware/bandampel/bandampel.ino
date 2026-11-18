@@ -907,8 +907,52 @@ static void saveAutoMode() {
 static void handleInput() {
   static bool     down = false, longDone = false;
   static uint32_t downAt = 0, lastSeen = 0;
+  static uint32_t btnAt = 0;            // BOOT-Taste gedrueckt seit (nur die Taste, nicht der Touch)
+  static int      lastCount = -1;
+  static bool     undone = false;
   uint32_t now = millis();
   int32_t tx, ty;
+
+  // BOOT-Taste 10 s halten: Werkseinstellung (ab 5 s Countdown, loslassen bricht ab)
+  bool btn = (digitalRead(BTN_PIN) == LOW);
+  if (btn && !btnAt) { btnAt = now; lastCount = -1; undone = false; }
+  if (!btn && btnAt) {
+    bool shown = lastCount >= 0;
+    btnAt = 0; lastCount = -1;
+    if (shown) drawAll();
+  }
+  if (btn && btnAt && now - btnAt >= 5000) {
+    if (!undone) {                      // der lange Druck hat Auto/Halten umgeschaltet: zurueck
+      undone = true;
+      if (longDone) { autoMode = !autoMode; saveAutoMode(); }
+    }
+    int remain = 10 - (int)((now - btnAt) / 1000);
+    if (remain < 0) remain = 0;
+    if (remain != lastCount) {
+      lastCount = remain;
+      tft.fillRoundRect(24, 76, 272, 92, 10, COL_HDR);
+      tft.drawRoundRect(24, 76, 272, 92, 10, COL_RED);
+      tft.drawRoundRect(25, 77, 270, 90, 9, COL_RED);
+      tft.setFont(&lgfx::fonts::Font4);
+      tft.setTextColor(COL_RED, COL_HDR);
+      drawCentered(String("Zuruecksetzen in ") + remain + " s", 160, 96);
+      tft.setFont(&lgfx::fonts::Font2);
+      tft.setTextColor(COL_DIM, COL_HDR);
+      drawCentered("Taste loslassen = abbrechen", 160, 134);
+    }
+    if (now - btnAt >= 10000) {
+      cfgFactoryReset();
+      tft.fillRoundRect(24, 76, 272, 92, 10, COL_HDR);
+      tft.setFont(&lgfx::fonts::Font4);
+      tft.setTextColor(COL_GREEN, COL_HDR);
+      drawCentered("Werkseinstellung", 160, 96);
+      tft.setFont(&lgfx::fonts::Font2);
+      tft.setTextColor(COL_DIM, COL_HDR);
+      drawCentered("Neustart ...", 160, 134);
+      delay(1500);
+      ESP.restart();
+    }
+  }
   bool pressed = (digitalRead(BTN_PIN) == LOW) || tft.getTouch(&tx, &ty);
   if (pressed) lastSeen = now;
   if (pressed && !down) {
