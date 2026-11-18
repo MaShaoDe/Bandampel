@@ -49,3 +49,9 @@ HamQSL liefert keine Prognose pro Betriebsart. Die Seite ist eine Faustregel (Vo
 ## Rufzeichen
 
 In `secrets.h`: `#define CALLSIGN "HE9QCU"`. Es steht dann in der Kopfzeile aller Seiten. Die Datei bleibt privat.
+
+## Seitenwechsel: Auto oder Halten
+
+- Kurz tippen oder BOOT-Taste kurz drücken: nächste Seite.
+- Lang drücken (ca. 0,8 s): zwischen **AUTO** (Seiten wechseln alle 10 Sekunden) und **HALT** (bleibt auf der Seite) umschalten. Der Zustand steht unten im Display und wird im Gerät gespeichert.
+- Intervall ändern: in `secrets.h` `#define AUTO_PAGE_MS 15000` (in Millisekunden).
