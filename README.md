@@ -1,5 +1,7 @@
 # Bandampel
 
+<p align="center"><img src="docs/bilder/teaser.jpg" alt="Bandampel: HF-Ausbreitung auf einen Blick, 80m bis 10m" width="480"></p>
+
 *HF-Ausbreitung auf einen Blick: Welches Band läuft gerade, und wofür?*
 
 Ein kleines ESP32-Gerät mit 2,8-Zoll-Farbdisplay, das Solardaten und Bandbedingungen für den Amateurfunk als Farbampel darstellt: 80m bis 10m, Tag und Nacht, grün, gelb, rot. Dazu SFI, K-Index, A-Index, Sunspots und weitere Werte. Das Gerät holt die Daten selbst per WLAN (Heimnetz oder Handy-Hotspot).
