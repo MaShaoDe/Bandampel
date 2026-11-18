@@ -12,7 +12,6 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 
 ## Als Nächstes
 - Marcel: Haus-WLAN freigeben (MAC `a4:f0:0f:5b:e9:9c`), Live-Seite morgens, abends und nachts fotografieren (Schwellen einstellen), Farbtest mit `PANEL_ST7789 1`.
-- Offen: Schwellen der Live-Seite einstellen. Sonnenauf- und -untergang per Locator JN47. Einstellungsseite für WLAN per Browser. Farben Türkis statt Grün und Rosa statt Rot: Test mit PANEL_ST7789, PANEL_INVERT, PANEL_RGB_ORDER in secrets.h (PR offen). Konfigurator im Browser (Web-Menü, Einstellungen im Flash) beschlossen, noch nicht gebaut.
 - Phase 2: Drehgeber (GPIO 22, 27, 35) und Trägerplatine (KiCad), Phase 3: Gehäuse (OpenSCAD).
 
 ## Entscheide (Marcel Sauder)
@@ -23,4 +22,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Das Hochladen überschreibt das Werksprogramm des Boards.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
-- Neu (PR offen, ungetestet): Web-Menü (bandampel-001.local), Notfall-WLAN Bandampel-Setup nach 60 s ohne Netz. Offen: Pause zwischen WLAN-Versuchen einstellbar (Vorschlag 30 s).
+- Neu (PR offen, ungetestet): Seite Sonne nach der Übersicht (Bogen, Zeiten, Countdown, Grayline), im Menü schaltbar. Web-Menü läuft (getestet).
