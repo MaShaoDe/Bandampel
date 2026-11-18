@@ -130,6 +130,7 @@ static void buildPages() {
 static const int   LIVE_WSPR_BAND[9] = { 1, 3, 7, 10, 14, 18, 21, 24, 28 };
 static const char* LIVE_LABELS[9]    = { "160", "80", "40", "30", "20", "17", "15", "12", "10" };
 static int      liveCount[9]    = { 0 };
+static int      ldrRaw          = -1;     // letzter Messwert des Lichtsensors (fuer das Web-Menue)
 static bool     haveLive        = false;
 static bool     liveFetchedOnce = false;
 static uint32_t nextLiveFetch   = 0;
@@ -667,6 +668,7 @@ static void updateNight() {
   long sum = 0;
   for (int i = 0; i < 8; i++) sum += analogRead(LDR_PIN);
   int v = (int)(sum / 8);
+  ldrRaw = v;
   if (cfg.ldrThreshold >= 0) {
     int dark = cfg.ldrNightHigh ? (v - cfg.ldrThreshold) : (cfg.ldrThreshold - v);   // positiv = dunkler als Schwelle
     if (!night && dark > cfg.ldrHyst) night = true;
@@ -682,6 +684,8 @@ static void updateNight() {
     Serial.printf("LDR roh: %d  Nacht: %s\n", v, night ? "ja" : "nein");
   }
 }
+
+#include "webcfg.h"       // Web-Menue und Notfall-WLAN
 
 // ---------------- Setup und Loop ----------------
 void setup() {
@@ -717,6 +721,7 @@ void setup() {
     Serial.printf("  [%s]  RSSI %d  Kanal %d\n", WiFi.SSID(i).c_str(), WiFi.RSSI(i), WiFi.channel(i));
   }
   configTzTime(cfg.tz.c_str(), "pool.ntp.org", "time.nist.gov");
+  webInit();
 }
 
 void loop() {
@@ -726,10 +731,11 @@ void loop() {
   uint32_t now = millis();
 
   bool wifiOk = (WiFi.status() == WL_CONNECTED);
-  if (!wifiOk && (now - lastWifiTry > 5000 || lastWifiTry == 0)) {
+  if (!wifiOk && (now - lastWifiTry > (apActive ? 300000UL : 5000UL) || lastWifiTry == 0)) {
     lastWifiTry = now ? now : 1;
     statusMsg = "WLAN suchen...";
     drawFooter();
+    if (apActive) WiFi.mode(WIFI_AP_STA);
     wl_status_t r = (wl_status_t)wifiMulti.run(20000);   // 20 s Zeit, iPhone-Hotspot ist langsam
     lastWifiTry = millis() ? millis() : 1;
     wifiOk = (WiFi.status() == WL_CONNECTED);
@@ -738,7 +744,7 @@ void loop() {
   }
   if (wifiOk != lastWifiOk) {
     lastWifiOk = wifiOk;
-    if (wifiOk) statusMsg = "WLAN " + WiFi.SSID();
+    if (wifiOk) statusMsg = WiFi.localIP().toString();
     drawFooter();
   }
 
@@ -758,6 +764,17 @@ void loop() {
     nextLiveFetch = millis() + (ok ? LIVE_OK_MS : FETCH_RETRY_MS);
     if (pageIds[page] == PG_LIVE) drawAll();
   }
+
+  // Notfall-WLAN: 60 Sekunden ohne bekanntes Netz, dann Bandampel-Setup oeffnen
+  static uint32_t offSince = 0;
+  if (wifiOk) {
+    offSince = 0;
+    if (apActive) { apStop(); statusMsg = WiFi.localIP().toString(); drawFooter(); }
+  } else {
+    if (!offSince) offSince = now ? now : 1;
+    if (!apActive && now - offSince > 60000UL) { apStart(); statusMsg = "AP Bandampel-Setup"; drawFooter(); }
+  }
+  webLoop();
 
   handleInput();
   autoAdvance();
