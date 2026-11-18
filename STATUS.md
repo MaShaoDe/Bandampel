@@ -7,7 +7,8 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Läuft (am Gerät bestätigt): Seiten Übersicht, Sonne (Bogen, Zeiten, Grayline), Bänder, Betriebsart, Live (WSPR, inkl. 160m), Details (4 Farbkarten), Info. Auto-Wechsel, Halten per langem Druck, WLAN-Symbol und Datenalter in der Fusszeile.
 - Läuft: Web-Menü mit 6 Reitern (bandampel-001.local), Einstellungen im Flash (Vorrang vor secrets.h), Notfall-WLAN Bandampel-Setup nach 60 s ohne Netz, WLAN-Scan, Helligkeit in Prozent (stufenlos nach Lichtsensor).
 - Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt, ST7789 weiss, INVERT 1 negativ, RGB_ORDER 1 vertauscht Rot und Blau.
-- Ungetestet: BOOT-Taste 10 s (Werkseinstellung), Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen.
+- Ungetestet: Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen.
+- Neu (PR offen, ungetestet): BOOT-Taste 10 s halten setzt die Einstellungen zurück (Countdown ab 5 s, danach gelten die Werte aus secrets.h).
 - Neu (PR offen, ungetestet): Seite Über (Urheber, Lizenzen, Datenquellen, QR-Code zu GitHub) auf dem Display und als Reiter im Web-Menü, Version 1.0.0 fest im Code.
 - Einstufungen (Live-Schwellen, Details-Karten, CW und SSB, Grayline) sind Faustregeln (Vorschlag), keine Prognose.
 
