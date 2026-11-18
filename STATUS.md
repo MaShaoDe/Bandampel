@@ -9,6 +9,7 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Optik V2 (PR 5, ungetestet): dunkle Karten mit Farbrahmen, 9 Bänder (160m bis 10m) als schmale Balken ohne Text, Tag/Nacht als Symbole, Rufzeichen optional in secrets.h. 160m ist eine Schätzung aus 80m-40m Nacht und K-Index (Vorschlag, offen).
 - Nachtmodus (PR 6, ungetestet): Lichtsensor GPIO 34, Schwelle in secrets.h, ohne Schwelle nur Messwerte. Polarität des Sensors noch nicht gemessen (offen).
 - Betriebsart-Seite (PR offen, ungetestet): CW und SSB pro Band, Faustregel CW eine Stufe besser als SSB, Vorschlag, offen.
+- Auto/Halten (PR offen, ungetestet): Seiten wechseln alle 10 s, langer Druck schaltet um, Zustand im Flash. Offen: Rufzeichen erscheint nicht in der Kopfzeile (secrets.h prüfen).
 - Port am MacBook: `/dev/cu.wchusbserial110`. Werkzeug: arduino-cli, FQBN `esp32:esp32:esp32`.
 
 ## Als Nächstes

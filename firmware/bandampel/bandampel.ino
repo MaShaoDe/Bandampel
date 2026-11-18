@@ -11,6 +11,7 @@
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <time.h>
+#include <Preferences.h>
 #include "lgfx_cyd.h"
 #include "secrets.h"
 
@@ -41,6 +42,10 @@ static const char*    TZ_ZURICH      = "CET-1CEST,M3.5.0,M10.5.0/3";   // MEZ/ME
 static const int LDR_PIN  = 34;
 static const int LDR_HYST = 150;
 static const int      PAGES          = 4;
+#ifndef AUTO_PAGE_MS
+#define AUTO_PAGE_MS 10000        // Seitenwechsel im Auto-Modus
+#endif
+static const uint32_t LONG_PRESS_MS  = 800;       // langer Druck: Auto/Halten umschalten
 
 // ---------------- Typen und Zustand ----------------
 enum Cond { C_UNK, C_POOR, C_FAIR, C_GOOD };
@@ -59,6 +64,8 @@ static Cond bandDay[4]   = { C_UNK, C_UNK, C_UNK, C_UNK };
 static Cond bandNight[4] = { C_UNK, C_UNK, C_UNK, C_UNK };
 
 static int      page        = 0;
+static bool     autoMode    = true;      // true: Seiten wechseln automatisch
+static uint32_t lastPageChange = 0;
 static String   statusMsg   = "Start";
 static uint32_t nextFetch   = 0;
 static bool     fetchedOnce = false;
@@ -196,8 +203,11 @@ static void drawFooter() {
   tft.setFont(&lgfx::fonts::Font2);
   tft.setTextColor(COL_DIM, COL_BG);
   String left = haveData ? solar.updated : statusMsg;
-  if (left.length() > 26) left = left.substring(0, 26);
+  if (left.length() > 20) left = left.substring(0, 20);
   tft.drawString(left, 6, 222);
+  tft.setTextColor(autoMode ? COL_DIM : COL_YELLOW, COL_BG);
+  tft.drawString(autoMode ? "AUTO" : "HALT", 206, 222);
+  tft.setTextColor(COL_DIM, COL_BG);
   bool ok = (WiFi.status() == WL_CONNECTED);
   tft.fillCircle(262, 230, 5, ok ? COL_GREEN : COL_RED);
   char pg[8];
@@ -393,17 +403,46 @@ static void drawAll() {
 }
 
 // ---------------- Eingabe ----------------
-static bool pageSwitchRequested() {
-  static uint32_t lockUntil = 0;
+static void saveAutoMode() {
+  Preferences prefs;
+  prefs.begin("bandampel", false);
+  prefs.putBool("auto", autoMode);
+  prefs.end();
+}
+
+// Kurz tippen oder BOOT-Taste: naechste Seite. Lang druecken (0,8 s): Auto/Halten umschalten.
+static void handleInput() {
+  static bool     down = false, longDone = false;
+  static uint32_t downAt = 0, lastSeen = 0;
   uint32_t now = millis();
-  if ((int32_t)(now - lockUntil) < 0) return false;
   int32_t tx, ty;
   bool pressed = (digitalRead(BTN_PIN) == LOW) || tft.getTouch(&tx, &ty);
-  if (pressed) {
-    lockUntil = now + 350;
-    return true;
+  if (pressed) lastSeen = now;
+  if (pressed && !down) {
+    down = true; longDone = false; downAt = now;
+  } else if (down && !longDone && pressed && now - downAt >= LONG_PRESS_MS) {
+    longDone = true;
+    autoMode = !autoMode;
+    saveAutoMode();
+    lastPageChange = now;
+    drawFooter();
+  } else if (down && !pressed && now - lastSeen > 60) {   // losgelassen (mit Entprellung)
+    down = false;
+    if (!longDone && lastSeen - downAt >= 30) {
+      page = (page + 1) % PAGES;
+      lastPageChange = now;
+      drawAll();
+    }
   }
-  return false;
+}
+
+static void autoAdvance() {
+  uint32_t now = millis();
+  if (autoMode && now - lastPageChange >= (uint32_t)AUTO_PAGE_MS) {
+    page = (page + 1) % PAGES;
+    lastPageChange = now;
+    drawAll();
+  }
 }
 
 // ---------------- Nachtmodus ----------------
@@ -438,6 +477,12 @@ static void updateNight() {
 void setup() {
   Serial.begin(115200);
   pinMode(BTN_PIN, INPUT_PULLUP);
+  {
+    Preferences prefs;
+    prefs.begin("bandampel", true);
+    autoMode = prefs.getBool("auto", true);
+    prefs.end();
+  }
   tft.init();
   tft.setRotation(ROTATION);
   tft.setBrightness(BRIGHTNESS);
@@ -491,10 +536,8 @@ void loop() {
     drawAll();
   }
 
-  if (pageSwitchRequested()) {
-    page = (page + 1) % PAGES;
-    drawAll();
-  }
+  handleInput();
+  autoAdvance();
 
   struct tm t;
   if (getLocalTime(&t, 0) && t.tm_year > 120 && t.tm_min != lastMin) {
