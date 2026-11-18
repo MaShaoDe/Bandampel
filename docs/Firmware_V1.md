@@ -108,3 +108,6 @@ Notfall-WLAN: Findet das Gerät 60 Sekunden lang kein bekanntes WLAN, öffnet es
 
 Live-Schwellen: Auf der Menüseite steht neben jedem Band die aktuelle Zahl der WSPR-Spots. Damit lassen sich die Schwellen «mittel» und «gut» nach Foto oder Gefühl einstellen.
 
+## Seite Details
+
+4 Karten mit farbigem Rahmen: X-Ray (Sonneneruptionen), Sonnenwind, Magnetfeld Bz und Signal-Rauschen. Grün ist ruhig, Gelb erhöht, Rot gestört. Die Einstufung ist eine Faustregel (Vorschlag), keine Prognose: X-Ray A oder B grün, C gelb, M oder X rot. Sonnenwind unter 400 km/s grün, unter 600 gelb, sonst rot. Bz ab minus 3 grün, ab minus 8 gelb, darunter rot. Rauschen S0 bis S1 grün, S2 bis S3 gelb, ab S4 rot.
