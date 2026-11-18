@@ -309,9 +309,10 @@ void loop() {
     lastWifiTry = now ? now : 1;
     statusMsg = "WLAN suchen...";
     drawFooter();
-    wl_status_t r = (wl_status_t)wifiMulti.run();
+    wl_status_t r = (wl_status_t)wifiMulti.run(20000);   // 20 s Zeit, iPhone-Hotspot ist langsam
+    lastWifiTry = millis() ? millis() : 1;
     wifiOk = (WiFi.status() == WL_CONNECTED);
-    Serial.printf("WLAN-Versuch: Status %d (3 = verbunden, 1 = Netz nicht gefunden, 4 = Verbindung fehlgeschlagen)\n", (int)r);
+    Serial.printf("WLAN-Versuch: Status %d (0 = laeuft noch, 1 = Netz nicht gefunden, 3 = verbunden, 4 = fehlgeschlagen, 6 = getrennt)\n", (int)r);
     if (wifiOk) Serial.printf("Verbunden mit [%s], IP %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
   }
   if (wifiOk != lastWifiOk) {
