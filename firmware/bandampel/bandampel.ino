@@ -81,6 +81,11 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
+#define FW_VERSION "1.0.0"         // Firmware-Version (fest im Code)
+#define FW_URL "https://github.com/MaShaoDe/Bandampel"
+#ifndef PAGE_ABOUT
+#define PAGE_ABOUT 1              // Ueber (Urheber, Lizenz, Kontakt, QR-Code)
+#endif
 #ifndef PAGE_INFO
 #define PAGE_INFO 1               // Info (WLAN, IP, Signal, Name, Datenalter, Laufzeit)
 #endif
@@ -127,8 +132,8 @@ static uint32_t nextFetch   = 0;
 static bool     fetchedOnce = false;
 static bool     apActive    = false;   // Notfall-WLAN Bandampel-Setup aktiv (siehe webcfg.h)
 
-enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN, PG_INFO };
-static int pageIds[7];
+enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN, PG_INFO, PG_ABOUT };
+static int pageIds[8];
 static int pageCount = 0;
 
 static void buildPages() {
@@ -140,6 +145,7 @@ static void buildPages() {
   if (cfg.pLive)     pageIds[pageCount++] = PG_LIVE;
   if (cfg.pDetails)  pageIds[pageCount++] = PG_DETAILS;
   if (cfg.pInfo)     pageIds[pageCount++] = PG_INFO;
+  if (cfg.pAbout)    pageIds[pageCount++] = PG_ABOUT;
   if (pageCount == 0) pageIds[pageCount++] = PG_OVERVIEW;   // mindestens eine Seite
 }
 
@@ -841,6 +847,38 @@ static void drawPageInfo() {
   drawInfoRow(180, "Laufzeit",   upt,  COL_TEXT);
 }
 
+// Seite Ueber: Urheber, Lizenz, Kontakt (fest im Code, nicht aenderbar)
+static void drawPageAbout() {
+  tft.setFont(&lgfx::fonts::Font4);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  tft.drawString("BANDAMPEL", 8, 28);
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString("Version " FW_VERSION, 8, 56);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  tft.drawString("(c) 2026", 8, 80);
+  tft.drawString("FerienBSD aka", 8, 96);
+  tft.drawString("Marcel Sauder", 8, 112);
+  tft.setFont(&lgfx::fonts::Font4);
+  tft.setTextColor(COL_YELLOW, COL_BG);
+  tft.drawString("HE9QCU", 8, 130);
+
+  tft.qrcode(FW_URL, 190, 28, 120, 3);                       // QR-Code zum GitHub-Projekt
+  tft.setFont(&lgfx::fonts::Font2);
+  tft.setTextColor(COL_DIM, COL_BG);
+  drawCentered("GitHub", 250, 152);
+
+  tft.drawFastHLine(8, 166, 304, COL_GREY);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  tft.drawString("Firmware GPL-3.0-only", 8, 172);
+  tft.drawString("Hardware CERN-OHL-P-2.0", 8, 188);
+  tft.drawString("Doku CC-BY-4.0", 8, 204);
+  tft.setTextColor(COL_DIM, COL_BG);
+  tft.drawString("Daten:", 196, 172);
+  tft.drawString("HamQSL, NOAA", 196, 188);
+  tft.drawString("wspr.live", 196, 204);
+}
+
 static void drawAll() {
   tft.fillScreen(COL_BG);
   drawHeader();
@@ -851,6 +889,7 @@ static void drawAll() {
     case PG_LIVE:     drawPageLive();     break;
     case PG_SUN:      drawPageSun();      break;
     case PG_INFO:     drawPageInfo();     break;
+    case PG_ABOUT:    drawPageAbout();    break;
     default:          drawPageDetails();  break;
   }
   drawFooter();
