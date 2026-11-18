@@ -25,4 +25,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - Gemergt, ungetestet: Web-Menü nach Speichern auf neutraler Seite (kein doppeltes Senden bei Reload).
 - Gemergt, ungetestet: Werkseinstellung verlangt Bestätigung (Menü-Passwort, sonst 000000).
 - Neu (PR offen, ungetestet): Helligkeit in Prozent, 3 Modi inkl. stufenlos nach Lichtsensor, Kalibrierknöpfe im Menü (Vorgabe Tag 60, Nacht 10). Details-Seite als 4 Karten mit Farbrahmen (Einstufung ist Vorschlag).
-- Neu (PR offen, ungetestet): Pause zwischen WLAN-Versuchen einstellbar (Standard 30 s). Farbtest abgeschlossen: ILI9341 mit Standardwerten bleibt, ST7789 weiss, INVERT 1 negativ, RGB_ORDER 1 vertauscht Rot und Blau.
+- Neu (PR offen, ungetestet): Seite Info (WLAN, IP, Signal, Name, Datenalter, Laufzeit), WLAN-Symbol in der Fusszeile, Datenalter statt Zeitstempel.
