@@ -267,13 +267,14 @@ Die Taste darf beim **Einschalten nicht gedrückt** sein. Sonst startet der ESP3
 
 ## 9. Selbstbau und Firmware
 
-Wer das Gerät selbst bauen will: Du brauchst ein fertiges Board vom Typ **ESP32-2432S028** (das «Cheap Yellow Display», CYD, auch als Board mit 2 USB-Anschlüssen) und einen Computer mit `arduino-cli`. Schritt für Schritt steht das in [Firmware_V1.md](Firmware_V1.md). Kurz:
+Wer das Gerät selbst bauen will: Du brauchst ein fertiges Board vom Typ **ESP32-2432S028** (das «Cheap Yellow Display», CYD, auch als Board mit 2 USB-Anschlüssen), ein USB-Kabel mit Datenleitungen und einen Computer (Windows oder macOS). Löten ist nicht nötig. Die ganze Anleitung steht in [Nachbauen.md](Nachbauen.md). Es gibt 2 Wege, nimm einen von beiden:
 
-1. `arduino-cli` und die Bibliothek LovyanGFX installieren.
-2. `secrets.h.example` zu `secrets.h` kopieren und WLAN eintragen.
-3. Kompilieren und hochladen: `arduino-cli compile firmware/bandampel && arduino-cli upload -p <Port> firmware/bandampel`
+- **Arduino IDE** (mit Maus, empfohlen für den Einstieg): Programm installieren, Board und Bibliothek LovyanGFX über die Menüs holen, `bandampel.ino` öffnen, bei «Werkzeuge» das Board «ESP32 Dev Module» und die Flash-Aufteilung «Huge APP (3MB No OTA/1MB SPIFFS)» wählen, Anschluss auswählen und «Hochladen» drücken.
+- **arduino-cli** (Terminal): `arduino-cli compile firmware/bandampel && arduino-cli upload -p <Port> firmware/bandampel`. Die Datei `sketch.yaml` im Sketch-Ordner stellt Board und Speicheraufteilung automatisch richtig ein.
 
-Die Datei `sketch.yaml` im Sketch-Ordner stellt automatisch die richtige Speicheraufteilung ein, du musst nichts angeben.
+Bei beiden Wegen gilt vorher: `secrets.h.example` zu `secrets.h` kopieren und das WLAN eintragen (ohne diese Datei lässt sich das Programm nicht kompilieren). Wichtig bei der Arduino IDE: Die Flash-Aufteilung «Huge APP» muss von Hand gewählt werden, sonst ist das Programm zu gross und das Kompilieren bricht ab.
+
+Technik zum Programm (Kompilieren, Seriell Monitor, Anpassen): [Firmware_V1.md](Firmware_V1.md).
 
 ---
 
