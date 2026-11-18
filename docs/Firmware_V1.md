@@ -92,3 +92,17 @@ Alle Einstellungen laufen jetzt über eine Laufzeit-Konfiguration (`settings.h`)
 
 Neu: Geräte-Nummer `UNIT_NUMBER` (1 bis 999, Standard 1). Der Gerätename im Netz ist `bandampel-001`, damit mehrere Geräte parallel laufen können. Ausserdem `MENU_PASSWORD` (leer = kein Passwort) und `TZ_DEFAULT`.
 
+## Web-Menü
+
+Das Gerät hat einen Web-Konfigurator. Er läuft im selben WLAN wie das Gerät, ohne Zusatzgeräte.
+
+1. Im Browser `http://bandampel-001.local` öffnen (die Nummer ist `UNIT_NUMBER`). Geht das nicht, die IP-Adresse aus der Fusszeile des Geräts verwenden.
+2. Einstellungen ändern und «Speichern und neu starten» drücken. Das Gerät startet danach neu.
+3. «Werkseinstellung» löscht alle gespeicherten Werte. Danach gelten wieder die Vorgaben aus `secrets.h`.
+
+Passwort: Ist ein Menü-Passwort gesetzt, fragt der Browser danach (Benutzer `admin`). Leer heisst kein Passwort. Die Übertragung ist unverschlüsselt (HTTP), das Passwort schützt also nur vor zufälligem Zugriff im Heimnetz.
+
+Notfall-WLAN: Findet das Gerät 60 Sekunden lang kein bekanntes WLAN, öffnet es das WLAN «Bandampel-Setup» (Fusszeile: «AP Bandampel-Setup»). Dort unter `http://192.168.4.1` das Menü öffnen und die WLAN-Daten korrigieren. Ist ein Menü-Passwort mit mindestens 8 Zeichen gesetzt, gilt es auch als WLAN-Passwort, sonst ist das Notfall-WLAN offen. Findet das Gerät wieder ein bekanntes Netz, schliesst sich das Notfall-WLAN von selbst. Im Notfall-Modus sucht das Gerät nur alle 5 Minuten nach dem bekannten Netz.
+
+Live-Schwellen: Auf der Menüseite steht neben jedem Band die aktuelle Zahl der WSPR-Spots. Damit lassen sich die Schwellen «mittel» und «gut» nach Foto oder Gefühl einstellen.
+

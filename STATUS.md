@@ -23,4 +23,4 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - `arduino-cli upload` schreibt bei einem Fehler im Kompilieren die alte Version. Immer mit `&&` verbinden.
 - Das Hochladen überschreibt das Werksprogramm des Boards.
 - Claude kann hier nicht kompilieren oder testen, nur Marcel am Gerät.
-- Neu (PR offen, ungetestet): Einstellungen zur Laufzeit (settings.h, Flash), Gerätename bandampel-001. Web-Menü mit Notfall-WLAN folgt (Vorschlag: Passwort einstellbar).
+- Neu (PR offen, ungetestet): Web-Menü (bandampel-001.local), Notfall-WLAN Bandampel-Setup nach 60 s ohne Netz. Offen: Pause zwischen WLAN-Versuchen einstellbar (Vorschlag 30 s).
