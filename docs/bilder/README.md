@@ -10,7 +10,7 @@ Hier liegen die Fotos und Bildschirmfotos. Die Namen sind im [Benutzerhandbuch](
 | `01_kopf_fuss.jpg` | |
 | `02_uebersicht.jpg` | Seite 1 Ampel |
 | `03_sonne_nacht.jpg` | Seite 2 Sonne, nachts |
-| `03_sonne_tag.jpg` | |
+| `03_sonne_tag.jpg` | Seite 2 Sonne, tagsüber (Grayline in 18 min) |
 | `04_baender.jpg` | Seite 3 Bänder |
 | `05_betriebsart.jpg` | Seite 4 Modus (SSB und CW) |
 | `06_live.jpg` | Seite 5 Live (WSPR) |
