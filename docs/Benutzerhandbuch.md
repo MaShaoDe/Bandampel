@@ -7,7 +7,7 @@
 
 Dieses Handbuch ist für alle gedacht: für Funkamateure mit 40 Jahren Erfahrung genauso wie für die Person, die sich fragt, warum sich ihre Familie dauernd über «S-Meter» und «K-Index» unterhält. Es ist nach dem Prinzip gebaut: erst was die Bandampel kann, dann wie man sie bedient, dann wie man sie einstellt. Bei Problemen hilft das Kapitel «Wenn etwas klemmt» weiter hinten.
 
-Die Bilder sind Fotos vom echten Gerät. Sie liegen in `docs/bilder/`.
+Die Bilder sind Fotos vom echten Gerät. Sie liegen in `docs/bilder/`. Die Kamera gibt Gelb auf dem Display teils weiss und Rot violett wieder. Massgebend sind die Farben der Legende im Text.
 
 ---
 
