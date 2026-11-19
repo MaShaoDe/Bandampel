@@ -34,7 +34,7 @@ Alle 8 Seiten und das Web-Menü zeigt das [Benutzerhandbuch](docs/Benutzerhandbu
 - Live-Seite aus gemessenen WSPR-Spots, inklusive 160m
 - Sonnenseite mit Auf- und Untergang, Tageslänge und Grayline
 - Detailseite: X-Ray, Sonnenwind, Magnetfeld, Rauschen
-- Web-Menü mit 7 Reitern (Rufzeichen, Locator, WLAN, Helligkeit, Seiten), bis zu 5 WLAN-Netze, Notfall-WLAN
+- Web-Menü mit 7 Reitern (Status, Anzeige, Helligkeit, WLAN, Funk, System, Über), bis zu 5 WLAN-Netze, Notfall-WLAN
 - Automatische Helligkeit nach Lichtsensor, Nachtmodus
 - BOOT-Taste 10 s: Werkseinstellung
 - Geplant: Drehgeber (mit eigener Trägerplatine), Akkubetrieb
