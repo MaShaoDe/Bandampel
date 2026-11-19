@@ -131,7 +131,7 @@ Fusszeile: links steht das Alter der Daten («Daten vor 2 h 5 min», aus dem Zei
 
 ## Web-Menü mit Reitern
 
-Das Menü hat 6 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige (Seiten, Seitenwechsel, SSB/CW), Helligkeit (Modus, Prozent, Lichtsensor mit Kalibrierknöpfen), WLAN (Liste, Netze suchen, Pause), Funk (Rufzeichen, Zeitzone, Standort, Live-Schwellen), System (Gerätenummer, Menü-Passwort, Werkseinstellung). Das Passwort steht bewusst zuletzt. Der Knopf «Speichern und neu starten» ist unten fest eingeblendet und speichert alle Reiter auf einmal. Das Layout passt sich Handy hoch und quer sowie grossen Bildschirmen an.
+Das Menü hat 7 Reiter, nach Wichtigkeit geordnet: Status (nur Anzeige), Anzeige (Seiten, Seitenwechsel, SSB/CW), Helligkeit (Modus, Prozent, Lichtsensor mit Kalibrierknöpfen), WLAN (Liste, Netze suchen, Pause), Funk (Rufzeichen, Zeitzone, Standort, Live-Schwellen), System (Gerätenummer, Menü-Passwort, Werkseinstellung), Über (Version, Urheber, Lizenzen). Das Passwort steht bewusst fast zuletzt. Der Knopf «Speichern und neu starten» ist unten fest eingeblendet und speichert alle Reiter auf einmal. Das Layout passt sich Handy hoch und quer sowie grossen Bildschirmen an.
 
 «Netze suchen» im Reiter WLAN listet die gefundenen Netze zur Auswahl in den Namensfeldern, so werden Tippfehler bei Gross und Kleinschreibung vermieden. Das Suchen kann die Verbindung kurz stören.
 

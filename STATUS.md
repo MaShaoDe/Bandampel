@@ -3,10 +3,10 @@
 Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streichen.
 
 ## Stand
-- Bandampel Firmware 1.18.9 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 18.11.2026.
+- Bandampel Firmware 1.18.19 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 18.11.2026.
 - Phase 1 (Firmware auf dem CYD) ist getestet und eingefroren: nur noch Fehlerbehebungen (1.18.x), keine neuen Funktionen (Vorschlag, Marcel Sauder einverstanden). Farbtest abgeschlossen, ILI9341 bleibt.
 - Ungetestet: voller Reset mit BOOT-Taste 10 s, Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen. Offen: Das Menü wird nur zwischen Datenabrufen bedient (bis 20 s). Einstufungen sind Faustregeln (Vorschlag), keine Prognose.
-- Bilder: 8 Display-Seiten und 8 Web-Reiter liegen in docs/bilder/ (Display noch 1.18.5, Web 1.18.2, nach dem Flashen neu fotografieren). Es fehlen 00_gesamt, 01_kopf_fuss, 03_sonne_tag, 10_web_handy, 17_boot_countdown.
+- Bilder: 8 Display-Seiten und 7 Web-Reiter (8 Bilder, Funk hat 2) liegen in docs/bilder/ (Display noch 1.18.5, Web 1.18.2, nach dem Flashen neu fotografieren). Es fehlen 00_gesamt, 01_kopf_fuss, 03_sonne_tag, 17_boot_countdown.
 
 ## Akku und Strom (alles Vorschlag, noch nichts gebaut)
 - Kette: Netzteil 5 V 1 A (6,3 mm Buchse, Polarität messen, Schutzdiode) zu TP4056 mit Schutz (USB-C Board) zu Akku XMY 103665 (3,7 V, 3000 mAh, 11,1 Wh) zu Aufwärtswandler MT3608 auf 5,0 V zu CYD, Anschluss P1 VIN und GND.
