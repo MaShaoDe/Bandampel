@@ -96,9 +96,9 @@ static void webRoot() {
 
   // 2 Anzeige
   h += "<section class=tab><div class=card><h2>Seiten</h2><div class=g>";
-  h += fCheck("Ampel (Übersicht)", "pOv", cfg.pOverview) + fCheck("Sonne", "pSu", cfg.pSun) + fCheck("Bänder (Prognose)", "pFc", cfg.pForecast)
-     + fCheck("Modus (SSB, CW)", "pMo", cfg.pModes) + fCheck("Live (Aktivität)", "pLi", cfg.pLive) + fCheck("Details", "pDe", cfg.pDetails)
-     + fCheck("Info (WLAN, IP)", "pIn", cfg.pInfo) + fCheck("Lizenz (QR-Code)", "pAb", cfg.pAbout);
+  h += fCheck("Solar (Übersicht)", "pOv", cfg.pOverview) + fCheck("Greyline (Sonne)", "pSu", cfg.pSun) + fCheck("Bands (Prognose)", "pFc", cfg.pForecast)
+     + fCheck("Mode (SSB, CW)", "pMo", cfg.pModes) + fCheck("WSPR (Aktivität)", "pLi", cfg.pLive) + fCheck("Space Wx (Details)", "pDe", cfg.pDetails)
+     + fCheck("Info (WLAN, IP)", "pIn", cfg.pInfo) + fCheck("About (Lizenz, QR-Code)", "pAb", cfg.pAbout);
   h += "</div><small>Der Name steht auf dem Display in der Kopfzeile neben dem Rufzeichen.</small></div><div class=card><h2>Ablauf und Betriebsart</h2><div class=g>";
   h += fInput("Seitenwechsel (Sekunden)", "automs", String(cfg.autoMs / 1000), "number", "min=2 max=600");
   h += "</div>" + fCheck("SSB zeigen", "ssb", cfg.showSsb) + fCheck("CW zeigen", "cw", cfg.showCw) + fCheck("SSB oben, CW unten", "ssbf", cfg.ssbFirst);
