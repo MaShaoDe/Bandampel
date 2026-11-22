@@ -13,6 +13,7 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - P1 VIN misst bei USB Betrieb 4,8 V (hinter der Diode D1). USB und Akku nicht gleichzeitig anschliessen, solange das nicht geklärt ist.
 - Ladestrom des TP4056 auf etwa 0,5 A senken (Rprog etwa 2,4 kOhm), damit das Netzteil Reserve hat. Der TP4056 hat keinen echten Power Path: Läuft der CYD beim Laden, bleibt der Akku auf 4,2 V (kein sauberes Ladeende). Alternative: IP5306 Modul (offen).
 - Nicht geeignet: XL6009 und XL6019 (Eingang unter 5 V unsicher), HW-070 (PWM Regler, hebt nicht an), PAM8403 (Audio), CN3791 (Solar, Brücke auf 12 V), LX-LJJC (Mehrzellen Lader).
+- OTA (Update per WLAN): mit «Huge APP» nicht möglich (kein OTA-Platz). Für Bandampel Neo (Phase 4) vormerken, dann mit 2 Programm-Slots, ob der Sketch passt ist ungeprüft (Marcel, 22.11.2026).
 - INA219 (I2C 0x40) vorhanden: nur als Messhilfe. Fest eingebaut erst bei Bandampel Neo (offen). Ladestand über IO35 und Spannungsteiler ist eine neue Funktion (offen).
 - Als Nächstes: MT3608 wird bestellt (Marcel, 19.11.2026), CYD Strom am Labornetzteil messen (5,0 V an P1, Helligkeit 100 und 10 Prozent), Laufzeit rechnen, dann 3D Gehäuse mit 6,3 mm Buchse.
 
