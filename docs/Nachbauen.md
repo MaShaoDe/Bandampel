@@ -61,6 +61,20 @@ arduino-cli compile && arduino-cli upload -p DEIN_PORT
 
 Die Datei `sketch.yaml` im Ordner stellt Board und die Flash-Aufteilung «Huge APP» schon richtig ein. Gibst du `--fqbn` selbst an, hänge `:PartitionScheme=huge_app` an. Das `&&` verhindert, dass nach einem Kompilierfehler die alte Version hochgeladen wird.
 
+## 4c. Fertige Firmware (.bin) aufspielen (ohne Quellcode, ungetestet)
+
+Der einfachste Weg, wenn du nichts kompilieren willst: Im Bereich «Releases» auf GitHub liegt (sobald sie dort hochgeladen wurde) eine Datei `bandampel-<Version>.merged.bin`. Sie enthält Bootloader, Flash-Aufteilung und Programm in einer Datei und ist ohne WLAN-Daten und ohne Rufzeichen gebaut. Diese Anleitung ist noch **ungetestet**.
+
+1. Werkzeug `esptool` installieren (braucht Python): `pip install esptool`
+2. Den Anschluss (Port) suchen: macOS `ls /dev/cu.*`, Windows im Geräte-Manager (zum Beispiel `COM5`).
+3. Aufspielen (Dateiname und Port anpassen):
+
+```
+esptool --chip esp32 --port DEIN_PORT --baud 921600 write-flash 0x0 bandampel-1.19.2.merged.bin
+```
+
+Bei älteren esptool-Versionen (4.x) heisst der Befehl `esptool.py` und `write_flash`. Gespeicherte Einstellungen gehen dabei vermutlich verloren. Danach weiter bei Kapitel 5: Rufzeichen und WLAN trägst du im Web-Menü ein. Findet das Gerät kein WLAN, öffnet es nach 60 Sekunden «Bandampel-Setup».
+
 ## 5. Erster Start
 
 1. Nach dem Hochladen startet das Gerät von selbst. Das Display zeigt «WLAN suchen».

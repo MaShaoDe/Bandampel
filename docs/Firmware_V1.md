@@ -143,3 +143,12 @@ Die letzte Seite zeigt Version, Urheber (`FerienBSD aka Marcel Sauder`), Rufzeic
 
 Ist das Web-Menü nicht erreichbar oder sind falsche Werte gespeichert (zum Beispiel ein Tippfehler im WLAN-Namen), hilft die BOOT-Taste: Im Betrieb 10 Sekunden gedrückt halten. Ab 5 Sekunden erscheint ein Countdown, Loslassen bricht ab. Bei 0 löscht das Gerät alle im Menü gespeicherten Werte und startet neu. Danach gelten wieder die Werte aus `secrets.h` (nicht leer). Steht dort kein WLAN, öffnet das Gerät nach 60 Sekunden das Notfall-WLAN «Bandampel-Setup». Nur die BOOT-Taste löst das aus, Berührung des Displays nicht. Die Taste darf beim Einschalten nicht gedrückt sein, sonst startet der ESP32 in den Flash-Modus.
 
+## Fertige .bin für den Release
+
+Für Nachbauer ohne Entwicklungsumgebung (siehe `Nachbauen.md`, Kapitel 4c) liegt zu jedem Release eine Datei `bandampel-<Version>.merged.bin`. Ungetestet, so wird sie gebaut:
+
+1. Eine `secrets.h` aus `secrets.h.example` verwenden, ohne eigene WLAN-Daten und ohne Rufzeichen. Die Datei wird in die `.bin` einkompiliert. Eine private `secrets.h` darf nie in eine veröffentlichte `.bin` gelangen.
+2. `arduino-cli compile --export-binaries` im Ordner `firmware/bandampel`. Die Datei `bandampel.ino.merged.bin` liegt dann unter `build/` (Ordner in der `.gitignore`).
+3. Umbenennen in `bandampel-<Version>.merged.bin` und dem Release hinzufügen: `gh release upload v<Version> bandampel-<Version>.merged.bin --repo MaShaoDe/Bandampel`.
+
+Die Adressen der Teile (Bootloader 0x1000, Partitionen 0x8000, boot_app0 0xe000, Programm 0x10000) stehen im Upload-Protokoll von arduino-cli. Die zusammengefasste Datei wird ab Adresse 0x0 geschrieben.
