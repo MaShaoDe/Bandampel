@@ -8,7 +8,8 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.19.2 | 2026-11-22 | dieser PR | Fertige .bin als Weg für Nachbauer: Anleitung (Nachbauen 4c) und Bauanleitung für den Release (ungetestet) |
+| 1.19.3 | 2026-11-22 | dieser PR | Nachbauen 4c: echter Dateiname der .bin, Hinweis auf ILI9341 und ST7789 |
+| 1.19.2 | 2026-11-22 | [#57](https://github.com/MaShaoDe/Bandampel/pull/57) | Fertige .bin als Weg für Nachbauer: Anleitung (Nachbauen 4c) und Bauanleitung für den Release (ungetestet) |
 | 1.19.1 | 2026-11-22 | [#56](https://github.com/MaShaoDe/Bandampel/pull/56) | Handbuch für Funkamateure und angehende: neue Seitennamen, Nutzen pro Seite, Erklärung Propagation, erweitertes Glossar |
 | 1.19.0 | 2026-11-22 | [#55](https://github.com/MaShaoDe/Bandampel/pull/55) | Seitennamen mit internationalen Funkerbegriffen: Solar, Greyline, Bands, Mode, WSPR, Space Wx, Info, About |
 | 1.18.23 | 2026-11-22 | [#54](https://github.com/MaShaoDe/Bandampel/pull/54) | STATUS: OTA für Bandampel Neo (Phase 4) vorgemerkt |

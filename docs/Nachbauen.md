@@ -63,14 +63,16 @@ Die Datei `sketch.yaml` im Ordner stellt Board und die Flash-Aufteilung «Huge A
 
 ## 4c. Fertige Firmware (.bin) aufspielen (ohne Quellcode, ungetestet)
 
-Der einfachste Weg, wenn du nichts kompilieren willst: Im Bereich «Releases» auf GitHub liegt (sobald sie dort hochgeladen wurde) eine Datei `bandampel-<Version>.merged.bin`. Sie enthält Bootloader, Flash-Aufteilung und Programm in einer Datei und ist ohne WLAN-Daten und ohne Rufzeichen gebaut. Diese Anleitung ist noch **ungetestet**.
+Der einfachste Weg, wenn du nichts kompilieren willst: Im Bereich «Releases» auf GitHub liegt (sobald sie dort hochgeladen wurde) eine Datei `bandampel.ino.merged.bin` (etwa 4 MB, sie füllt den ganzen Flash). Sie enthält Bootloader, Flash-Aufteilung und Programm in einer Datei und ist ohne WLAN-Daten und ohne Rufzeichen gebaut. Diese Anleitung ist noch **ungetestet**.
+
+**Nur für das Standard-Board:** Die Datei ist für den CYD mit dem Display ILI9341 gebaut. Hat dein Board 2 USB-Anschlüsse, ist das Display oft ein ST7789, und die Farben stimmen dann vermutlich nicht. Welches Display du hast, zeigt das Tool in `firmware/tools/cyd_id`. In diesem Fall baust du selbst (Kapitel 4a oder 4b) und trägst in `secrets.h` die Zeile `#define PANEL_ST7789 1` ein (siehe `secrets.h.example`).
 
 1. Werkzeug `esptool` installieren (braucht Python): `pip install esptool`
 2. Den Anschluss (Port) suchen: macOS `ls /dev/cu.*`, Windows im Geräte-Manager (zum Beispiel `COM5`).
 3. Aufspielen (Dateiname und Port anpassen):
 
 ```
-esptool --chip esp32 --port DEIN_PORT --baud 921600 write-flash 0x0 bandampel-1.19.2.merged.bin
+esptool --chip esp32 --port DEIN_PORT --baud 921600 write-flash 0x0 bandampel.ino.merged.bin
 ```
 
 Bei älteren esptool-Versionen (4.x) heisst der Befehl `esptool.py` und `write_flash`. Gespeicherte Einstellungen gehen dabei vermutlich verloren. Danach weiter bei Kapitel 5: Rufzeichen und WLAN trägst du im Web-Menü ein. Findet das Gerät kein WLAN, öffnet es nach 60 Sekunden «Bandampel-Setup».
