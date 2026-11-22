@@ -81,7 +81,7 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
-#define FW_VERSION "1.18.23"         // Firmware-Version (fest im Code)
+#define FW_VERSION "1.19.0"         // Firmware-Version (fest im Code)
 #define FW_URL "https://github.com/MaShaoDe/Bandampel"
 #ifndef PAGE_ABOUT
 #define PAGE_ABOUT 1              // Ueber (Urheber, Lizenz, Kontakt, QR-Code)
@@ -135,7 +135,7 @@ static bool     apActive    = false;   // Notfall-WLAN Bandampel-Setup aktiv (si
 enum PageId { PG_OVERVIEW, PG_FORECAST, PG_MODES, PG_LIVE, PG_DETAILS, PG_SUN, PG_INFO, PG_ABOUT };
 static int pageIds[8];
 // Seitennamen in der Kopfzeile (ASCII, gleiche Reihenfolge wie PageId)
-static const char* const PAGE_NAMES[8] = { "Ampel", "Baender", "Modus", "Live", "Details", "Sonne", "Info", "Lizenz" };
+static const char* const PAGE_NAMES[8] = { "Solar", "Bands", "Mode", "WSPR", "Space Wx", "Greyline", "Info", "About" };
 static int pageCount = 0;
 
 static void buildPages() {

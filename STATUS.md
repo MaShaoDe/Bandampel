@@ -3,8 +3,8 @@
 Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streichen.
 
 ## Stand
-- Bandampel Firmware 1.18.22 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 20.11.2026.
-- Phase 1 (Firmware auf dem CYD) ist getestet und eingefroren: nur noch Fehlerbehebungen (1.18.x), keine neuen Funktionen (Vorschlag, Marcel Sauder einverstanden). Farbtest abgeschlossen, ILI9341 bleibt.
+- Bandampel Firmware 1.19.0 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 20.11.2026.
+- Phase 1 (Firmware auf dem CYD) ist getestet und eingefroren: nur noch Fehlerbehebungen (1.18.x), keine neuen Funktionen (Ausnahme 1.19.0: Seitennamen, danach wieder eingefroren) (Vorschlag, Marcel Sauder einverstanden). Farbtest abgeschlossen, ILI9341 bleibt.
 - Ungetestet: voller Reset mit BOOT-Taste 10 s, Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen. Offen: Das Menü wird nur zwischen Datenabrufen bedient (bis 20 s). Einstufungen sind Faustregeln (Vorschlag), keine Prognose.
 - Bilder: 8 Display-Seiten und 7 Web-Reiter (8 Bilder, Funk hat 2) liegen in docs/bilder/ (Display 1.18.9, Web 1.18.2). Es fehlen 00_gesamt, 01_kopf_fuss und 17_boot_countdown (Marcel macht sie).
 
@@ -13,6 +13,7 @@ Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streiche
 - P1 VIN misst bei USB Betrieb 4,8 V (hinter der Diode D1). USB und Akku nicht gleichzeitig anschliessen, solange das nicht geklärt ist.
 - Ladestrom des TP4056 auf etwa 0,5 A senken (Rprog etwa 2,4 kOhm), damit das Netzteil Reserve hat. Der TP4056 hat keinen echten Power Path: Läuft der CYD beim Laden, bleibt der Akku auf 4,2 V (kein sauberes Ladeende). Alternative: IP5306 Modul (offen).
 - Nicht geeignet: XL6009 und XL6019 (Eingang unter 5 V unsicher), HW-070 (PWM Regler, hebt nicht an), PAM8403 (Audio), CN3791 (Solar, Brücke auf 12 V), LX-LJJC (Mehrzellen Lader).
+- Ideen für Neo (brauchen Speicher): Weltkarte mit Grayline und WSPR-Spots, grosse UTC-Uhr mit 2. Zeitzone, DX-Spots (Telnet-Cluster), OTA. Seitennamen sind seit 1.19.0 international (Solar, Greyline, Bands, Mode, WSPR, Space Wx, Info, About).
 - OTA (Update per WLAN): mit «Huge APP» nicht möglich (kein OTA-Platz). Für Bandampel Neo (Phase 4) vormerken, dann mit 2 Programm-Slots, ob der Sketch passt ist ungeprüft (Marcel, 22.11.2026).
 - INA219 (I2C 0x40) vorhanden: nur als Messhilfe. Fest eingebaut erst bei Bandampel Neo (offen). Ladestand über IO35 und Spannungsteiler ist eine neue Funktion (offen).
 - Als Nächstes: MT3608 wird bestellt (Marcel, 19.11.2026), CYD Strom am Labornetzteil messen (5,0 V an P1, Helligkeit 100 und 10 Prozent), Laufzeit rechnen, dann 3D Gehäuse mit 6,3 mm Buchse.

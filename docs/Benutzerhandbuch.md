@@ -38,18 +38,18 @@ Das Gerät holt sich die Daten selbst aus dem Internet (über dein WLAN oder den
 
 ### Die 8 Seiten im Überblick
 
-Das sieht man auf den Seiten und was es bedeutet. Die Einzelheiten stehen im nächsten Kapitel. Dort heissen Seite 1 «Übersicht», Seite 4 «Betriebsart» und Seite 8 «Über». Auf dem Gerät steht in der Kopfzeile «Ampel», «Modus» und «Lizenz».
+Das sieht man auf den Seiten und was es bedeutet. Die Einzelheiten stehen im nächsten Kapitel. Dort heissen Seite 1 «Übersicht», Seite 4 «Betriebsart» und Seite 8 «Über». Auf dem Gerät steht in der Kopfzeile «Solar», «Mode» und «About» (internationale Funkerbegriffe).
 
 | Nr | Seite (Name in der Kopfzeile) | Was man sieht | Kurz erklärt |
 |---|---|---|---|
-| 1 | Ampel | SFI, K-Index, A-Index und Sunspots als 4 Kacheln mit Farbrahmen | Die wichtigsten Sonnenwerte auf einen Blick. Hoher SFI und niedrige K und A sind gut. Der Rahmen zeigt die Bewertung. |
-| 2 | Sonne | Sonnenbogen mit Aufgang, Untergang, Tageslänge und Countdown | Zeigt, wo die Sonne steht (nachts der Mond). In der Grayline, der Dämmerungszone, laufen tiefe Bänder oft besonders gut. |
-| 3 | Baender | 8 Bänder von 80m bis 10m als Farbbalken für Tag und Nacht, dazu SFI, K und A | Prognose pro Band. Die Zeile, die gerade gilt (Tag oder Nacht), leuchtet. 160m fehlt, die Quelle kennt es nicht. |
-| 4 | Modus | Dieselben 8 Bänder, getrennt für SSB und CW (mit Digital wie FT8), je Tag und Nacht | CW und Digital kommen mit schwachen Signalen aus und werden eine Stufe besser bewertet. Faustregel, keine Prognose. |
-| 5 | Live | 9 Balken von 160m bis 10m mit der Zahl der WSPR-Meldungen der letzten 30 Minuten | Hier wird gemessen, nicht prognostiziert: Wie viel ist gerade wirklich auf dem Band los? Region standardmässig Mitteleuropa. |
-| 6 | Details | 4 Karten: X-Ray (Flares), Sonnenwind, Magnetfeld Bz, Rauschen | Was sonst auf die Ausbreitung drückt, mit Wertung wie «ruhig» oder «erhöht» und Farbrahmen. |
+| 1 | Solar | SFI, K-Index, A-Index und Sunspots als 4 Kacheln mit Farbrahmen | Die wichtigsten Sonnenwerte auf einen Blick. Hoher SFI und niedrige K und A sind gut. Der Rahmen zeigt die Bewertung. |
+| 2 | Greyline | Sonnenbogen mit Aufgang, Untergang, Tageslänge und Countdown | Zeigt, wo die Sonne steht (nachts der Mond). In der Grayline, der Dämmerungszone, laufen tiefe Bänder oft besonders gut. |
+| 3 | Bands | 8 Bänder von 80m bis 10m als Farbbalken für Tag und Nacht, dazu SFI, K und A | Prognose pro Band. Die Zeile, die gerade gilt (Tag oder Nacht), leuchtet. 160m fehlt, die Quelle kennt es nicht. |
+| 4 | Mode | Dieselben 8 Bänder, getrennt für SSB und CW (mit Digital wie FT8), je Tag und Nacht | CW und Digital kommen mit schwachen Signalen aus und werden eine Stufe besser bewertet. Faustregel, keine Prognose. |
+| 5 | WSPR | 9 Balken von 160m bis 10m mit der Zahl der WSPR-Meldungen der letzten 30 Minuten | Hier wird gemessen, nicht prognostiziert: Wie viel ist gerade wirklich auf dem Band los? Region standardmässig Mitteleuropa. |
+| 6 | Space Wx | 4 Karten: X-Ray (Flares), Sonnenwind, Magnetfeld Bz, Rauschen | Was sonst auf die Ausbreitung drückt, mit Wertung wie «ruhig» oder «erhöht» und Farbrahmen. |
 | 7 | Info | Firmware-Version, WLAN-Name, IP-Adresse, Signalstärke, Gerätename, Alter der Daten, Laufzeit | Die technische Seite. Hier steht die Adresse für das Web-Menü. |
-| 8 | Lizenz | Version, Urheber, Lizenzen, Datenquellen und ein QR-Code | Mit dem Handy scannen führt zum Projekt auf GitHub. |
+| 8 | About | Version, Urheber, Lizenzen, Datenquellen und ein QR-Code | Mit dem Handy scannen führt zum Projekt auf GitHub. |
 
 Auf jeder Seite stehen oben das Rufzeichen, der Seitenname und die Uhrzeit (Ortszeit und UTC). Unten stehen das Alter der Daten, AUTO oder HALT (Seitenwechsel), das WLAN-Symbol und die Seitennummer. Farben: Grün gut, Gelb mittel, Rot schlecht, Grau keine Daten.
 
@@ -61,7 +61,7 @@ Jede Seite hat oben eine **Kopfzeile** und unten eine **Fusszeile**. Dazwischen 
 
 ### Kopfzeile
 
-Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast), dahinter in Gelb der Name der Seite: Ampel, Baender, Modus, Live, Details, Sonne, Info oder Lizenz. Im Web-Menü heissen die Haken genauso. Rechts die Uhrzeit: gross die Ortszeit, klein dahinter die UTC-Zeit mit einem «Z» (Funker sprechen von «Zulu»).
+Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast), dahinter in Gelb der Name der Seite: Solar, Bands, Mode, WSPR, Space Wx, Greyline, Info oder About. Im Web-Menü heissen die Haken genauso. Rechts die Uhrzeit: gross die Ortszeit, klein dahinter die UTC-Zeit mit einem «Z» (Funker sprechen von «Zulu»).
 
 ### Fusszeile
 
