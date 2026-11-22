@@ -81,7 +81,7 @@ static const int LDR_PIN  = 34;
 #ifndef LIVE_MINUTES
 #define LIVE_MINUTES 30           // Zeitfenster der Live-Aktivitaet
 #endif
-#define FW_VERSION "1.19.2"         // Firmware-Version (fest im Code)
+#define FW_VERSION "1.19.3"         // Firmware-Version (fest im Code)
 #define FW_URL "https://github.com/MaShaoDe/Bandampel"
 #ifndef PAGE_ABOUT
 #define PAGE_ABOUT 1              // Ueber (Urheber, Lizenz, Kontakt, QR-Code)

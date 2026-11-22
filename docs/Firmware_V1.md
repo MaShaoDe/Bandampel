@@ -145,10 +145,10 @@ Ist das Web-Menü nicht erreichbar oder sind falsche Werte gespeichert (zum Beis
 
 ## Fertige .bin für den Release
 
-Für Nachbauer ohne Entwicklungsumgebung (siehe `Nachbauen.md`, Kapitel 4c) liegt zu jedem Release eine Datei `bandampel-<Version>.merged.bin`. Ungetestet, so wird sie gebaut:
+Für Nachbauer ohne Entwicklungsumgebung (siehe `Nachbauen.md`, Kapitel 4c) liegt zu jedem Release eine Datei `bandampel.ino.merged.bin` (für das Standard-Board mit ILI9341, etwa 4 MB). Ungetestet, so wird sie gebaut:
 
 1. Eine `secrets.h` aus `secrets.h.example` verwenden, ohne eigene WLAN-Daten und ohne Rufzeichen. Die Datei wird in die `.bin` einkompiliert. Eine private `secrets.h` darf nie in eine veröffentlichte `.bin` gelangen.
 2. `arduino-cli compile --export-binaries` im Ordner `firmware/bandampel`. Die Datei `bandampel.ino.merged.bin` liegt dann unter `build/` (Ordner in der `.gitignore`).
-3. Umbenennen in `bandampel-<Version>.merged.bin` und dem Release hinzufügen: `gh release upload v<Version> bandampel-<Version>.merged.bin --repo MaShaoDe/Bandampel`.
+3. Dem Release hinzufügen: `gh release upload v<Version> build/esp32.esp32.esp32/bandampel.ino.merged.bin --repo MaShaoDe/Bandampel`. Der Dateiname bleibt beim Herunterladen `bandampel.ino.merged.bin`, auch wenn man mit `#Etikett` eine andere Anzeige setzt.
 
 Die Adressen der Teile (Bootloader 0x1000, Partitionen 0x8000, boot_app0 0xe000, Programm 0x10000) stehen im Upload-Protokoll von arduino-cli. Die zusammengefasste Datei wird ab Adresse 0x0 geschrieben.
