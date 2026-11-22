@@ -3,9 +3,9 @@
 
 # Bandampel: Das Benutzerhandbuch
 
-*Version 1.17.3. Die Ampel für den Äther: Was läuft gerade auf Kurzwelle, und wofür?*
+*Gilt für die Firmware 1.19. Die Ampel für den Äther: Was läuft gerade auf Kurzwelle, und wofür?*
 
-Dieses Handbuch ist für alle gedacht: für Funkamateure mit 40 Jahren Erfahrung genauso wie für die Person, die sich fragt, warum sich ihre Familie dauernd über «S-Meter» und «K-Index» unterhält. Es ist nach dem Prinzip gebaut: erst was die Bandampel kann, dann wie man sie bedient, dann wie man sie einstellt. Bei Problemen hilft das Kapitel «Wenn etwas klemmt» weiter hinten.
+Dieses Handbuch ist für alle gedacht: für Funkamateure mit 40 Jahren Erfahrung genauso wie für angehende Funkamateure (zum Beispiel in der Prüfungsvorbereitung) und für die Person, die sich fragt, warum sich ihre Familie dauernd über «S-Meter» und «K-Index» unterhält. Die Seiten heissen auf dem Gerät mit den üblichen englischen Funkerbegriffen (Solar, Bands, Mode ...). Was sie bedeuten, steht bei jeder Seite und im Glossar am Ende. Es ist nach dem Prinzip gebaut: erst was die Bandampel kann, dann wie man sie bedient, dann wie man sie einstellt. Bei Problemen hilft das Kapitel «Wenn etwas klemmt» weiter hinten.
 
 Die Bilder sind Fotos vom echten Gerät. Sie liegen in `docs/bilder/`. Die Kamera gibt Gelb auf dem Display teils weiss und Rot violett wieder. Massgebend sind die Farben der Legende im Text.
 
@@ -17,6 +17,8 @@ Ein kleiner Kasten mit Bildschirm, der dir auf einen Blick sagt, ob sich das Ein
 
 Das Gerät holt sich die Daten selbst aus dem Internet (über dein WLAN oder den Hotspot deines Handys), rechnet ein bisschen und malt dir daraus Farben. Du musst nichts wissen, nichts rechnen und keine Tabellen lesen. Wer es doch wissen will, findet unten für jede Zahl eine Erklärung.
 
+**Warum Sonnenwerte?** Kurzwellensignale (HF, etwa 3 bis 30 MHz) werden von der Ionosphäre zur Erde zurückgeworfen, einer Schicht in grosser Höhe. Die Sonne bestimmt, wie stark diese Schicht ionisiert ist. Viel Sonnenaktivität (hoher SFI, viele Sunspots) öffnet tagsüber die oberen Bänder (15, 12, 10 m). Nachts sind die tiefen Bänder (80 m, 160 m) besser. Gestörte Tage (hoher K-Index, starke Flares) dämpfen die Ausbreitung. Fachwort dafür: **Propagation**. Genau diese Werte zeigt die Bandampel als Farben.
+
 ![Die Bandampel auf dem Tisch](bilder/00_gesamt.jpg)
 
 ---
@@ -26,9 +28,9 @@ Das Gerät holt sich die Daten selbst aus dem Internet (über dein WLAN oder den
 - **8 Seiten**, die automatisch durchlaufen oder per Fingertipp wechseln.
 - **Prognose für 8 Bänder** (80 m bis 10 m), getrennt für Tag und Nacht, als Farbbalken.
 - **Prognose für SSB und CW** (Sprechfunk und Morsen samt Digital wie FT8), jeweils Tag und Nacht.
-- **Live-Aktivität**: Was gerade wirklich auf den Bändern los ist, gemessen aus WSPR-Meldungen, auch für 160 m.
-- **Sonnenseite**: Sonnenaufgang, Sonnenuntergang, Tageslänge und ein Hinweis auf die **Grayline**.
-- **Sonnenwerte im Detail**: Flares, Sonnenwind, Magnetfeld, Rauschen.
+- **WSPR-Seite (Live-Aktivität)**: Was gerade wirklich auf den Bändern los ist, gemessen aus WSPR-Meldungen, auch für 160 m.
+- **Greyline-Seite (Sonne)**: Sonnenaufgang, Sonnenuntergang, Tageslänge und ein Hinweis auf die **Grayline**.
+- **Space Wx (Weltraumwetter)**: Flares, Sonnenwind, Magnetfeld, Rauschen.
 - **Uhr** mit Ortszeit und UTC, dein **Rufzeichen** in der Kopfzeile.
 - **Automatische Helligkeit** nach Umgebungslicht, damit es nachts nicht blendet und kaum Strom braucht.
 - **Web-Menü** im Browser: alles einstellen, ohne Kabel und ohne Programmieren.
@@ -38,7 +40,7 @@ Das Gerät holt sich die Daten selbst aus dem Internet (über dein WLAN oder den
 
 ### Die 8 Seiten im Überblick
 
-Das sieht man auf den Seiten und was es bedeutet. Die Einzelheiten stehen im nächsten Kapitel. Dort heissen Seite 1 «Übersicht», Seite 4 «Betriebsart» und Seite 8 «Über». Auf dem Gerät steht in der Kopfzeile «Solar», «Mode» und «About» (internationale Funkerbegriffe).
+Das sieht man auf den Seiten und was es bedeutet. Die Einzelheiten stehen im nächsten Kapitel. Dort steht der Name auf dem Gerät zuerst, dahinter die deutsche Bezeichnung, zum Beispiel «Solar (Übersicht)» oder «Mode (Betriebsart)».
 
 | Nr | Seite (Name in der Kopfzeile) | Was man sieht | Kurz erklärt |
 |---|---|---|---|
@@ -81,7 +83,7 @@ Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast), dahi
 | Rot | schlecht | Kaffeepause |
 | Grau | keine Daten | Das Gerät denkt noch nach |
 
-### Seite 1: Übersicht
+### Seite 1: Solar (Übersicht)
 
 4 grosse Kacheln mit den wichtigsten Zahlen der Sonne:
 
@@ -92,46 +94,56 @@ Links dein Rufzeichen (oder «BANDAMPEL», wenn du keins eingetragen hast), dahi
 
 Der Rahmen jeder Kachel hat die Farbe der Bewertung. Die Grenzwerte sind Faustregeln, keine Naturgesetze.
 
-![Seite Übersicht](bilder/02_uebersicht.jpg)
+**Was bringt es dir?** Du siehst in 2 Sekunden, ob die Sonne heute für Kurzwelle mitspielt. Hoher SFI und niedrige K und A heissen: Die oberen Bänder (15 m bis 10 m) können offen sein, das Einschalten lohnt sich.
 
-### Seite 2: Sonne
+![Seite Solar](bilder/02_uebersicht.jpg)
+
+### Seite 2: Greyline (Sonne)
 
 Ein Bogen zeigt den Weg der Sonne: links Aufgang, rechts Untergang. Ein gelber Punkt zeigt, wo die Sonne gerade steht. Nachts wandert stattdessen der Mond unter dem Horizont. Darunter stehen die Zeiten und die Tageslänge, und ein Countdown sagt, wie lange es noch bis zum nächsten Aufgang oder Untergang dauert.
 
 **Grayline:** In der halben Stunde vor und nach Auf- und Untergang läuft die Dämmerungszone über die Erde. Dort sind die tiefen Bänder (160 m, 80 m, 40 m) oft besonders gut, weil die Signale dann weite Wege schaffen. Die Seite meldet «GRAYLINE AKTIV» in Gelb. Das ist eine bewährte Faustregel, keine Garantie.
 
-![Seite Sonne am Tag](bilder/03_sonne_tag.jpg)
-![Seite Sonne in der Nacht](bilder/03_sonne_nacht.jpg)
+**Was bringt es dir?** Du planst Funkzeiten. Wer um Sonnenauf- und -untergang auf den tiefen Bändern (160 m, 80 m, 40 m) funkt, hat oft die besten Chancen auf weite Verbindungen (DX).
+
+![Seite Greyline am Tag](bilder/03_sonne_tag.jpg)
+![Seite Greyline in der Nacht](bilder/03_sonne_nacht.jpg)
 
 Die Zeiten rechnet das Gerät selbst aus (Genauigkeit etwa 1 bis 2 Minuten). Als Standort gilt Frauenfeld, du kannst ihn im Menü ändern.
 
-### Seite 3: Bänder
+### Seite 3: Bands (Bänder)
 
 8 Spalten für die Bänder 80, 40, 30, 20, 17, 15, 12 und 10 Meter. Oben die Tag-Balken (Sonne), unten die Nacht-Balken (Mond). Die Zeile, die gerade gilt, leuchtet hell, die andere ist gedämpft. Darunter stehen die Zahlen SFI, K und A.
 
-160 m fehlt hier mit Absicht: Die Prognosequelle kennt es nicht. 160 m findest du auf der Live-Seite.
+160 m fehlt hier mit Absicht: Die Prognosequelle kennt es nicht. 160 m findest du auf der WSPR-Seite.
 
-![Seite Bänder](bilder/04_baender.jpg)
+**Was bringt es dir?** Du weisst, auf welchem Band du jetzt anfangen solltest, und ob es sich tagsüber oder nachts mehr lohnt. Statt alle Bänder durchzudrehen, gehst du gleich zum grünen Balken.
 
-### Seite 4: Betriebsart
+![Seite Bands](bilder/04_baender.jpg)
+
+### Seite 4: Mode (Betriebsart)
 
 Dieselben 8 Bänder, aber getrennt nach **SSB** (Sprechfunk) und **CW** (Morsen, dazu Digitalmodi wie FT8). Standardmässig steht SSB oben, du kannst die Reihenfolge ändern.
 
 Warum zwei Blöcke? Morsen und FT8 kommen mit viel schwächeren Signalen aus als Sprechfunk. Deshalb bewertet die Bandampel CW und Digital eine Stufe besser. Ist das Erdmagnetfeld gestört (K ab 5), wird für beide eine Stufe abgezogen. Das ist eine Faustregel, keine Prognose.
 
-![Seite Betriebsart](bilder/05_betriebsart.jpg)
+**Was bringt es dir?** Ist die Ausbreitung nur mittelmässig, geht Sprechfunk (SSB) oft nicht mehr, Morsen (CW) oder FT8 aber schon. Die Seite zeigt dir, wann sich der Wechsel der Betriebsart lohnt.
 
-### Seite 5: Live
+![Seite Mode](bilder/05_betriebsart.jpg)
+
+### Seite 5: WSPR (Live)
 
 Hier wird nicht prognostiziert, sondern gemessen. Funkamateure auf der ganzen Welt melden mit WSPR (einem Spezialmodus für schwache Signale) jede gehörte Station. Die Bandampel zählt, wie viele Meldungen in den letzten 30 Minuten aus deiner Region kamen. Viele Meldungen heissen: Das Band lebt. Es gibt 9 Balken, 160 m inklusive.
 
 Bei den Balken steht die Anzahl der Meldungen. Die Region ist standardmässig Mitteleuropa (Locator-Felder JN und JO). Die Farbschwellen sind noch geschätzt und werden nach Erfahrung angepasst.
 
-![Seite Live](bilder/06_live.jpg)
+**Was bringt es dir?** Ein Realitätscheck: Die Prognose sagt, was möglich wäre, WSPR zeigt, was gerade wirklich ankommt. Sind viele Meldungen da, ist das Band offen, auch wenn die Prognose zurückhaltend ist.
 
-**Wichtig:** Die Live-Seite braucht nach dem Einschalten ein paar Minuten, bis die erste Abfrage da ist. Danach aktualisiert sie sich alle 15 Minuten.
+![Seite WSPR](bilder/06_live.jpg)
 
-### Seite 6: Details
+**Wichtig:** Die WSPR-Seite braucht nach dem Einschalten ein paar Minuten, bis die erste Abfrage da ist. Danach aktualisiert sie sich alle 15 Minuten.
+
+### Seite 6: Space Wx (Weltraumwetter)
 
 4 Karten mit Farbrahmen für alles, was sonst noch auf die Ausbreitung drückt:
 
@@ -140,19 +152,23 @@ Bei den Balken steht die Anzahl der Meldungen. Die Region ist standardmässig Mi
 - **Magnetfeld Bz:** Zeigt es nach Süden (negativ), kann das Erdmagnetfeld ins Wanken kommen. Ab minus 3 nT unruhig, ab minus 8 gestört.
 - **Rauschen:** Wie laut das Grundrauschen auf den Bändern ist (S-Stufen). S0 bis S1 leise, S2 bis S3 mittel, ab S4 laut.
 
-![Seite Details](bilder/07_details.jpg)
+**Was bringt es dir?** Du verstehst, warum ein Band trotz guter Prognose schweigt: Ein Flare oder ein Magnetsturm hat es gerade gestört. Dann sparst du dir die Fehlersuche an der Antenne und wartest ab.
+
+![Seite Space Wx](bilder/07_details.jpg)
 
 ### Seite 7: Info
 
 Die technische Seite für Neugierige: ganz oben die Firmware-Version (die Nummer brauchst du, wenn du Hilfe suchst), dann WLAN-Name, IP-Adresse, Signalstärke, der Name des Geräts im Netz, das Alter der Daten und die Laufzeit seit dem Einschalten. Praktisch, wenn du das Web-Menü öffnen willst und die Adresse suchst.
 
+**Was bringt es dir?** Hier suchst du die Adresse für das Web-Menü und siehst bei Problemen sofort, ob WLAN und Daten in Ordnung sind.
+
 ![Seite Info](bilder/08_info.jpg)
 
-### Seite 8: Über
+### Seite 8: About (Über)
 
 Version, Urheber, Lizenzen, Datenquellen und ein **QR-Code**, der direkt zum Projekt auf GitHub führt. Einfach mit dem Handy scannen.
 
-![Seite Über](bilder/09_ueber.jpg)
+![Seite About](bilder/09_ueber.jpg)
 
 ---
 
@@ -205,7 +221,7 @@ Nur zum Anschauen: WLAN, IP, Signal, Version, Name im Netz, Alter der Daten, Lau
 
 ### Reiter «Anzeige»
 
-- **Seiten:** Jede Seite lässt sich einzeln ausschalten. Wer Details nicht braucht, schaltet sie ab.
+- **Seiten:** Jede Seite lässt sich einzeln ausschalten. Wer Space Wx nicht braucht, schaltet die Seite ab.
 - **Seitenwechsel:** Wie viele Sekunden jede Seite im AUTO-Modus steht.
 - **SSB, CW:** Zeigen oder verstecken, und welche Betriebsart oben steht.
 
@@ -233,7 +249,7 @@ Nur zum Anschauen: WLAN, IP, Signal, Version, Name im Netz, Alter der Daten, Lau
 - **Rufzeichen:** Erscheint in der Kopfzeile.
 - **Zeitzone:** Standard ist Zürich mit automatischer Sommerzeit.
 - **Standort:** Breite und Länge für die Sonnenzeiten.
-- **Live-Seite:** Region (Locator-Felder), Zeitfenster und die Farbschwellen für jedes Band. Daneben steht die aktuelle Zahl, damit du die Schwellen nach Gefühl einstellen kannst.
+- **WSPR-Seite:** Region (Locator-Felder), Zeitfenster und die Farbschwellen für jedes Band. Daneben steht die aktuelle Zahl, damit du die Schwellen nach Gefühl einstellen kannst.
 
 ![Reiter Funk](bilder/15_web_funk.png)
 ![Reiter Funk, unterer Teil](bilder/15_web_funk_2.png)
@@ -306,7 +322,7 @@ Das Gerät hat noch keine Daten. Es braucht nach dem Start etwa eine Minute. Ble
 **Die Daten sind alt.**
 Die Quelle HamQSL aktualisiert sich alle paar Stunden. «Daten vor 3 h» ist normal.
 
-**Die Live-Seite ist leer.**
+**Die WSPR-Seite ist leer.**
 Sie holt sich ihre Daten alle 15 Minuten, nach dem Start dauert es etwas. Ist die Region falsch eingestellt, fehlen die Meldungen. Standard ist JN und JO.
 
 **Die Uhrzeit stimmt nicht.**
@@ -341,6 +357,15 @@ Stelle in `sketch.yaml` die Flash-Aufteilung «Huge APP» ein, das ist im Reposi
 | **SSB** | Einseitenband, die übliche Sprechfunk-Betriebsart |
 | **CW** | Morsetelegrafie |
 | **FT8** | Digitalmodus für sehr schwache Signale |
+| **Propagation** | Ausbreitung der Funkwellen: Wie gut Signale über die Ionosphäre weite Strecken schaffen |
+| **Band** | Frequenzbereich, benannt nach der Wellenlänge. Ungefähr: 160 m = 1,8 MHz, 80 m = 3,5 MHz, 40 m = 7 MHz, 30 m = 10 MHz, 20 m = 14 MHz, 17 m = 18 MHz, 15 m = 21 MHz, 12 m = 24 MHz, 10 m = 28 MHz |
+| **Mode** | Betriebsart, zum Beispiel SSB, CW oder FT8 |
+| **Space Wx** | Weltraumwetter (Wx ist die Funkerabkürzung für Wetter): Flares, Sonnenwind, Magnetfeld |
+| **Solar** | Hier: die Sonnenwerte SFI, K, A und Sunspots |
+| **Ionosphäre** | Hohe Luftschicht, die Kurzwelle zur Erde zurückwirft |
+| **Locator** | Gitterfeld-Kennung für einen Standort, zum Beispiel JN47. Die ersten 2 Buchstaben sind das grosse Feld (Mitteleuropa: JN und JO) |
+| **DX** | Weite Verbindungen, meist über Tausende Kilometer |
+| **S-Stufen** | Skala für die Signalstärke (S-Meter). Hier für das Grundrauschen genutzt |
 | **UTC / Zulu** | Weltzeit, unabhängig von Zeitzone und Sommerzeit |
 | **ESP32** | Der kleine Computer im Gerät |
 | **CYD** | «Cheap Yellow Display», das fertige Board, auf dem die Bandampel läuft |

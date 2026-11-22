@@ -25,7 +25,7 @@ Die Datei `firmware/bandampel/sketch.yaml` setzt das Board (`esp32:esp32:esp32`)
 
 ## Bedienung
 
-Seite wechseln: Display antippen oder BOOT-Taste. 8 Seiten: Übersicht, Sonne, Bänder, Betriebsart, Live, Details, Info, Über. Ausführlich im [Benutzerhandbuch](Benutzerhandbuch.md).
+Seite wechseln: Display antippen oder BOOT-Taste. 8 Seiten: Solar, Greyline, Bands, Mode, WSPR, Space Wx, Info, About (so heissen sie in der Kopfzeile). Ausführlich im [Benutzerhandbuch](Benutzerhandbuch.md).
 
 ## Anpassen
 
@@ -89,7 +89,7 @@ Auf der Seite Betriebsart lassen sich SSB und CW einzeln schalten: `#define SHOW
 
 ## Sonnenaufgang und Sonnenuntergang
 
-Die Seite «Sonne» (nach der Übersicht) zeigt einen Sonnenbogen mit der aktuellen Position (nachts den Mond unter dem Horizont), Aufgang, Untergang, Tageslänge und einen Countdown zum nächsten Ereignis. In den 30 Minuten vor und nach Auf- und Untergang steht «GRAYLINE AKTIV». In dieser Dämmerungszone sind die tiefen Bänder (160, 80, 40 m) oft besonders gut. Das ist eine Faustregel, keine Prognose. Auf der Seite «Bänder» ist die Zeile Tag (Sonne) oder Nacht (Mond) hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), in Ortszeit (Zürich, mit Sommerzeit). Standort mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), Seite ausblenden mit `#define PAGE_SUN 0` oder im Web-Menü. Vor der Zeitsynchronisation steht «Warte auf Uhrzeit».
+Die Seite «Greyline» (Sonne, nach «Solar») zeigt einen Sonnenbogen mit der aktuellen Position (nachts den Mond unter dem Horizont), Aufgang, Untergang, Tageslänge und einen Countdown zum nächsten Ereignis. In den 30 Minuten vor und nach Auf- und Untergang steht «GRAYLINE AKTIV». In dieser Dämmerungszone sind die tiefen Bänder (160, 80, 40 m) oft besonders gut. Das ist eine Faustregel, keine Prognose. Auf der Seite «Bänder» ist die Zeile Tag (Sonne) oder Nacht (Mond) hell, wenn sie gerade gilt. Die Zeiten werden im Gerät berechnet (Genauigkeit etwa 1 bis 2 Minuten), in Ortszeit (Zürich, mit Sommerzeit). Standort mit `SUN_LAT` und `SUN_LON` (Voreinstellung Frauenfeld), Seite ausblenden mit `#define PAGE_SUN 0` oder im Web-Menü. Vor der Zeitsynchronisation steht «Warte auf Uhrzeit».
 
 ## Einstellungen im Flash
 
@@ -111,7 +111,7 @@ Notfall-WLAN: Findet das Gerät 60 Sekunden lang kein bekanntes WLAN, öffnet es
 
 Live-Schwellen: Auf der Menüseite steht neben jedem Band die aktuelle Zahl der WSPR-Spots. Damit lassen sich die Schwellen «mittel» und «gut» nach Foto oder Gefühl einstellen.
 
-## Seite Details
+## Seite Space Wx (Details)
 
 4 Karten mit farbigem Rahmen: X-Ray (Sonneneruptionen), Sonnenwind, Magnetfeld Bz und Signal-Rauschen. Grün ist ruhig, Gelb erhöht, Rot gestört. Die Einstufung ist eine Faustregel (Vorschlag), keine Prognose: X-Ray A oder B grün, C gelb, M oder X rot. Sonnenwind unter 400 km/s grün, unter 600 gelb, sonst rot. Bz ab minus 3 grün, ab minus 8 gelb, darunter rot. Rauschen S0 bis S1 grün, S2 bis S3 gelb, ab S4 rot.
 
