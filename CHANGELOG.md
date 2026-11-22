@@ -8,9 +8,10 @@ Zählung: Eine neue Funktion erhöht die mittlere Zahl (1.5.0 zu 1.6.0). Eine Fe
 
 | Version | Gemergt | PR | Inhalt |
 |---|---|---|---|
-| 1.19.1 | 2026-11-22 | dieser PR | Handbuch für Funkamateure und angehende: neue Seitennamen, Nutzen pro Seite, Erklärung Propagation, erweitertes Glossar |
+| 1.19.2 | 2026-11-22 | dieser PR | Fertige .bin als Weg für Nachbauer: Anleitung (Nachbauen 4c) und Bauanleitung für den Release (ungetestet) |
+| 1.19.1 | 2026-11-22 | [#56](https://github.com/MaShaoDe/Bandampel/pull/56) | Handbuch für Funkamateure und angehende: neue Seitennamen, Nutzen pro Seite, Erklärung Propagation, erweitertes Glossar |
 | 1.19.0 | 2026-11-22 | [#55](https://github.com/MaShaoDe/Bandampel/pull/55) | Seitennamen mit internationalen Funkerbegriffen: Solar, Greyline, Bands, Mode, WSPR, Space Wx, Info, About |
-| 1.18.23 | 2026-11-22 | dieser PR | STATUS: OTA für Bandampel Neo (Phase 4) vorgemerkt |
+| 1.18.23 | 2026-11-22 | [#54](https://github.com/MaShaoDe/Bandampel/pull/54) | STATUS: OTA für Bandampel Neo (Phase 4) vorgemerkt |
 | 1.18.22 | 2026-11-20 | [#53](https://github.com/MaShaoDe/Bandampel/pull/53) | STATUS: Stand 20.11., Regeln liegen im Projekt statt im Repo (ersetzt PR 50) |
 | 1.18.21 | 2026-11-19 | [#52](https://github.com/MaShaoDe/Bandampel/pull/52) | Neue Kamerafotos der Seiten Ampel, Bänder, Modus, Live, Details, Info und Lizenz (Firmware 1.18.9) |
 | 1.18.20 | 2026-11-19 | [#51](https://github.com/MaShaoDe/Bandampel/pull/51) | Bild 03_sonne_tag: Seite Sonne tagsüber (schliesst toten Link im Handbuch) |

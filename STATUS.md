@@ -3,9 +3,9 @@
 Höchstens 30 Zeilen. Immer überschreiben, nicht anhängen. Erledigtes streichen.
 
 ## Stand
-- Bandampel Firmware 1.19.1 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 20.11.2026.
+- Bandampel Firmware 1.19.2 im Repo. Auf dem CYD (ESP32-2432S028, ILI9341, arduino-cli, FQBN in `sketch.yaml`) zuletzt bestätigt: 1.18.5. Der Port wechselt beim Umstecken (zuletzt `/dev/cu.wchusbserial210`). Stand 20.11.2026.
 - Phase 1 (Firmware auf dem CYD) ist getestet und eingefroren: nur noch Fehlerbehebungen (1.18.x), keine neuen Funktionen (Ausnahme 1.19.0: Seitennamen, danach wieder eingefroren) (Vorschlag, Marcel Sauder einverstanden). Farbtest abgeschlossen, ILI9341 bleibt.
-- Ungetestet: voller Reset mit BOOT-Taste 10 s, Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen. Offen: Das Menü wird nur zwischen Datenabrufen bedient (bis 20 s). Einstufungen sind Faustregeln (Vorschlag), keine Prognose.
+- Ungetestet: fertige .bin im Release (Nachbauen.md 4c, Firmware_V1.md), voller Reset mit BOOT-Taste 10 s, Bestätigung der Werkseinstellung im Menü, Pause zwischen WLAN-Versuchen. Offen: Das Menü wird nur zwischen Datenabrufen bedient (bis 20 s). Einstufungen sind Faustregeln (Vorschlag), keine Prognose.
 - Bilder: 8 Display-Seiten und 7 Web-Reiter (8 Bilder, Funk hat 2) liegen in docs/bilder/ (Display 1.18.9, Web 1.18.2). Es fehlen 00_gesamt, 01_kopf_fuss und 17_boot_countdown (Marcel macht sie).
 
 ## Akku und Strom (alles Vorschlag, noch nichts gebaut)
